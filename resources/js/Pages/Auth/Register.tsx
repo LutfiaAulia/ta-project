@@ -10,8 +10,12 @@ export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
+        kode_verifikasi: '',
         password: '',
         password_confirmation: '',
+        nama_instansi: '',
+        alamat: '',
+        no_hp: '',
     });
 
     const submit: FormEventHandler = (e) => {
