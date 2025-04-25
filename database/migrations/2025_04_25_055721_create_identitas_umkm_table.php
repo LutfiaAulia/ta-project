@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('lokasi');
             $table->text('deskripsi');
             $table->string('nib');
+            
             $table->foreign('nib')->references('nib')->on('umkm')->onDelete('cascade');
             $table->timestamps();
         });

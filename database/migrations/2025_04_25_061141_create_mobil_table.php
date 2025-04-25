@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('plat_mobil');
             $table->string('tipe_mobil');
             $table->unsignedBigInteger('id_sopir');
+            
             $table->foreign('id_sopir')->references('id_sopir')->on('sopir')->onDelete('cascade');
             $table->timestamps();
         });

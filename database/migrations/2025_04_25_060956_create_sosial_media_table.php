@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('platform');
             $table->string('url');
             $table->unsignedBigInteger('id_identitas');
+            
             $table->foreign('id_identitas')->references('id_identitas')->on('identitas_umkm')->onDelete('cascade');
             $table->timestamps();
         });

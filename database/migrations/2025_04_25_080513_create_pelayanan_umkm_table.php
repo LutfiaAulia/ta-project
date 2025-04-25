@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('layanan');
             $table->string('nip');
             $table->unsignedBigInteger('id_booking');
+            
             $table->foreign('nip')->references('nip')->on('pegawai')->onDelete('cascade');
             $table->foreign('id_booking')->references('id_booking')->on('booking')->onDelete('cascade');
             $table->timestamps();

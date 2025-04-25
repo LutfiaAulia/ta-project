@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('ttd');
             $table->string('nip');
             $table->unsignedBigInteger('id_pelayanan');
+            
             $table->foreign('nip')->references('nip')->on('pegawai')->onDelete('cascade');
             $table->foreign('id_pelayanan')->references('id_pelayanan')->on('pelayanan_umkm')->onDelete('cascade');
             $table->timestamps();

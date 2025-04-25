@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('tgl_surat');
             $table->string('surat');
             $table->string('nip');
+            
             $table->foreign('nip')->references('nip')->on('pegawai')->onDelete('cascade');
             $table->timestamps();
         });
