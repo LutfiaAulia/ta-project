@@ -30,7 +30,7 @@ export default function Register() {
                     {/* Kiri */}
                     <div className="bg-green-500 text-white flex flex-col justify-center items-center p-10 shadow-lg">
                         <h1 className="text-4xl font-bold mb-4 text-center">
-                            Selamat Datang Kembali
+                            Selamat Datang
                         </h1>
                         <p className="text-center mb-8">
                             Sudah punya akun? Ayo segera masuk untuk menikmati
