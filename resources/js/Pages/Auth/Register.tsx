@@ -63,7 +63,7 @@ export default function Register() {
                                     name="name"
                                     placeholder="nama"
                                     value={data.name}
-                                    className="mt-1 block w-full"
+                                    className="w-full px-4 py-2 border rounded-lg bg-gray-100"
                                     autoComplete="name"
                                     isFocused={true}
                                     onChange={(e) =>
@@ -84,7 +84,7 @@ export default function Register() {
                                     name="email"
                                     placeholder="email"
                                     value={data.email}
-                                    className="mt-1 block w-full"
+                                    className="w-full px-4 py-2 border rounded-lg bg-gray-100"
                                     autoComplete="username"
                                     onChange={(e) =>
                                         setData("email", e.target.value)
@@ -104,7 +104,7 @@ export default function Register() {
                                     name="password"
                                     placeholder="password"
                                     value={data.password}
-                                    className="mt-1 block w-full"
+                                    className="w-full px-4 py-2 border rounded-lg bg-gray-100"
                                     autoComplete="new-password"
                                     onChange={(e) =>
                                         setData("password", e.target.value)
@@ -124,7 +124,7 @@ export default function Register() {
                                     name="password_confirmation"
                                     placeholder="konfirmasi password"
                                     value={data.password_confirmation}
-                                    className="mt-1 block w-full"
+                                    className="w-full px-4 py-2 border rounded-lg bg-gray-100"
                                     autoComplete="new-password"
                                     onChange={(e) =>
                                         setData(
@@ -146,7 +146,7 @@ export default function Register() {
                                     name="nama_instansi"
                                     placeholder="nama instansi/organisasi"
                                     value={data.nama_instansi}
-                                    className="mt-1 block w-full"
+                                    className="w-full px-4 py-2 border rounded-lg bg-gray-100"
                                     onChange={(e) =>
                                         setData("nama_instansi", e.target.value)
                                     }
@@ -164,7 +164,7 @@ export default function Register() {
                                     name="alamat"
                                     placeholder="alamat kantor"
                                     value={data.alamat}
-                                    className="mt-1 block w-full"
+                                    className="w-full px-4 py-2 border rounded-lg bg-gray-100"
                                     onChange={(e) =>
                                         setData("alamat", e.target.value)
                                     }
@@ -181,10 +181,15 @@ export default function Register() {
                                     id="no_hp"
                                     name="no_hp"
                                     placeholder="nomor telephone"
+                                    maxLength={13}
                                     value={data.no_hp}
-                                    className="mt-1 block w-full"
-                                    onChange={(e) =>
-                                        setData("no_hp", e.target.value)
+                                    className="w-full px-4 py-2 border rounded-lg bg-gray-100"
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (/^\d*$/.test(value)) {
+                                            setData("no_hp", e.target.value)
+                                        }
+                                    }
                                     }
                                     required
                                 />
