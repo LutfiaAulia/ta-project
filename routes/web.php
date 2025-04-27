@@ -30,6 +30,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
+    Route::get('/{id}/edit', [BookingController::class, 'edit'])->name('booking.edit');
+    Route::put('/{id}/update', [BookingController::class, 'update'])->name('booking.update');
+    Route::delete('/{id}/destroy', [BookingController::class, 'destroy'])->name('booking.destroy');
+    Route::get('/booking/riwayat', [BookingController::class, 'riwayat'])->name('booking.riwayat');
+
 });
 
 require __DIR__.'/auth.php';

@@ -46,4 +46,64 @@ class BookingController extends Controller
 
         return redirect()->route('booking.create')->with('success', 'Booking berhasil disimpan!');
     }
+
+    public function edit($id): Response
+    {
+        $booking = Booking::findOrFail($id);
+
+        return Inertia::render('instansi/EditBookingIns', [
+            'booking' => $booking
+        ]);
+    }
+
+    public function update(Request $request, $id): RedirectResponse
+    {
+        $booking = Booking::findOrFail($id);
+
+        $request->validate([
+            'jadwal' => 'required|date',
+            'acara' => 'required|string|max:255',
+            'peserta' => 'required|integer',
+            'layanan' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:255',
+            'no_hp' => 'required|string|min:12|max:13',
+            'surat' => 'required|file|mimes:pdf|max:200',
+        ]);
+
+        $data = $request->only(['jadwal', 'acara', 'peserta', 'layanan', 'no_hp']);
+
+        if ($request->hasFile('surat')) {
+            if ($booking->surat && Storage::disk('public')->exists($booking->surat)) {
+                Storage::disk('public')->delete($booking->surat);
+            }
+
+            $data['surat'] = $request->file('surat')->store('surat', 'public');
+        }
+
+        $booking->update($data);
+
+        return redirect()->route('dashboard')->with('success', 'Booking berhasil diperbaharui');
+    }
+
+    public function destroy($id): RedirectResponse
+    {
+        $booking = Booking::findOrFail($id);
+
+        if ($booking->surat && Storage::disk('public')->exists($booking->surat)) {
+            Storage::disk('publik')->delete($booking->surat);
+        }
+
+        $booking->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Booking berhasil dihapus');
+    }
+
+    public function riwayat()
+    {
+        $bookings = Booking::where('id_instansi', Auth::id())->get();
+
+        return Inertia::render('Instansi/RiwayatBooking', [
+            'bookings' => $bookings,
+        ]);
+    }
 }
