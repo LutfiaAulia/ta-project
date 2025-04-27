@@ -6,7 +6,7 @@ export default function BookingIns() {
     const { data, setData, post, processing, errors, reset } = useForm({
         jadwal: "",
         acara: "",
-        jumlah_peserta: "",
+        peserta: "",
         layanan: "",
         lokasi: "",
         no_hp: "",
@@ -16,7 +16,7 @@ export default function BookingIns() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route("booking.store"), {
-            onFinish: () => reset("surat"),
+            onFinish: () => reset(),
         });
     };
 
@@ -89,20 +89,20 @@ export default function BookingIns() {
                                     </label>
                                     <input
                                         type="number"
-                                        name="jumlah_peserta"
-                                        value={data.jumlah_peserta}
+                                        name="peserta"
+                                        value={data.peserta}
                                         onChange={(e) =>
                                             setData(
-                                                "jumlah_peserta",
+                                                "peserta",
                                                 e.target.value
                                             )
                                         }
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
                                         required
                                     />
-                                    {errors.jumlah_peserta && (
+                                    {errors.peserta && (
                                         <p className="mt-2 text-xs text-red-500">
-                                            {errors.jumlah_peserta}
+                                            {errors.peserta}
                                         </p>
                                     )}
                                 </div>

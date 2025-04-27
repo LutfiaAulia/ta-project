@@ -45,8 +45,8 @@ export default function Authenticated({
                                 </NavLink>
 
                                 <NavLink
-                                    href={route("bookingins")}
-                                    active={route().current("bookingins")}
+                                    href={route("booking.create")}
+                                    active={route().current("booking.create")}
                                 >
                                     Booking Mobil Klinik
                                 </NavLink>
