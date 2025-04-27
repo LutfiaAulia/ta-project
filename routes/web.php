@@ -18,6 +18,14 @@ Route::get('/dashboard', function () {
     return Inertia::render('Instansi/DashboardIns');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/bookingins', function () {
+    return Inertia::render('Instansi/BookingIns');
+})->middleware(['auth', 'verified'])->name('bookingins');
+
+Route::get('/ribook', function () {
+    return Inertia::render('Instansi/RiwayatBooking');
+})->middleware(['auth', 'verified'])->name('ribook');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

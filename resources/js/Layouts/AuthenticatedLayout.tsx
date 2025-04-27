@@ -1,4 +1,3 @@
-import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
@@ -15,13 +14,16 @@ export default function Authenticated({
         useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-green-300">
             <nav className="border-b border-gray-100 bg-white">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
-                                <Link href="/" className="flex items-center space-x-2">
+                                <Link
+                                    href="/"
+                                    className="flex items-center space-x-2"
+                                >
                                     <img
                                         src="/logo.png"
                                         alt="Logo"
@@ -40,6 +42,20 @@ export default function Authenticated({
                                     active={route().current("dashboard")}
                                 >
                                     Dashboard
+                                </NavLink>
+
+                                <NavLink
+                                    href={route("bookingins")}
+                                    active={route().current("bookingins")}
+                                >
+                                    Booking Mobil Klinik
+                                </NavLink>
+
+                                <NavLink
+                                    href={route("ribook")}
+                                    active={route().current("ribook")}
+                                >
+                                    Riwayat Booking
                                 </NavLink>
                             </div>
                         </div>
