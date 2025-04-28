@@ -52,8 +52,8 @@ export default function Authenticated({
                                 </NavLink>
 
                                 <NavLink
-                                    href={route("ribook")}
-                                    active={route().current("ribook")}
+                                    href={route("booking.riwayat")}
+                                    active={route().current("booking.riwayat")}
                                 >
                                     Riwayat Booking
                                 </NavLink>
