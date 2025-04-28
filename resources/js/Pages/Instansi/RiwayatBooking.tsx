@@ -6,7 +6,7 @@ interface Booking {
     acara: string;
     layanan: string;
     lokasi: string;
-    status_booking: "Diajukan" | "Diterima" | "Ditolak" | "Selesai"; // Sesuaikan dengan status yang ada
+    status_booking: "Diajukan" | "Diterima" | "Ditolak" | "Selesai";
 }
 interface RiwayatBookingProps {
     bookings: Booking[];
