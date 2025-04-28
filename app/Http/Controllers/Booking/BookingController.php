@@ -47,18 +47,18 @@ class BookingController extends Controller
         return redirect()->route('booking.create')->with('success', 'Booking berhasil disimpan!');
     }
 
-    public function edit($id): Response
+    public function edit($id_booking): Response
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::findOrFail($id_booking);
 
-        return Inertia::render('instansi/EditBookingIns', [
+        return Inertia::render('Instansi/EditBookingIns', [
             'booking' => $booking
         ]);
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id_booking): RedirectResponse
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::findOrFail($id_booking);
 
         $request->validate([
             'jadwal' => 'required|date',
@@ -82,28 +82,30 @@ class BookingController extends Controller
 
         $booking->update($data);
 
-        return redirect()->route('dashboard')->with('success', 'Booking berhasil diperbaharui');
+        return redirect()->route('booking.edit', ['id_booking' => $booking->id_booking])->with('success', 'Booking berhasil diperbaharui');
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy($id_booking): RedirectResponse
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::findOrFail($id_booking);
 
         if ($booking->surat && Storage::disk('public')->exists($booking->surat)) {
-            Storage::disk('publik')->delete($booking->surat);
+            Storage::disk('public')->delete($booking->surat);
         }
 
         $booking->delete();
 
-        return redirect()->route('dashboard')->with('success', 'Booking berhasil dihapus');
+        return redirect()->route('booking.riwayat')->with('success', 'Booking berhasil dihapus');
     }
 
     public function riwayat()
     {
-        $bookings = Booking::where('id_instansi', Auth::id())->get();
+        $booking = Booking::where('id_instansi', Auth::id())->get();
+
+        //dd($booking->toArray());
 
         return Inertia::render('Instansi/RiwayatBooking', [
-            'bookings' => $bookings,
+            'booking' => $booking,
         ]);
     }
 }
