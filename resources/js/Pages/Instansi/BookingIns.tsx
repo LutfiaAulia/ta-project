@@ -1,6 +1,6 @@
 import { Head, useForm } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { FormEventHandler } from "react";
+import { FormEventHandler, useState } from "react";
 
 export default function BookingIns() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -13,10 +13,15 @@ export default function BookingIns() {
         surat: null as File | null,
     });
 
+    const [successMessage, setSuccessMessage] = useState("");
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route("booking.store"), {
-            onFinish: () => reset(),
+            onSuccess: () => {
+                setSuccessMessage("Berhasil Melakukan Booking!");
+                reset();
+            },
         });
     };
 
@@ -36,6 +41,12 @@ export default function BookingIns() {
                             <h2 className="text-2xl font-semibold mb-6 text-center">
                                 Form Pembookingan Layanan Mobil Klinik
                             </h2>
+
+                            {successMessage && (
+                                <div className="mb-4 p-4 text-green-700 bg-green-100 rounded-md border border-green-300">
+                                    {successMessage}
+                                </div>
+                            )}
 
                             <form onSubmit={submit} className="space-y-6">
                                 {/* Jadwal */}
@@ -92,10 +103,7 @@ export default function BookingIns() {
                                         name="peserta"
                                         value={data.peserta}
                                         onChange={(e) =>
-                                            setData(
-                                                "peserta",
-                                                e.target.value
-                                            )
+                                            setData("peserta", e.target.value)
                                         }
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
                                         required
@@ -164,10 +172,7 @@ export default function BookingIns() {
                                         onChange={(e) => {
                                             const value = e.target.value;
                                             if (/^\d*$/.test(value)) {
-                                                setData(
-                                                    "no_hp",
-                                                    e.target.value
-                                                );
+                                                setData("no_hp", value);
                                             }
                                         }}
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
