@@ -40,7 +40,7 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg px-[1cm]">
                         <div className="p-6 text-gray-900">
                             <h2 className="text-2xl font-semibold mb-6 text-center">
-                                Detail Pembookingan Layanan Mobil Klinik
+                                Pembookingan Layanan Mobil Klinik
                             </h2>
 
                             <div className="space-y-6">
