@@ -6,6 +6,15 @@ import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+type User = {
+    name: string;
+    email: string;
+    nama_instansi?: string;
+    alamat?: string;
+    no_hp?: string;
+    email_verified_at?: string | null;
+};
+
 export default function UpdateProfileInformation({
     mustVerifyEmail,
     status,
@@ -15,17 +24,19 @@ export default function UpdateProfileInformation({
     status?: string;
     className?: string;
 }) {
-    const user = usePage().props.auth.user;
+    const user = usePage().props.auth.user as User;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
             name: user.name,
             email: user.email,
+            nama_instansi: user.nama_instansi ?? '',
+            alamat: user.alamat ?? '',
+            no_hp: user.no_hp ?? '',
         });
 
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
-
         patch(route('profile.update'));
     };
 
@@ -35,43 +46,71 @@ export default function UpdateProfileInformation({
                 <h2 className="text-lg font-medium text-gray-900">
                     Profile Information
                 </h2>
-
                 <p className="mt-1 text-sm text-gray-600">
-                    Update your account's profile information and email address.
+                    Ubah data akun kamu.
                 </p>
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
-
                     <TextInput
                         id="name"
                         className="mt-1 block w-full"
                         value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('name', e.target.value)}
                         required
                         isFocused
                         autoComplete="name"
                     />
-
                     <InputError className="mt-2" message={errors.name} />
                 </div>
 
                 <div>
                     <InputLabel htmlFor="email" value="Email" />
-
                     <TextInput
                         id="email"
                         type="email"
                         className="mt-1 block w-full"
                         value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('email', e.target.value)}
                         required
                         autoComplete="username"
                     />
-
                     <InputError className="mt-2" message={errors.email} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="nama_instansi" value="Nama Instansi" />
+                    <TextInput
+                        id="nama_instansi"
+                        className="mt-1 block w-full"
+                        value={data.nama_instansi}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('nama_instansi', e.target.value)}
+                    />
+                    <InputError className="mt-2" message={errors.nama_instansi} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="alamat" value="Alamat" />
+                    <TextInput
+                        id="alamat"
+                        className="mt-1 block w-full"
+                        value={data.alamat}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('alamat', e.target.value)}
+                    />
+                    <InputError className="mt-2" message={errors.alamat} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="no_hp" value="No HP" />
+                    <TextInput
+                        id="no_hp"
+                        className="mt-1 block w-full"
+                        value={data.no_hp}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('no_hp', e.target.value)}
+                    />
+                    <InputError className="mt-2" message={errors.no_hp} />
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
@@ -87,7 +126,6 @@ export default function UpdateProfileInformation({
                                 Click here to re-send the verification email.
                             </Link>
                         </p>
-
                         {status === 'verification-link-sent' && (
                             <div className="mt-2 text-sm font-medium text-green-600">
                                 A new verification link has been sent to your
@@ -107,8 +145,8 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600">
-                            Saved.
+                        <p className="text-sm text-green-600">
+                            Tersimpan
                         </p>
                     </Transition>
                 </div>
