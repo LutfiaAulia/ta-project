@@ -163,6 +163,24 @@ export default function Authenticated({
                         </ResponsiveNavLink>
                     </div>
 
+                    <div className="space-y-1 pb-3 pt-2">
+                        <ResponsiveNavLink
+                            href={route("booking.create")}
+                            active={route().current("booking.create")}
+                        >
+                            Booking Mobil Klinik
+                        </ResponsiveNavLink>
+                    </div>
+
+                    <div className="space-y-1 pb-3 pt-2">
+                        <ResponsiveNavLink
+                            href={route("booking.riwayat")}
+                            active={route().current("booking.riwayat")}
+                        >
+                            Riwayat Booking
+                        </ResponsiveNavLink>
+                    </div>
+
                     <div className="border-t border-gray-200 pb-1 pt-4">
                         <div className="px-4">
                             <div className="text-base font-medium text-gray-800">
