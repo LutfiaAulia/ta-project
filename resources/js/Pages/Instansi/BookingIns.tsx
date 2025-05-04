@@ -2,15 +2,21 @@ import { Head, useForm } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { FormEventHandler, useState } from "react";
 import { PageProps } from "@/types";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { parseISO } from "date-fns";
+import CustomDateInput from "@/Components/CustomDateInput";
 
 interface BookingInsProps extends PageProps {
     layananList: Array<{ id: number; nama: string }>;
     selectedLayanan?: number[];
+    bookedDates: string[];
 }
 
 export default function BookingIns({
     layananList,
     selectedLayanan,
+    bookedDates,
 }: BookingInsProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         jadwal: "",
@@ -63,15 +69,29 @@ export default function BookingIns({
                                     <label className="block text-sm font-medium text-gray-700">
                                         Jadwal
                                     </label>
-                                    <input
-                                        type="date"
-                                        name="jadwal"
-                                        value={data.jadwal}
-                                        onChange={(e) =>
-                                            setData("jadwal", e.target.value)
+                                    <DatePicker
+                                        selected={
+                                            data.jadwal
+                                                ? new Date(data.jadwal)
+                                                : null
                                         }
-                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
-                                        required
+                                        onChange={(date: Date | null) => {
+                                            if (date) {
+                                                setData(
+                                                    "jadwal",
+                                                    date
+                                                        .toISOString()
+                                                        .split("T")[0]
+                                                );
+                                            }
+                                        }}
+                                        minDate={new Date()}
+                                        excludeDates={bookedDates.map((d) =>
+                                            parseISO(d)
+                                        )}
+                                        dateFormat="dd-MM-yyyy"
+                                        placeholderText="Pilih Tanggal"
+                                        customInput={<CustomDateInput />}
                                     />
                                     {errors.jadwal && (
                                         <p className="mt-2 text-xs text-red-500">

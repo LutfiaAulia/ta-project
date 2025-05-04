@@ -16,9 +16,13 @@ class BookingController extends Controller
     public function create(): Response
     {
         $layananList = Layanan::select('id_layanan as id', 'layanan as nama')->get();
+
+        $bookedDates = Booking::pluck('jadwal')->map(fn ($date) => $date->format('Y-m-d'));
+
         return Inertia::render('Instansi/BookingIns', [
             'layananList' => $layananList,
             'selectedLayanan' => [],
+            'bookedDates' => $bookedDates,
         ]);
     }
 
