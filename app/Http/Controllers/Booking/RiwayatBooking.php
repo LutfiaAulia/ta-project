@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Controllers\Booking;
+
+
+use App\Http\Controllers\Controller;
+use App\Models\Booking;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+
+class RiwayatBooking extends Controller
+{
+    public function riwayat()
+    {
+        $booking = Booking::where('id_instansi', Auth::id())->get();
+
+        return Inertia::render('Instansi/RiwayatBooking', [
+            'booking' => $booking,
+        ]);
+    }
+
+    public function show($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        return Inertia::render('Instansi/DetailBookingIns', [
+            'booking' => $booking
+        ]);
+    }
+
+    public function showSurat($filename)
+    {
+        $filePath = storage_path("app/public/surat/{$filename}");
+
+        if (file_exists($filePath)) {
+            return response()->file($filePath);
+        }
+
+        abort(404, 'Surat tidak ditemukan');
+    }
+}

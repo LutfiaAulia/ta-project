@@ -46,4 +46,9 @@ class Booking extends Model
     {
         return $this->belongsTo(Mobil::class, 'id_mobil');
     }
+
+    public function layanan()
+    {
+        return $this->belongsToMany(Layanan::class, 'booking_layanan', 'id_booking', 'id_layanan');
+    }
 }

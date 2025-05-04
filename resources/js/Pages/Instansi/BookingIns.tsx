@@ -1,13 +1,22 @@
 import { Head, useForm } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { FormEventHandler, useState } from "react";
+import { PageProps } from "@/types";
 
-export default function BookingIns() {
+interface BookingInsProps extends PageProps {
+    layananList: Array<{ id: number; nama: string }>;
+    selectedLayanan?: number[];
+}
+
+export default function BookingIns({
+    layananList,
+    selectedLayanan,
+}: BookingInsProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         jadwal: "",
         acara: "",
         peserta: "",
-        layanan: "",
+        layanan: selectedLayanan?.map(String) ?? [],
         lokasi: "",
         no_hp: "",
         surat: null as File | null,
@@ -117,22 +126,65 @@ export default function BookingIns() {
 
                                 {/* Layanan */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700">
-                                        Layanan
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Pilih Layanan
                                     </label>
-                                    <input
-                                        type="text"
-                                        name="layanan"
-                                        value={data.layanan}
-                                        onChange={(e) =>
-                                            setData("layanan", e.target.value)
-                                        }
-                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
-                                        required
-                                    />
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        {layananList.map((layanan) => (
+                                            <label
+                                                key={layanan.id}
+                                                className="inline-flex items-center"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    value={layanan.id}
+                                                    checked={data.layanan.includes(
+                                                        String(layanan.id)
+                                                    )}
+                                                    onChange={(e) => {
+                                                        const value =
+                                                            e.target.value;
+                                                        if (e.target.checked) {
+                                                            setData("layanan", [
+                                                                ...data.layanan,
+                                                                value,
+                                                            ]);
+                                                        } else {
+                                                            setData(
+                                                                "layanan",
+                                                                data.layanan.filter(
+                                                                    (id) =>
+                                                                        id !==
+                                                                        value
+                                                                )
+                                                            );
+                                                        }
+                                                    }}
+                                                    className="mr-2 rounded border-gray-300 text-green-600 shadow-sm focus:ring-green-500"
+                                                />
+                                                {layanan.nama}
+                                            </label>
+                                        ))}
+                                    </div>
+
                                     {errors.layanan && (
                                         <p className="mt-2 text-xs text-red-500">
                                             {errors.layanan}
+                                        </p>
+                                    )}
+
+                                    {/* Menampilkan layanan yang terpilih */}
+                                    {data.layanan.length > 0 && (
+                                        <p className="mt-3 text-sm text-gray-600">
+                                            Layanan terpilih:{" "}
+                                            {layananList
+                                                .filter((l) =>
+                                                    data.layanan.includes(
+                                                        String(l.id)
+                                                    )
+                                                )
+                                                .map((l) => l.nama)
+                                                .join(", ")}
                                         </p>
                                     )}
                                 </div>
