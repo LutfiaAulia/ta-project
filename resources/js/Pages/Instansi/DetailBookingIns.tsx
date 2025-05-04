@@ -1,12 +1,17 @@
 import { Head } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
+interface Layanan {
+    id: number;
+    nama_layanan: string;
+}
+
 interface Booking {
     id_booking: number;
     jadwal: string;
     acara: string;
     peserta: number;
-    layanan: string;
+    layanan: Layanan[]; // sekarang array, bukan string
     lokasi: string;
     no_hp: string;
     surat: string | null;
@@ -73,9 +78,19 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
                                     <label className="block font-medium text-black-700 text-[12px]">
                                         Layanan
                                     </label>
-                                    <p className="font-bold">
-                                        {booking.layanan}
-                                    </p>
+                                    {booking.layanan.length > 0 ? (
+                                        <ul className="list-disc ml-5 font-bold">
+                                            {booking.layanan.map((layanan) => (
+                                                <li key={layanan.id}>
+                                                    {layanan.nama_layanan}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className="text-gray-500">
+                                            Tidak ada layanan yang dipilih.
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div>

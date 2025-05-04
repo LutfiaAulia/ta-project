@@ -21,7 +21,7 @@ class RiwayatBooking extends Controller
 
     public function show($id)
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::with(['layanan:id_layanan,layanan as nama_layanan'])->findOrFail($id);
 
         return Inertia::render('Instansi/DetailBookingIns', [
             'booking' => $booking
