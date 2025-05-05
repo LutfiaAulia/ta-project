@@ -20,9 +20,13 @@ export default function LoginPegawai() {
                 style={{ backgroundImage: "url('/images/bg_login.png')" }}
             >
                 <div className="bg-white bg-opacity-90 p-8 rounded-lg shadow-lg max-w-md w-full">
-                    <div className="flex items-center gap-3 mb-6">
-                        <img src="/logo.png" alt="Logo" className="w-16 h-16" />
-                        <p className="text-[12px] font-medium leading-tight text-gray-800">
+                    <div className="flex items-center justify-center gap-3 mb-6">
+                        <img
+                            src="/logo.png"
+                            alt="Logo"
+                            className="w-auto h-14"
+                        />
+                        <p className="text-[12px] font-medium leading-tight text-gray-800 text-left">
                             Dinas Koperasi UKM Provinsi <br /> Sumatera Barat
                         </p>
                     </div>
@@ -49,7 +53,7 @@ export default function LoginPegawai() {
                                 value={data.nip}
                                 onChange={(e) => setData("nip", e.target.value)}
                                 className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                                placeholder="Masukkan NIP"
+                                placeholder="NIP"
                             />
                         </div>
 
@@ -66,7 +70,7 @@ export default function LoginPegawai() {
                                     setData("password", e.target.value)
                                 }
                                 className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                                placeholder="Masukkan Password"
+                                placeholder="Password"
                             />
                         </div>
 
