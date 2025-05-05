@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginPegawaiController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
 use App\Http\Controllers\ProfileController;
@@ -31,6 +32,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
     Route::get('/booking/{id}/show', [RiwayatBooking::class, 'show'])->name('booking.show');
     Route::get('/surat/{filename}', [RiwayatBooking::class, 'showSurat'])->name('surat.show');
+});
+
+Route::get('/pegawai/login', [LoginPegawaiController::class, 'showLoginForm'])->name('pegawai.login.form');
+Route::post('/pegawai/login', [LoginPegawaiController::class, 'login'])->name('pegawai.login');
+
+Route::middleware('auth:pegawai')->group(function () {
+    Route::get('/pegawai/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('pegawai.dashboard');
 });
 
 require __DIR__.'/auth.php';
