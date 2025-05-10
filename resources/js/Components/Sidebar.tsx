@@ -1,5 +1,6 @@
 import React from "react";
 import { FaTh, FaClipboardList, FaStore, FaFileAlt } from "react-icons/fa";
+import { Link } from "@inertiajs/react";
 
 const Sidebar: React.FC = () => {
     return (
@@ -15,28 +16,39 @@ const Sidebar: React.FC = () => {
 
             {/* Menu Section */}
             <ul className="flex flex-col mt-6 space-y-1 px-4">
-                <li className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer">
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className={`flex items-center gap-3 p-2 rounded ${
+                        route().current("pegawai.dashboard")
+                            ? "bg-green-500"
+                            : "hover:bg-green-500"
+                    } transition cursor-pointer`}
+                >
                     <FaTh />
                     <span>Beranda</span>
-                </li>
-                <li className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer">
+                </Link>
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                >
                     <FaClipboardList />
                     <span>List Booking</span>
-                </li>
-                <li className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer">
+                </Link>
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                >
                     <FaStore />
                     <span>Data UMKM</span>
-                </li>
-                <li className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer">
+                </Link>
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                >
                     <FaFileAlt />
                     <span>Laporan</span>
-                </li>
+                </Link>
             </ul>
-
-            {/* Optional Footer Section */}
-            <div className="mt-auto p-4 text-xs text-center text-green-200 opacity-70">
-                &copy; {new Date().getFullYear()} Diskop UKM Sumbar
-            </div>
         </div>
     );
 };

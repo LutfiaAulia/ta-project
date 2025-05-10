@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,5 +23,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
+        Inertia::share([
+            'pegawai' => fn() => Auth::guard('pegawai')->user() ? [
+                'nama' => Auth::guard('pegawai')->user()->nama,
+                'nip' => Auth::guard('pegawai')->user()->nip,
+            ] : null,
+        ]);
     }
 }

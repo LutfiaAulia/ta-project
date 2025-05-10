@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import { usePage } from "@inertiajs/react";
+import { Inertia } from "@inertiajs/inertia";
 
 const Topbar: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const { pegawai } = usePage<any>().props;
+
+    const handleLogout = () => {
+        Inertia.post(route("pegawai.logout"));
+    };
 
     return (
         <div
@@ -18,7 +25,7 @@ const Topbar: React.FC = () => {
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center gap-2 font-medium text-sm text-gray-700 hover:text-green-700 transition"
                 >
-                    Rini
+                    {pegawai?.nama ?? "Loading..."}
                     <FaChevronDown
                         className={`transition-transform duration-200 ${
                             dropdownOpen ? "rotate-180" : ""
@@ -31,7 +38,10 @@ const Topbar: React.FC = () => {
                             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                                 Profil
                             </li>
-                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                            <li
+                                onClick={handleLogout}
+                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            >
                                 Logout
                             </li>
                         </ul>
