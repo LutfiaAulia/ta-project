@@ -1,6 +1,7 @@
 import { Head } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { useState } from "react";
+import BookingTable from "../../Components/BookingTable";
 
 interface Booking {
     id_booking: any;
@@ -40,7 +41,6 @@ export default function RiwayatBooking({ booking }: RiwayatBookingProps) {
         (booking) =>
             booking.acara.toLowerCase().includes(search.toLowerCase()) ||
             booking.lokasi.toLowerCase().includes(search.toLowerCase()) ||
-            booking.layanan.toLowerCase().includes(search.toLowerCase()) ||
             booking.status_booking.toLowerCase().includes(search.toLowerCase())
     );
 
@@ -74,120 +74,40 @@ export default function RiwayatBooking({ booking }: RiwayatBookingProps) {
                 <div className="mx-auto max-w-7xl px-[2cm]">
                     <div className="bg-white p-6 rounded-lg shadow">
                         <div className="flex justify-between mb-4">
-                            <div>
-                                <select
-                                    value={itemsPerPage}
-                                    onChange={(e) =>
-                                        setItemsPerPage(Number(e.target.value))
-                                    }
-                                    className="border border-gray-300 p-2 rounded-lg text-sm w-20"
-                                >
-                                    <option value={10}>10</option>
-                                    <option value={25}>25</option>
-                                    <option value={50}>50</option>
-                                </select>
-                            </div>
+                            <select
+                                value={itemsPerPage}
+                                onChange={(e) =>
+                                    setItemsPerPage(Number(e.target.value))
+                                }
+                                className="border border-gray-300 p-2 rounded-lg text-sm w-20"
+                            >
+                                <option value={10}>10</option>
+                                <option value={25}>25</option>
+                                <option value={50}>50</option>
+                            </select>
 
-                            <div>
-                                <input
-                                    type="text"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Cari Booking"
-                                    className="border border-gray-300 p-2 rounded-lg text-[12px] w-64"
-                                />
-                            </div>
+                            <input
+                                type="text"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Cari Booking"
+                                className="border border-gray-300 p-2 rounded-lg text-[12px] w-64"
+                            />
                         </div>
 
-                        <div className="overflow-hidden shadow-sm">
-                            <div className="text-gray-900">
-                                <div className="overflow-x-auto">
-                                    <table className="min-w-full table-auto border border-gray-300 text-[12px]">
-                                        <thead className="bg-gray-300">
-                                            <tr>
-                                                <th className="border px-4 py-2">
-                                                    No
-                                                </th>
-                                                <th className="border px-4 py-2">
-                                                    Jadwal
-                                                </th>
-                                                <th className="border px-4 py-2">
-                                                    Acara
-                                                </th>
-                                                <th className="border px-4 py-2">
-                                                    Layanan
-                                                </th>
-                                                <th className="border px-4 py-2">
-                                                    Lokasi
-                                                </th>
-                                                <th className="border px-4 py-2">
-                                                    Status
-                                                </th>
-                                                <th className="border px-4 py-2">
-                                                    Aksi
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {currentBookings.map(
-                                                (booking, index) => (
-                                                    <tr
-                                                        key={booking.id_booking}
-                                                    >
-                                                        <td className="border px-4 py-2 text-center">
-                                                            {startIndex +
-                                                                index +
-                                                                1}
-                                                        </td>
-                                                        <td className="border px-4 py-2 whitespace-pre-line">
-                                                            {formatTanggal(
-                                                                booking.jadwal
-                                                            )}
-                                                        </td>
-                                                        <td className="border px-4 py-2">
-                                                            {booking.acara}
-                                                        </td>
-                                                        <td className="border px-4 py-2">
-                                                            {booking.layanan}
-                                                        </td>
-                                                        <td className="border px-4 py-2">
-                                                            {booking.lokasi}
-                                                        </td>
-                                                        <td className="border px-4 py-2 text-center">
-                                                            <span
-                                                                className={`px-2 py-1 rounded-full text-[11px] ${
-                                                                    statusColors[
-                                                                        booking
-                                                                            .status_booking
-                                                                    ] ||
-                                                                    "bg-gray-300 text-gray-800"
-                                                                }`}
-                                                            >
-                                                                {
-                                                                    booking.status_booking
-                                                                }
-                                                            </span>
-                                                        </td>
-                                                        <td className="border px-4 py-2 text-center">
-                                                            <a
-                                                                href={`/booking/${booking.id_booking}/show`}
-                                                                className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-[11px]"
-                                                            >
-                                                                Detail
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            )}
-                                        </tbody>
-                                    </table>
-                                    {filteredBookings.length === 0 && (
-                                        <div className="text-center text-gray-500 py-8">
-                                            Tidak ada data booking.
-                                        </div>
-                                    )}
+                        <div className="overflow-hidden shadow-sm text-gray-900">
+                            <BookingTable
+                                bookings={currentBookings}
+                                startIndex={startIndex}
+                                formatTanggal={formatTanggal}
+                                statusColors={statusColors}
+                            />
+
+                            {filteredBookings.length === 0 && (
+                                <div className="text-center text-gray-500 py-8">
+                                    Tidak ada data booking.
                                 </div>
-                            </div>
+                            )}
                         </div>
 
                         {totalPages > 1 && (
