@@ -21,13 +21,12 @@ class LoginPegawaiController extends Controller
             'password' => ['required'],
         ]);
 
-        // Coba autentikasi menggunakan guard pegawai
-        if (Auth::guard('pegawai')->attempt($credentials)) {
+        if (Auth::attempt([
+            'nip' => $credentials['nip'],
+            'password' => $credentials['password'],
+            'user_type' => 'pegawai',
+        ])) {
             $request->session()->regenerate();
-
-            // Optional: jika kamu ingin redirect berdasarkan role, kamu bisa cek di sini
-            // $pegawai = Auth::guard('pegawai')->user();
-            // if ($pegawai->role === 'admin') return redirect()->route('pegawai.admin.dashboard');
 
             return redirect()->intended('/pegawai/dashboard');
         }
@@ -39,8 +38,7 @@ class LoginPegawaiController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('pegawai')->logout();
-
+        Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

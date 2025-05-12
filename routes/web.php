@@ -8,7 +8,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Halaman utama
+// ================= HALAMAN UTAMA ================= //
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -18,8 +18,8 @@ Route::get('/', function () {
     ]);
 });
 
-// ========== ROUTE UNTUK INSTANSI(AUTH DEFAULT) ========== //
-Route::middleware(['auth', 'verified'])->group(function () {
+// ========== ROUTE UNTUK INSTANSI (user_type: instansi) ========== //
+Route::middleware(['auth', 'verified', 'check.user.type:instansi'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Instansi/DashboardIns'))->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -34,17 +34,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/surat/{filename}', [RiwayatBooking::class, 'showSurat'])->name('surat.show');
 });
 
-// ========== AUTH PEGAWAI ========== //
+// ========== AUTH PEGAWAI (user_type: pegawai) ========== //
 Route::prefix('pegawai')->group(function () {
-    // Login & logout pegawai
     Route::get('/login', [LoginPegawaiController::class, 'showLoginForm'])->name('pegawai.login.form');
     Route::post('/login', [LoginPegawaiController::class, 'login'])->name('pegawai.login');
     Route::post('/logout', [LoginPegawaiController::class, 'logout'])->name('pegawai.logout');
 
-    // Route khusus untuk pegawai yang sudah login
-    Route::middleware('auth:pegawai')->group(function () {
-        Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('pegawai.dashboard');
-        // Tambah route lain khusus pegawai di sini
+    Route::middleware(['auth', 'check.user.type:pegawai'])->group(function () {
+        Route::get('/dashboard', fn() => Inertia::render('Pegawai/Dashboard'))->name('pegawai.dashboard');
     });
 });
 

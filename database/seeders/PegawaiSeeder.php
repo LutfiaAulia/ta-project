@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Pegawai;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -14,22 +15,18 @@ class PegawaiSeeder extends Seeder
      */
     public function run(): void
     {
-        Pegawai::create([
-            'nip' => '198403262023012008',
+        User::create([
+            'nip' => '198403262023012015',
             'nama' => 'Andi Kurniawan',
-            'jabatan' => 'Staff Umum',
+            'user_type' => 'pegawai',
             'password' => Hash::make('12345678'),
-            'role' => 'pegawai',
-            'no_hp' => '081234567890',
         ]);
 
-        Pegawai::create([
+        User::create([
             'nip' => '199007082022011008',
             'nama' => 'Siti Rahma',
-            'jabatan' => 'Kepala Bidang',
+            'user_type' => 'pegawai',
             'password' => Hash::make('rahasia321'),
-            'role' => 'admin',
-            'no_hp' => '089876543210',
         ]);
     }
 }
