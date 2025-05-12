@@ -64,4 +64,9 @@ class User extends Authenticatable //implements MustVerifyEmail
     {
         return $this->hasOne(Umkm::class);
     }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'user_id');
+    }
 }

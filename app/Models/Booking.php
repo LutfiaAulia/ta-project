@@ -24,7 +24,7 @@ class Booking extends Model
         'alasan_ditolak',
         'status_booking',
         'nip',
-        'id_instansi',
+        'user_id',
         'id_mobil',
     ];
 
@@ -37,9 +37,9 @@ class Booking extends Model
         return $this->belongsTo(Pegawai::class, 'nip');
     }
 
-    public function instansi()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function mobil()
