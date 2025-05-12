@@ -1,6 +1,7 @@
 import { Config } from 'ziggy-js';
 
 export interface User {
+    nama: ReactNode;
     id: number;
     name: string;
     email: string;

@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Pegawai extends Model
+class Instansi extends Model
 {
     use HasFactory;
 
-    protected $table = 'pegawai';
+    protected $table = 'instansi';
 
     /**
      * The attributes that are mass assignable.
@@ -18,15 +18,13 @@ class Pegawai extends Model
      */
     protected $fillable = [
         'user_id',
-        'nip',
-        'nama',
+        'nama_instansi',
         'no_hp',
-        'jabatan',
-        'role',
+        'alamat',
     ];
 
     /**
-     * Relasi ke model User (satu pegawai dimiliki oleh satu user)
+     * Relasi ke model User (satu instansi dimiliki oleh satu user)
      */
     public function user()
     {

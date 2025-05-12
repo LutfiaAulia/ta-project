@@ -18,15 +18,13 @@ class User extends Authenticatable //implements MustVerifyEmail
      * @var list<string>
      */
 
-    protected $table = 'instansi';
-
     protected $fillable = [
-        'name',
+        'nama',
         'email',
         'password',
-        'nama_instansi',
-        'alamat',
-        'no_hp',
+        'user_type',
+        'nip',
+        'nib',
     ];
 
     /**
@@ -50,5 +48,20 @@ class User extends Authenticatable //implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function instansi()
+    {
+        return $this->hasOne(Instansi::class);
+    }
+
+    public function pegawai()
+    {
+        return $this->hasOne(Pegawai::class);
+    }
+
+    public function umkm()
+    {
+        return $this->hasOne(Umkm::class);
     }
 }

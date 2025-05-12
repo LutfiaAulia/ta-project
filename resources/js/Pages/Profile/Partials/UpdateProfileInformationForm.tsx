@@ -1,43 +1,60 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Transition } from '@headlessui/react';
-import { Link, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { usePage } from "@inertiajs/react";
+import { PageProps as InertiaPageProps } from "@inertiajs/core";
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import { Transition } from "@headlessui/react";
+import { Link, useForm } from "@inertiajs/react";
+import { FormEventHandler } from "react";
+
+type Instansi = {
+    nama_instansi: string;
+    alamat: string;
+    no_hp: string;
+};
 
 type User = {
-    name: string;
+    nama: string;
     email: string;
-    nama_instansi?: string;
-    alamat?: string;
-    no_hp?: string;
     email_verified_at?: string | null;
+    instansi?: Instansi | null;
+};
+
+// Menyesuaikan tipe PageProps agar sesuai dengan tipe yang diharapkan oleh Inertia.js
+type PageProps = InertiaPageProps & {
+    user: User;
+    mustVerifyEmail: boolean;
+    status?: string;
+    auth: any;
+    ziggy: any;
 };
 
 export default function UpdateProfileInformation({
     mustVerifyEmail,
     status,
-    className = '',
+    className = "",
 }: {
     mustVerifyEmail: boolean;
     status?: string;
     className?: string;
 }) {
-    const user = usePage().props.auth.user as User;
+    // Mengambil data user dengan tipe yang lebih lengkap dari props
+    const { user } = usePage<PageProps>().props;
 
+    // Menyiapkan form dengan data user
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
-            name: user.name,
+            nama: user.nama,
             email: user.email,
-            nama_instansi: user.nama_instansi ?? '',
-            alamat: user.alamat ?? '',
-            no_hp: user.no_hp ?? '',
+            nama_instansi: user.instansi?.nama_instansi ?? "",
+            alamat: user.instansi?.alamat ?? "",
+            no_hp: user.instansi?.no_hp ?? "",
         });
 
     const submit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
-        patch(route('profile.update'));
+        patch(route("profile.update"));
     };
 
     return (
@@ -53,17 +70,19 @@ export default function UpdateProfileInformation({
 
             <form onSubmit={submit} className="mt-6 space-y-6">
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <InputLabel htmlFor="nama" value="Nama" />
                     <TextInput
-                        id="name"
+                        id="nama"
                         className="mt-1 block w-full"
-                        value={data.name}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('name', e.target.value)}
+                        value={data.nama}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setData("nama", e.target.value)
+                        }
                         required
                         isFocused
-                        autoComplete="name"
+                        autoComplete="nama"
                     />
-                    <InputError className="mt-2" message={errors.name} />
+                    <InputError className="mt-2" message={errors.nama} />
                 </div>
 
                 <div>
@@ -73,7 +92,9 @@ export default function UpdateProfileInformation({
                         type="email"
                         className="mt-1 block w-full"
                         value={data.email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('email', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setData("email", e.target.value)
+                        }
                         required
                         autoComplete="username"
                     />
@@ -86,9 +107,14 @@ export default function UpdateProfileInformation({
                         id="nama_instansi"
                         className="mt-1 block w-full"
                         value={data.nama_instansi}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('nama_instansi', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setData("nama_instansi", e.target.value)
+                        }
                     />
-                    <InputError className="mt-2" message={errors.nama_instansi} />
+                    <InputError
+                        className="mt-2"
+                        message={errors.nama_instansi}
+                    />
                 </div>
 
                 <div>
@@ -97,7 +123,9 @@ export default function UpdateProfileInformation({
                         id="alamat"
                         className="mt-1 block w-full"
                         value={data.alamat}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('alamat', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setData("alamat", e.target.value)
+                        }
                     />
                     <InputError className="mt-2" message={errors.alamat} />
                 </div>
@@ -108,7 +136,9 @@ export default function UpdateProfileInformation({
                         id="no_hp"
                         className="mt-1 block w-full"
                         value={data.no_hp}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('no_hp', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setData("no_hp", e.target.value)
+                        }
                     />
                     <InputError className="mt-2" message={errors.no_hp} />
                 </div>
@@ -118,7 +148,7 @@ export default function UpdateProfileInformation({
                         <p className="mt-2 text-sm text-gray-800">
                             Your email address is unverified.
                             <Link
-                                href={route('verification.send')}
+                                href={route("verification.send")}
                                 method="post"
                                 as="button"
                                 className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -126,7 +156,7 @@ export default function UpdateProfileInformation({
                                 Click here to re-send the verification email.
                             </Link>
                         </p>
-                        {status === 'verification-link-sent' && (
+                        {status === "verification-link-sent" && (
                             <div className="mt-2 text-sm font-medium text-green-600">
                                 A new verification link has been sent to your
                                 email address.
@@ -145,9 +175,7 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-green-600">
-                            Tersimpan
-                        </p>
+                        <p className="text-sm text-green-600">Tersimpan</p>
                     </Transition>
                 </div>
             </form>

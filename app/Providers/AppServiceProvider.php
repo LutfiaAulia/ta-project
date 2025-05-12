@@ -23,11 +23,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
-        Inertia::share([
-            'pegawai' => fn() => Auth::guard('pegawai')->user() ? [
-                'nama' => Auth::guard('pegawai')->user()->nama,
-                'nip' => Auth::guard('pegawai')->user()->nip,
-            ] : null,
-        ]);
     }
 }
