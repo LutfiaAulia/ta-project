@@ -18,9 +18,7 @@ return new class extends Migration
             $table->string('alamat_usaha');
             $table->string('lokasi');
             $table->text('deskripsi');
-            $table->string('nib');
-            
-            $table->foreign('nib')->references('nib')->on('umkm')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

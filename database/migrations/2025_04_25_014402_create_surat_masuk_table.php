@@ -20,9 +20,7 @@ return new class extends Migration
             $table->date('tgl_diterima');
             $table->date('tgl_surat');
             $table->string('surat');
-            $table->string('nip');
-            
-            $table->foreign('nip')->references('nip')->on('pegawai')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

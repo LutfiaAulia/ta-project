@@ -23,13 +23,8 @@ return new class extends Migration
             $table->string('pegawailap')->nullable();
             $table->text('alasan_ditolak')->nullable();
             $table->string('status_booking');
-            $table->string('nip')->nullable();
-            $table->unsignedBigInteger('id_instansi');
-            $table->unsignedBigInteger('id_mobil')->nullable();
-            
-            $table->foreign('nip')->references('nip')->on('pegawai')->onDelete('cascade');
-            $table->foreign('id_instansi')->references('id')->on('instansi')->onDelete('cascade');
-            $table->foreign('id_mobil')->references('id_mobil')->on('mobil')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->enum('user_type', ['pegawai', 'instansi']);
             $table->timestamps();
         });
     }

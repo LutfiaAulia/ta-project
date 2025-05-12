@@ -23,10 +23,8 @@ return new class extends Migration
             $table->string('nama_usaha');
             $table->string('alamat usaha');
             $table->string('layanan');
-            $table->string('nip');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->unsignedBigInteger('id_booking');
-            
-            $table->foreign('nip')->references('nip')->on('pegawai')->onDelete('cascade');
             $table->foreign('id_booking')->references('id_booking')->on('booking')->onDelete('cascade');
             $table->timestamps();
         });

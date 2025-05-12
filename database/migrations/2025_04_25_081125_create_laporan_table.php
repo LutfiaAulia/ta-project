@@ -24,10 +24,8 @@ return new class extends Migration
             $table->text('penutup');
             $table->string('nama_penulis');
             $table->string('ttd');
-            $table->string('nip');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->unsignedBigInteger('id_pelayanan');
-            
-            $table->foreign('nip')->references('nip')->on('pegawai')->onDelete('cascade');
             $table->foreign('id_pelayanan')->references('id_pelayanan')->on('pelayanan_umkm')->onDelete('cascade');
             $table->timestamps();
         });

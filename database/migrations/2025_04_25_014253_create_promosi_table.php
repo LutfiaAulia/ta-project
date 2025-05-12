@@ -18,11 +18,8 @@ return new class extends Migration
             $table->integer('harga_produk');
             $table->text('deskripsi_produk');
             $table->string('foto_produk');
-            $table->string('nip')->nullable();
-            $table->string('nib');
-
-            $table->foreign('nip')->references('nip')->on('pegawai')->onDelete('cascade');
-            $table->foreign('nib')->references('nib')->on('umkm')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->enum('user_type', ['pegawai', 'umkm']);
             $table->timestamps();
         });
     }
