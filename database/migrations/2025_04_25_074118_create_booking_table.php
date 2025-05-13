@@ -24,7 +24,6 @@ return new class extends Migration
             $table->text('alasan_ditolak')->nullable();
             $table->string('status_booking');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('user_type', ['pegawai', 'instansi']);
             $table->timestamps();
         });
     }

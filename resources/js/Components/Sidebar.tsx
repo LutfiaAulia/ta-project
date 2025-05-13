@@ -28,7 +28,7 @@ const Sidebar: React.FC = () => {
                     <span>Beranda</span>
                 </Link>
                 <Link
-                    href={route("booking.riwayat")}
+                    href={route("booking.listBooking")}
                     className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
                 >
                     <FaClipboardList />

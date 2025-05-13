@@ -42,6 +42,9 @@ Route::prefix('pegawai')->group(function () {
 
     Route::middleware(['auth', 'check.user.type:pegawai'])->group(function () {
         Route::get('/dashboard', fn() => Inertia::render('Pegawai/Dashboard'))->name('pegawai.dashboard');
+        Route::get('/booking/listBooking', [RiwayatBooking::class, 'showAllBooking'])->name('booking.listBooking');
+
+
     });
 });
 

@@ -11,7 +11,7 @@ interface Booking {
     jadwal: string;
     acara: string;
     peserta: number;
-    layanan: Layanan[]; // sekarang array, bukan string
+    layanan: Layanan[];
     lokasi: string;
     no_hp: string;
     surat: string | null;
