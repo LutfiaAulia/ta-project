@@ -80,12 +80,6 @@ const ListBookingKabid: React.FC<PageProps<{ bookings: any[] }>> = ({
                                         >
                                             Detail
                                         </Link>
-                                        <Link
-                                            href={`/kabid/booking/${b.id}/verifikasi`}
-                                            className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-2 py-1 rounded"
-                                        >
-                                            Verifikasi
-                                        </Link>
                                     </td>
                                 </tr>
                             ))}
