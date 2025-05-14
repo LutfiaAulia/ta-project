@@ -23,8 +23,8 @@ const formatTanggalDanJam = (datetimeString: string) => {
     );
 };
 
-const ListBookingKabid: React.FC<PageProps<{ bookings: any[] }>> = ({
-    bookings,
+const ListBooking: React.FC<PageProps<{ booking: any[] }>> = ({
+    booking,
 }) => {
     return (
         <Layout>
@@ -47,8 +47,8 @@ const ListBookingKabid: React.FC<PageProps<{ bookings: any[] }>> = ({
                             </tr>
                         </thead>
                         <tbody>
-                            {bookings.map((b, index) => (
-                                <tr key={b.id}>
+                            {booking.map((b, index) => (
+                                <tr key={b.id_booking}>
                                     <td className="border px-2 py-2 text-center">{index + 1}</td>
                                     <td className="border px-2 py-2 text-center whitespace-nowrap">
                                         {formatTanggalDanJam(b.jadwal)}
@@ -75,7 +75,7 @@ const ListBookingKabid: React.FC<PageProps<{ bookings: any[] }>> = ({
                                     </td>
                                     <td className="border px-2 py-2 text-center space-x-1">
                                         <Link
-                                            href={`/kabid/booking/${b.id}`}
+                                            href={`/pegawai/booking/${b.id_booking}`}
                                             className="bg-gray-200 hover:bg-gray-300 text-xs px-2 py-1 rounded"
                                         >
                                             Detail
@@ -91,4 +91,4 @@ const ListBookingKabid: React.FC<PageProps<{ bookings: any[] }>> = ({
     );
 };
 
-export default ListBookingKabid;
+export default ListBooking;

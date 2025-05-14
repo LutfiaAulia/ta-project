@@ -42,9 +42,11 @@ Route::prefix('pegawai')->group(function () {
 
     Route::middleware(['auth', 'check.user.type:pegawai'])->group(function () {
         Route::get('/dashboard', fn() => Inertia::render('Pegawai/Dashboard'))->name('pegawai.dashboard');
-        Route::get('/booking/listBooking', [RiwayatBooking::class, 'showAllBooking'])->name('booking.listBooking');
-
-
+        Route::get('/booking/listBooking', [RiwayatBooking::class, 'listAllBooking'])->name('booking.listBooking');
+        Route::get('/booking/{id}', [RiwayatBooking::class, 'showBook'])->name('booking.showbook');
+        Route::post('/booking/{id}/verifikasi', [BookingController::class, 'verifikasi'])->name('booking.verif');
+        Route::post('/booking/{id}/tolak', [BookingController::class, 'tolak'])->name('booking.tolak');
+        Route::get('/surat/{filename}', [RiwayatBooking::class, 'showSurat'])->name('surat.show');
     });
 });
 

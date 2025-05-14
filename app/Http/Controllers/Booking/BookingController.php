@@ -17,7 +17,7 @@ class BookingController extends Controller
     {
         $layananList = Layanan::select('id_layanan as id', 'layanan as nama')->get();
 
-        $bookedDates = Booking::pluck('jadwal')->map(fn ($date) => $date->format('Y-m-d'));
+        $bookedDates = Booking::pluck('jadwal')->map(fn($date) => $date->format('Y-m-d'));
 
         return Inertia::render('Instansi/BookingIns', [
             'layananList' => $layananList,
@@ -56,5 +56,37 @@ class BookingController extends Controller
 
 
         return redirect()->route('booking.create')->with('success', 'Booking berhasil disimpan!');
+    }
+
+    public function verifikasi(Request $request, $id): RedirectResponse
+    {
+        $request->validate([
+            'pegawailap' => 'required|string|max:255',
+        ]);
+
+        $booking = Booking::findOrFail($id);
+
+        $booking->update([
+            'status_booking' => 'Diterima',
+            'pegawailap' => $request->pegawailap,
+        ]);
+
+        return redirect()->back()->with('success', 'Booking berhasil diverifikasi.');
+    }
+
+    public function tolak(Request $request, $id): RedirectResponse
+    {
+        $request->validate([
+            'alasan_ditolak' => 'required|string|max:255',
+        ]);
+
+        $booking = Booking::findOrFail($id);
+
+        $booking->update([
+            'status_booking' => 'Ditolak',
+            'alasan_ditolak' => $request->alasan_ditolak,
+        ]);
+
+        return redirect()->back()->with('success', 'Booking berhasil ditolak.');
     }
 }

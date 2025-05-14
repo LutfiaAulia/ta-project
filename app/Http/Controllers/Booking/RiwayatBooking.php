@@ -39,15 +39,23 @@ class RiwayatBooking extends Controller
         abort(404, 'Surat tidak ditemukan');
     }
 
-    public function showAllBooking()
-{
-    $bookings = Booking::with(['user:id,nama', 'layanan:id_layanan,layanan as nama_layanan'])
-        ->latest()
-        ->get();
+    public function listAllBooking()
+    {
+        $booking = Booking::with(['user:id,nama', 'layanan:id_layanan,layanan as nama_layanan'])
+            ->latest()
+            ->get();
 
-    return Inertia::render('Pegawai/KepalaBidang/ListBookingKabid', [
-        'bookings' => $bookings,
-    ]);
-}
+        return Inertia::render('Pegawai/ListBooking', [
+            'booking' => $booking,
+        ]);
+    }
 
+    public function showBook($id)
+    {
+        $booking = Booking::with(['layanan:id_layanan,layanan as nama_layanan', 'user'])->findOrFail($id);
+
+        return Inertia::render('Pegawai/DetailBooking', [
+            'booking' => $booking,
+        ]);
+    }
 }
