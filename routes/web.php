@@ -18,6 +18,11 @@ Route::get('/', function () {
     ]);
 });
 
+// ==================== ROUTE UNTUK DIAKSES BANYAK ROLE ==================== //
+Route::middleware(['auth'])->group(function () {
+    Route::get('/surat/{filename}', [RiwayatBooking::class, 'showSurat'])->name('surat.show');
+});
+
 // ========== ROUTE UNTUK INSTANSI (user_type: instansi) ========== //
 Route::middleware(['auth', 'verified', 'check.user.type:instansi'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Instansi/DashboardIns'))->name('dashboard');
@@ -31,10 +36,9 @@ Route::middleware(['auth', 'verified', 'check.user.type:instansi'])->group(funct
     Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
     Route::get('/booking/{id}/show', [RiwayatBooking::class, 'show'])->name('booking.show');
-    Route::get('/surat/{filename}', [RiwayatBooking::class, 'showSurat'])->name('surat.show');
 });
 
-// ========== AUTH PEGAWAI (user_type: pegawai) ========== //
+// ========== ROUTE UNTUK PEGAWAI (user_type: pegawai) ========== //
 Route::prefix('pegawai')->group(function () {
     Route::get('/login', [LoginPegawaiController::class, 'showLoginForm'])->name('pegawai.login.form');
     Route::post('/login', [LoginPegawaiController::class, 'login'])->name('pegawai.login');
@@ -46,7 +50,6 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/booking/{id}', [RiwayatBooking::class, 'showBook'])->name('booking.showbook');
         Route::post('/booking/{id}/verifikasi', [BookingController::class, 'verifikasi'])->name('booking.verif');
         Route::post('/booking/{id}/tolak', [BookingController::class, 'tolak'])->name('booking.tolak');
-        Route::get('/surat/{filename}', [RiwayatBooking::class, 'showSurat'])->name('surat.show');
     });
 });
 

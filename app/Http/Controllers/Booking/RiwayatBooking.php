@@ -12,7 +12,13 @@ class RiwayatBooking extends Controller
 {
     public function riwayat()
     {
-        $booking = Booking::where('user_id', Auth::id())->get();
+        $instansi = Auth::user()->instansi;
+
+        if (!$instansi) {
+            abort(403, 'Akun ini bukan instansi atau belum memiliki data instansi.');
+        }
+
+        $booking = Booking::where('id_instansi', $instansi->id)->get();
 
         return Inertia::render('Instansi/RiwayatBooking', [
             'booking' => $booking,

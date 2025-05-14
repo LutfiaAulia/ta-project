@@ -24,7 +24,7 @@ class Booking extends Model
         'alasan_ditolak',
         'status_booking',
         'nip',
-        'user_id',
+        'id_instansi',
         'id_mobil',
     ];
 
@@ -32,14 +32,9 @@ class Booking extends Model
         'jadwal' => 'datetime',
     ];
 
-    public function pegawai()
+    public function instansi()
     {
-        return $this->belongsTo(Pegawai::class, 'nip');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Instansi::class, 'id_instansi');
     }
 
     public function mobil()

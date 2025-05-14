@@ -49,7 +49,7 @@ class BookingController extends Controller
             'no_hp' => $request->no_hp,
             'surat' => $suratPath,
             'status_booking' => 'Diajukan',
-            'user_id' => Auth::user()->id,
+            'id_instansi' => Auth::user()->instansi->id,
         ]);
 
         $booking->layanan()->attach(array_map('intval', $request->layanan));
