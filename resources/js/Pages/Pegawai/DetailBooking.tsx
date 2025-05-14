@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from "@/Components/Layout";
 import { PageProps } from "@/types";
-import { Link, router } from "@inertiajs/react";
-import { useState } from "react";
+import { router } from "@inertiajs/react";
 
 interface DetailBookingProps extends PageProps {
     booking: {
@@ -16,8 +15,9 @@ interface DetailBookingProps extends PageProps {
         surat: string | null;
         status_booking: string;
         alasan_ditolak?: string;
-        pegawailap: string;
+        pegawailap?: { id: number; nama: string }[];
     };
+    pegawaiLapangan: { id: number; nama: string }[];
 }
 
 const formatTanggalDanJam = (datetime: string) => {
@@ -40,24 +40,27 @@ const formatTanggalDanJam = (datetime: string) => {
     );
 };
 
-const DetailBooking: React.FC<DetailBookingProps> = ({ booking }) => {
+const DetailBooking: React.FC<DetailBookingProps> = ({
+    booking,
+    pegawaiLapangan,
+}) => {
     const [showModalVerif, setShowModalVerif] = useState(false);
-    const [namaPegawai, setNamaPegawai] = useState("");
+    const [selectedPegawai, setSelectedPegawai] = useState<number[]>([]);
 
     const handleVerifikasi = () => {
         setShowModalVerif(true);
     };
 
     const submitVerifikasi = () => {
-        if (namaPegawai.trim()) {
+        if (selectedPegawai.length > 0) {
             router.post(
                 `/pegawai/booking/${booking.id_booking}/verifikasi`,
-                { pegawailap: namaPegawai },
+                { pegawailap: selectedPegawai },
                 {
                     preserveScroll: true,
                     onSuccess: () => {
                         setShowModalVerif(false);
-                        setNamaPegawai("");
+                        setSelectedPegawai([]);
                     },
                 }
             );
@@ -84,8 +87,6 @@ const DetailBooking: React.FC<DetailBookingProps> = ({ booking }) => {
                     },
                 }
             );
-            setShowModalTolak(false);
-            setAlasan("");
         }
     };
 
@@ -126,7 +127,7 @@ const DetailBooking: React.FC<DetailBookingProps> = ({ booking }) => {
                                 Layanan
                             </label>
                             <ul className="list-disc ml-5 font-bold">
-                                {booking.layanan.map((layanan) => (
+                                {booking.layanan.map((layanan, index) => (
                                     <li key={layanan.id}>
                                         {layanan.nama_layanan}
                                     </li>
@@ -148,15 +149,20 @@ const DetailBooking: React.FC<DetailBookingProps> = ({ booking }) => {
                             <p className="font-bold">{booking.no_hp}</p>
                         </div>
 
-                        {booking.status_booking === "Diterima" &&
-                            booking.pegawailap && (
+                        {booking.status_booking === "Diterima" && (
                                 <div>
                                     <label className="block text-xs font-medium text-gray-600">
                                         Pegawai Lapangan
                                     </label>
-                                    <p className="font-bold">
-                                        {booking.pegawailap}
-                                    </p>
+                                    <ul className="font-bold">
+                                        {pegawaiLapangan.map(
+                                            (pegawai, index) => (
+                                                <li key={pegawai.id}>
+                                                    {index + 1}. {pegawai.nama}
+                                                </li>
+                                            )
+                                        )}
+                                    </ul>
                                 </div>
                             )}
 
@@ -215,19 +221,42 @@ const DetailBooking: React.FC<DetailBookingProps> = ({ booking }) => {
                     )}
                 </div>
             </div>
+
             {showModalVerif && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
                         <h2 className="text-lg font-semibold mb-4">
-                            Masukkan Nama Pegawai Lapangan
+                            Pilih Pegawai Lapangan
                         </h2>
-                        <input
-                            type="text"
-                            value={namaPegawai}
-                            onChange={(e) => setNamaPegawai(e.target.value)}
-                            className="w-full border p-2 rounded mb-4"
-                            placeholder="Nama Pegawai Lapangan"
-                        />
+
+                        <div className="max-h-48 overflow-y-auto border p-2 rounded mb-4">
+                            {pegawaiLapangan.map((pegawai) => (
+                                <label
+                                    key={pegawai.id}
+                                    className="flex items-center gap-2 mb-1"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        value={pegawai.id}
+                                        checked={selectedPegawai.includes(
+                                            pegawai.id
+                                        )}
+                                        onChange={(e) => {
+                                            const id = Number(e.target.value);
+                                            setSelectedPegawai((prev) =>
+                                                e.target.checked
+                                                    ? [...prev, id]
+                                                    : prev.filter(
+                                                          (val) => val !== id
+                                                      )
+                                            );
+                                        }}
+                                    />
+                                    <span>{pegawai.nama}</span>
+                                </label>
+                            ))}
+                        </div>
+
                         <div className="flex justify-end gap-2">
                             <button
                                 onClick={() => setShowModalVerif(false)}
@@ -238,8 +267,9 @@ const DetailBooking: React.FC<DetailBookingProps> = ({ booking }) => {
                             <button
                                 onClick={submitVerifikasi}
                                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                                disabled={selectedPegawai.length === 0}
                             >
-                                Verifikasi
+                                Simpan
                             </button>
                         </div>
                     </div>

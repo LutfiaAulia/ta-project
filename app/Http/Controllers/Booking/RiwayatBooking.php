@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Booking;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Pegawai;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,7 +48,7 @@ class RiwayatBooking extends Controller
 
     public function listAllBooking()
     {
-        $booking = Booking::with(['user:id,nama', 'layanan:id_layanan,layanan as nama_layanan'])
+        $booking = Booking::with(['instansi.user:id,nama', 'layanan:id_layanan,layanan as nama_layanan'])
             ->latest()
             ->get();
 
@@ -58,10 +59,21 @@ class RiwayatBooking extends Controller
 
     public function showBook($id)
     {
-        $booking = Booking::with(['layanan:id_layanan,layanan as nama_layanan', 'user'])->findOrFail($id);
+        $booking = Booking::with(['layanan:id_layanan,layanan as nama_layanan', 'instansi'])->findOrFail($id);
+
+        $pegawaiLapangan = Pegawai::where('role', 'pegawai lapangan')
+            ->with('user')
+            ->get()
+            ->map(function ($pegawai) {
+                return [
+                    'id' => $pegawai->id,
+                    'nama' => $pegawai->user->nama,
+                ];
+            });
 
         return Inertia::render('Pegawai/DetailBooking', [
             'booking' => $booking,
+            'pegawaiLapangan' => $pegawaiLapangan,
         ]);
     }
 }

@@ -25,11 +25,13 @@ class Pegawai extends Model
         'role',
     ];
 
-    /**
-     * Relasi ke model User (satu pegawai dimiliki oleh satu user)
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function booking()
+    {
+        return $this->belongsToMany(Booking::class, 'booking_pegawai', 'id_pegawai', 'id_booking');
     }
 }

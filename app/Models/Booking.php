@@ -32,6 +32,11 @@ class Booking extends Model
         'jadwal' => 'datetime',
     ];
 
+    public function pegawaiLapangan()
+    {
+        return $this->belongsToMany(Pegawai::class, 'booking_pegawai', 'id_booking', 'id_pegawai');
+    }
+
     public function instansi()
     {
         return $this->belongsTo(Instansi::class, 'id_instansi');

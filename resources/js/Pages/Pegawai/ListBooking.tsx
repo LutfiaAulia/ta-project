@@ -53,7 +53,7 @@ const ListBooking: React.FC<PageProps<{ booking: any[] }>> = ({
                                     <td className="border px-2 py-2 text-center whitespace-nowrap">
                                         {formatTanggalDanJam(b.jadwal)}
                                     </td>
-                                    <td className="border px-2 py-2">{b.user?.nama}</td>
+                                    <td className="border px-2 py-2">{b.instansi?.user?.nama}</td>
                                     <td className="border px-2 py-2">{b.acara}</td>
                                     <td className="border px-2 py-2">{b.lokasi}</td>
                                     <td className="border px-2 py-2 text-center">

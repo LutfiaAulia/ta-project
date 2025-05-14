@@ -16,17 +16,10 @@ class PegawaiSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'nip' => '198403262023012015',
-            'nama' => 'Andi Kurniawan',
+            'nip' => '198503152010011001',
+            'nama' => 'Setia Budi',
             'user_type' => 'pegawai',
             'password' => Hash::make('12345678'),
-        ]);
-
-        User::create([
-            'nip' => '199007082022011008',
-            'nama' => 'Siti Rahma',
-            'user_type' => 'pegawai',
-            'password' => Hash::make('rahasia321'),
         ]);
     }
 }

@@ -61,15 +61,17 @@ class BookingController extends Controller
     public function verifikasi(Request $request, $id): RedirectResponse
     {
         $request->validate([
-            'pegawailap' => 'required|string|max:255',
+            'pegawailap' => 'required|array',
+            'pegawailap.*' => 'exists:pegawai,id',
         ]);
 
         $booking = Booking::findOrFail($id);
 
         $booking->update([
             'status_booking' => 'Diterima',
-            'pegawailap' => $request->pegawailap,
         ]);
+
+        $booking->pegawaiLapangan()->attach(array_map('intval', $request->pegawailap));
 
         return redirect()->back()->with('success', 'Booking berhasil diverifikasi.');
     }
