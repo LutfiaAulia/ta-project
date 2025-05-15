@@ -6,7 +6,10 @@ import { router } from "@inertiajs/react";
 interface DetailBookingProps extends PageProps {
     booking: {
         id_booking: number;
-        jadwal: string;
+        tanggal_mulai: string;
+        tanggal_akhir: string;
+        waktu_mulai: string;
+        waktu_akhir: string;
         acara: string;
         peserta: number;
         layanan: { id: number; nama_layanan: string }[];
@@ -20,22 +23,46 @@ interface DetailBookingProps extends PageProps {
     pegawaiLapangan: { id: number; nama: string }[];
 }
 
-const formatTanggalDanJam = (datetime: string) => {
-    const date = new Date(datetime);
-    const tanggal = date.toLocaleDateString("id-ID", {
+const extractJam = (waktu: string | null | undefined) => {
+    if (!waktu) return "-";
+    const dateObj = new Date(waktu);
+    if (isNaN(dateObj.getTime())) return "-";
+    // Koreksi timezone jika diperlukan (misal -7 jam)
+    dateObj.setHours(dateObj.getHours() - 7);
+    const jam = dateObj.getHours().toString().padStart(2, "0");
+    const menit = dateObj.getMinutes().toString().padStart(2, "0");
+    return `${jam}:${menit}`;
+};
+
+const formatTanggalDanJam = (
+    tanggalMulai: string,
+    tanggalAkhir: string,
+    waktuMulai: string,
+    waktuAkhir: string
+) => {
+    const mulai = new Date(tanggalMulai);
+    const akhir = new Date(tanggalAkhir);
+
+    const opsiTanggal: Intl.DateTimeFormatOptions = {
         day: "numeric",
         month: "long",
         year: "numeric",
-    });
-    const jam = date.toLocaleTimeString("id-ID", {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
+    };
+
+    const tgl =
+        tanggalMulai === tanggalAkhir
+            ? mulai.toLocaleDateString("id-ID", opsiTanggal)
+            : `${mulai.getDate()} - ${akhir.getDate()} ${akhir.toLocaleDateString(
+                  "id-ID",
+                  { month: "long", year: "numeric" }
+              )}`;
 
     return (
         <>
-            <div>{tanggal}</div>
-            <div className="text-gray-500 text-xs">{jam} WIB</div>
+            <div>{tgl}</div>
+            <div className="text-gray-500 text-xs">
+                {extractJam(waktuMulai)} - {extractJam(waktuAkhir)} WIB
+            </div>
         </>
     );
 };
@@ -104,7 +131,12 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                                 Jadwal
                             </label>
                             <div className="font-bold">
-                                {formatTanggalDanJam(booking.jadwal)}
+                                {formatTanggalDanJam(
+                                    booking.tanggal_mulai,
+                                    booking.tanggal_akhir,
+                                    booking.waktu_mulai,
+                                    booking.waktu_akhir
+                                )}
                             </div>
                         </div>
 
@@ -127,7 +159,7 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                                 Layanan
                             </label>
                             <ul className="list-disc ml-5 font-bold">
-                                {booking.layanan.map((layanan, index) => (
+                                {booking.layanan.map((layanan) => (
                                     <li key={layanan.id}>
                                         {layanan.nama_layanan}
                                     </li>
@@ -150,21 +182,17 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                         </div>
 
                         {booking.status_booking === "Diterima" && (
-                                <div>
-                                    <label className="block text-xs font-medium text-gray-600">
-                                        Pegawai Lapangan
-                                    </label>
-                                    <ul className="font-bold">
-                                        {pegawaiLapangan.map(
-                                            (pegawai, index) => (
-                                                <li key={pegawai.id}>
-                                                    {index + 1}. {pegawai.nama}
-                                                </li>
-                                            )
-                                        )}
-                                    </ul>
-                                </div>
-                            )}
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600">
+                                    Pegawai Lapangan
+                                </label>
+                                <ul className="font-bold">
+                                    {pegawaiLapangan.map((pegawai) => (
+                                        <li key={pegawai.id}>{pegawai.nama}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
 
                         {booking.status_booking === "Ditolak" &&
                             booking.alasan_ditolak && (
