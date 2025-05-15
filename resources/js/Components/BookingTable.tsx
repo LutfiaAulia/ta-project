@@ -12,7 +12,6 @@ interface Booking {
     status_booking: "Diajukan" | "Diterima" | "Ditolak" | "Selesai";
 }
 
-// Fungsi untuk format jadwal lengkap (tanggal + jam)
 const formatJadwalLengkap = (
     tanggalMulai: string,
     tanggalAkhir: string,
@@ -40,7 +39,7 @@ const formatJadwalLengkap = (
         if (!waktu) return "-";
         const dateObj = new Date(waktu);
         if (isNaN(dateObj.getTime())) return "-";
-        dateObj.setHours(dateObj.getHours() - 7); // koreksi waktu ke WIB
+        dateObj.setHours(dateObj.getHours() - 7);
         const jam = dateObj.getHours().toString().padStart(2, "0");
         const menit = dateObj.getMinutes().toString().padStart(2, "0");
         return `${jam}:${menit}`;

@@ -31,14 +31,12 @@ export default function RiwayatBooking({ booking }: RiwayatBookingProps) {
         Selesai: "bg-green-200 text-gray-800",
     };
 
-    // Filter booking berdasarkan kata kunci (case insensitive)
     const filteredBookings = booking.filter((item) =>
         [item.acara, item.lokasi, item.status_booking].some((field) =>
             field.toLowerCase().includes(search.toLowerCase())
         )
     );
 
-    // Reset ke halaman 1 saat search atau jumlah item berubah
     useEffect(() => {
         setCurrentPage(1);
     }, [search, itemsPerPage]);
