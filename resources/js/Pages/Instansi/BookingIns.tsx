@@ -19,7 +19,10 @@ export default function BookingIns({
     bookedDates,
 }: BookingInsProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        jadwal: "",
+        tanggal_mulai: "",
+        tanggal_akhir: "",
+        waktu_mulai: "",
+        waktu_akhir: "",
         acara: "",
         peserta: "",
         layanan: selectedLayanan?.map(String) ?? [],
@@ -64,40 +67,148 @@ export default function BookingIns({
                             )}
 
                             <form onSubmit={submit} className="space-y-6">
-                                {/* Jadwal */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">
-                                        Jadwal
-                                    </label>
-                                    <DatePicker
-                                        selected={
-                                            data.jadwal
-                                                ? new Date(data.jadwal)
-                                                : null
-                                        }
-                                        onChange={(date: Date | null) => {
-                                            if (date) {
-                                                setData(
-                                                    "jadwal",
-                                                    date
-                                                        .toISOString()
-                                                        .split("T")[0]
-                                                );
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Tanggal Mulai */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            Tanggal Mulai
+                                        </label>
+                                        <DatePicker
+                                            selected={
+                                                data.tanggal_mulai
+                                                    ? new Date(
+                                                          data.tanggal_mulai
+                                                      )
+                                                    : null
                                             }
-                                        }}
-                                        minDate={new Date()}
-                                        excludeDates={bookedDates.map((d) =>
-                                            parseISO(d)
+                                            onChange={(date: Date | null) => {
+                                                if (date) {
+                                                    const isoDate = date
+                                                        .toISOString()
+                                                        .split("T")[0];
+                                                    setData(
+                                                        "tanggal_mulai",
+                                                        isoDate
+                                                    );
+
+                                                    if (!data.tanggal_akhir) {
+                                                        setData(
+                                                            "tanggal_akhir",
+                                                            isoDate
+                                                        );
+                                                    }
+                                                }
+                                            }}
+                                            minDate={new Date()}
+                                            excludeDates={bookedDates.map((d) =>
+                                                parseISO(d)
+                                            )}
+                                            dateFormat="dd-MM-yyyy"
+                                            placeholderText="Pilih Tanggal"
+                                            customInput={<CustomDateInput />}
+                                        />
+                                        {errors.tanggal_mulai && (
+                                            <p className="mt-2 text-xs text-red-500">
+                                                {errors.tanggal_mulai}
+                                            </p>
                                         )}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="Pilih Tanggal"
-                                        customInput={<CustomDateInput />}
-                                    />
-                                    {errors.jadwal && (
-                                        <p className="mt-2 text-xs text-red-500">
-                                            {errors.jadwal}
-                                        </p>
-                                    )}
+                                    </div>
+
+                                    {/* Tanggal Akhir */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            Tanggal Akhir
+                                        </label>
+                                        <DatePicker
+                                            selected={
+                                                data.tanggal_akhir
+                                                    ? new Date(
+                                                          data.tanggal_akhir
+                                                      )
+                                                    : null
+                                            }
+                                            onChange={(date: Date | null) => {
+                                                if (date) {
+                                                    setData(
+                                                        "tanggal_akhir",
+                                                        date
+                                                            .toISOString()
+                                                            .split("T")[0]
+                                                    );
+                                                }
+                                            }}
+                                            minDate={
+                                                data.tanggal_mulai
+                                                    ? new Date(
+                                                          data.tanggal_mulai
+                                                      )
+                                                    : new Date()
+                                            }
+                                            excludeDates={bookedDates.map((d) =>
+                                                parseISO(d)
+                                            )}
+                                            dateFormat="dd-MM-yyyy"
+                                            placeholderText="Pilih Tanggal"
+                                            customInput={<CustomDateInput />}
+                                        />
+                                        {errors.tanggal_akhir && (
+                                            <p className="mt-2 text-xs text-red-500">
+                                                {errors.tanggal_akhir}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Waktu Mulai */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            Waktu Mulai
+                                        </label>
+                                        <input
+                                            type="time"
+                                            name="waktu_mulai"
+                                            value={data.waktu_mulai}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "waktu_mulai",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
+                                            required
+                                        />
+                                        {errors.waktu_mulai && (
+                                            <p className="mt-2 text-xs text-red-500">
+                                                {errors.waktu_mulai}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {/* Waktu Akhir */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            Waktu Akhir
+                                        </label>
+                                        <input
+                                            type="time"
+                                            name="waktu_akhir"
+                                            value={data.waktu_akhir}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "waktu_akhir",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
+                                            required
+                                        />
+                                        {errors.waktu_akhir && (
+                                            <p className="mt-2 text-xs text-red-500">
+                                                {errors.waktu_akhir}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
 
                                 {/* Acara */}

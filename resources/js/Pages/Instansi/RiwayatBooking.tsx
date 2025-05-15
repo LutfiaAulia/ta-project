@@ -1,11 +1,14 @@
 import { Head } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookingTable from "../../Components/BookingTable";
 
 interface Booking {
-    id_booking: any;
-    jadwal: string;
+    id_booking: number | string;
+    tanggal_mulai: string;
+    tanggal_akhir: string;
+    waktu_mulai: string;
+    waktu_akhir: string;
     acara: string;
     layanan: string;
     lokasi: string;
@@ -17,6 +20,10 @@ interface RiwayatBookingProps {
 }
 
 export default function RiwayatBooking({ booking }: RiwayatBookingProps) {
+    const [search, setSearch] = useState<string>("");
+    const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+
     const statusColors: { [key in Booking["status_booking"]]: string } = {
         Diajukan: "bg-yellow-200 text-gray-800",
         Diterima: "bg-blue-300 text-white",
@@ -24,25 +31,17 @@ export default function RiwayatBooking({ booking }: RiwayatBookingProps) {
         Selesai: "bg-green-200 text-gray-800",
     };
 
-    const [search, setSearch] = useState<string>("");
-    const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-
-    function formatTanggal(tanggal: string): string {
-        const options: Intl.DateTimeFormatOptions = {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        };
-        return new Date(tanggal).toLocaleDateString("id-ID", options);
-    }
-
-    const filteredBookings = booking.filter(
-        (booking) =>
-            booking.acara.toLowerCase().includes(search.toLowerCase()) ||
-            booking.lokasi.toLowerCase().includes(search.toLowerCase()) ||
-            booking.status_booking.toLowerCase().includes(search.toLowerCase())
+    // Filter booking berdasarkan kata kunci (case insensitive)
+    const filteredBookings = booking.filter((item) =>
+        [item.acara, item.lokasi, item.status_booking].some((field) =>
+            field.toLowerCase().includes(search.toLowerCase())
+        )
     );
+
+    // Reset ke halaman 1 saat search atau jumlah item berubah
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, itemsPerPage]);
 
     const totalItems = filteredBookings.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -52,12 +51,12 @@ export default function RiwayatBooking({ booking }: RiwayatBookingProps) {
         startIndex + itemsPerPage
     );
 
-    const goToNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    const goToPreviousPage = () => {
+        if (currentPage > 1) setCurrentPage((prev) => prev - 1);
     };
 
-    const goToPreviousPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    const goToNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
     };
 
     return (
@@ -96,14 +95,13 @@ export default function RiwayatBooking({ booking }: RiwayatBookingProps) {
                         </div>
 
                         <div className="overflow-hidden shadow-sm text-gray-900">
-                            <BookingTable
-                                bookings={currentBookings}
-                                startIndex={startIndex}
-                                formatTanggal={formatTanggal}
-                                statusColors={statusColors}
-                            />
-
-                            {filteredBookings.length === 0 && (
+                            {currentBookings.length > 0 ? (
+                                <BookingTable
+                                    bookings={currentBookings}
+                                    startIndex={startIndex}
+                                    statusColors={statusColors}
+                                />
+                            ) : (
                                 <div className="text-center text-gray-500 py-8">
                                     Tidak ada data booking.
                                 </div>

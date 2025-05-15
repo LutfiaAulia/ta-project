@@ -13,7 +13,10 @@ class Booking extends Model
     protected $primaryKey = 'id_booking';
 
     protected $fillable = [
-        'jadwal',
+        'tanggal_mulai',
+        'tanggal_akhir',
+        'waktu_mulai',
+        'waktu_akhir',
         'acara',
         'peserta',
         'layanan',
@@ -29,7 +32,10 @@ class Booking extends Model
     ];
 
     protected $casts = [
-        'jadwal' => 'datetime',
+        'tanggal_mulai' => 'date',
+        'tanggal_akhir' => 'date',
+        'waktu_mulai' => 'datetime',
+        'waktu_akhir' => 'datetime',
     ];
 
     public function pegawaiLapangan()

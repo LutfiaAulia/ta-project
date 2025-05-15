@@ -2,24 +2,67 @@ import React from "react";
 
 interface Booking {
     id_booking: any;
-    jadwal: string;
+    tanggal_mulai: string;
+    tanggal_akhir: string;
+    waktu_mulai: string;
+    waktu_akhir: string;
     acara: string;
     layanan: string;
     lokasi: string;
     status_booking: "Diajukan" | "Diterima" | "Ditolak" | "Selesai";
 }
 
+// Fungsi untuk format jadwal lengkap (tanggal + jam)
+const formatJadwalLengkap = (
+    tanggalMulai: string,
+    tanggalAkhir: string,
+    waktuMulai: string | null | undefined,
+    waktuAkhir: string | null | undefined
+) => {
+    const options: Intl.DateTimeFormatOptions = {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+    };
+
+    const mulai = new Date(tanggalMulai);
+    const akhir = new Date(tanggalAkhir);
+
+    const tgl =
+        tanggalMulai === tanggalAkhir
+            ? mulai.toLocaleDateString("id-ID", options)
+            : `${mulai.getDate()}-${akhir.getDate()} ${akhir.toLocaleDateString(
+                  "id-ID",
+                  { month: "long", year: "numeric" }
+              )}`;
+
+    const extractJam = (waktu: string | null | undefined) => {
+        if (!waktu) return "-";
+        const dateObj = new Date(waktu);
+        if (isNaN(dateObj.getTime())) return "-";
+        dateObj.setHours(dateObj.getHours() - 7); // koreksi waktu ke WIB
+        const jam = dateObj.getHours().toString().padStart(2, "0");
+        const menit = dateObj.getMinutes().toString().padStart(2, "0");
+        return `${jam}:${menit}`;
+    };
+
+    const jamMulai = extractJam(waktuMulai);
+    const jamAkhir = extractJam(waktuAkhir);
+
+    const jam = `${jamMulai} - ${jamAkhir} WIB`;
+
+    return `${tgl}\n${jam}`;
+};
+
 interface BookingTableProps {
     bookings: Booking[];
     startIndex: number;
-    formatTanggal: (tanggal: string) => string;
     statusColors: { [key in Booking["status_booking"]]: string };
 }
 
 const BookingTable: React.FC<BookingTableProps> = ({
     bookings,
     startIndex,
-    formatTanggal,
     statusColors,
 }) => {
     return (
@@ -41,8 +84,13 @@ const BookingTable: React.FC<BookingTableProps> = ({
                             <td className="border px-4 py-2 text-center">
                                 {startIndex + index + 1}
                             </td>
-                            <td className="border px-4 py-2 whitespace-pre-line">
-                                {formatTanggal(booking.jadwal)}
+                            <td className="border px-4 py-2 whitespace-pre-line text-center">
+                                {formatJadwalLengkap(
+                                    booking.tanggal_mulai,
+                                    booking.tanggal_akhir,
+                                    booking.waktu_mulai,
+                                    booking.waktu_akhir
+                                )}
                             </td>
                             <td className="border px-4 py-2">
                                 {booking.acara}

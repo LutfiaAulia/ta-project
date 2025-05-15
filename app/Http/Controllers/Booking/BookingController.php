@@ -17,7 +17,7 @@ class BookingController extends Controller
     {
         $layananList = Layanan::select('id_layanan as id', 'layanan as nama')->get();
 
-        $bookedDates = Booking::pluck('jadwal')->map(fn($date) => $date->format('Y-m-d'));
+        $bookedDates = Booking::pluck('tanggal_mulai')->map(fn($date) => $date->format('Y-m-d'));
 
         return Inertia::render('Instansi/BookingIns', [
             'layananList' => $layananList,
@@ -29,7 +29,10 @@ class BookingController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'jadwal' => 'required|date',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_mulai',
+            'waktu_mulai' => 'required|date_format:H:i',
+            'waktu_akhir' => 'required|date_format:H:i',
             'acara' => 'required|string|max:255',
             'peserta' => 'required|integer',
             'layanan' => 'required|array',
@@ -39,10 +42,19 @@ class BookingController extends Controller
             'surat' => 'required|file|mimes:pdf|max:200',
         ]);
 
+        if($request->tanggal_mulai === $request->tanggal_akhir) {
+            if(strtotime($request->waktu_akhir) <= strtotime($request->waktu_mulai)) {
+                return back()->withErrors(['waktu_akhir' => 'Waktu akhir harus lebih besar'])->withInput();
+            }
+        }
+
         $suratPath = $request->file('surat')->store('surat', 'public');
 
         $booking = Booking::create([
-            'jadwal' => $request->jadwal,
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_akhir' => $request->tanggal_akhir,
+            'waktu_mulai' => $request->waktu_mulai,
+            'waktu_akhir' => $request->waktu_akhir,
             'acara' => $request->acara,
             'peserta' => $request->peserta,
             'lokasi' => $request->lokasi,

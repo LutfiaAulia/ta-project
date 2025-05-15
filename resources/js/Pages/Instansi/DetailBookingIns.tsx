@@ -8,7 +8,10 @@ interface Layanan {
 
 interface Booking {
     id_booking: number;
-    jadwal: string;
+    tanggal_mulai: string;
+    tanggal_akhir: string;
+    waktu_mulai: string | null;
+    waktu_akhir: string | null;
     acara: string;
     peserta: number;
     layanan: Layanan[];
@@ -21,14 +24,47 @@ interface DetailBookingInsProps {
     booking: Booking;
 }
 
-function formatTanggal(tanggal: string): string {
+// Fungsi untuk menampilkan jadwal dengan format yang sama seperti di riwayat
+const formatJadwalLengkap = (
+    tanggalMulai: string,
+    tanggalAkhir: string,
+    waktuMulai: string | null | undefined,
+    waktuAkhir: string | null | undefined
+) => {
     const options: Intl.DateTimeFormatOptions = {
-        day: "numeric",
+        day: "2-digit",
         month: "long",
         year: "numeric",
     };
-    return new Date(tanggal).toLocaleDateString("id-ID", options);
-}
+
+    const mulai = new Date(tanggalMulai);
+    const akhir = new Date(tanggalAkhir);
+
+    const tgl =
+        tanggalMulai === tanggalAkhir
+            ? mulai.toLocaleDateString("id-ID", options)
+            : `${mulai.getDate()}-${akhir.getDate()} ${akhir.toLocaleDateString(
+                  "id-ID",
+                  { month: "long", year: "numeric" }
+              )}`;
+
+    const extractJam = (waktu: string | null | undefined) => {
+        if (!waktu) return "-";
+        const dateObj = new Date(waktu);
+        if (isNaN(dateObj.getTime())) return "-";
+        dateObj.setHours(dateObj.getHours() - 7); // koreksi waktu ke WIB
+        const jam = dateObj.getHours().toString().padStart(2, "0");
+        const menit = dateObj.getMinutes().toString().padStart(2, "0");
+        return `${jam}:${menit}`;
+    };
+
+    const jamMulai = extractJam(waktuMulai);
+    const jamAkhir = extractJam(waktuAkhir);
+
+    const jam = `${jamMulai} - ${jamAkhir} WIB`;
+
+    return `${tgl}\n${jam}`;
+};
 
 export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
     return (
@@ -53,8 +89,13 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
                                     <label className="block font-medium text-black-700 text-[12px]">
                                         Jadwal
                                     </label>
-                                    <p className="font-bold">
-                                        {formatTanggal(booking.jadwal)}
+                                    <p className="font-bold whitespace-pre-line">
+                                        {formatJadwalLengkap(
+                                            booking.tanggal_mulai,
+                                            booking.tanggal_akhir,
+                                            booking.waktu_mulai,
+                                            booking.waktu_akhir
+                                        )}
                                     </p>
                                 </div>
 
