@@ -1,8 +1,11 @@
-import React from "react";
-import { FaTh, FaClipboardList, FaStore, FaFileAlt, FaInbox, FaShareSquare, FaUsersCog, FaCar, FaUserTie, FaShoppingBag } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaTh, FaClipboardList, FaStore, FaFileAlt, FaInbox, FaShareSquare, FaUsersCog, FaCar, FaUserTie, FaShoppingBag, FaChevronDown } from "react-icons/fa";
 import { Link } from "@inertiajs/react";
 
 const Sidebar: React.FC = () => {
+
+    const [akunOpen, setAkunOpen] = useState(false);
+    
     return (
         <div className="w-60 h-screen bg-green-600 text-white flex flex-col fixed">
             {/* Logo Section */}
@@ -62,13 +65,41 @@ const Sidebar: React.FC = () => {
                     <FaShareSquare />
                     <span>Disposisi</span>
                 </Link>
-                <Link
-                    href={route("pegawai.dashboard")}
-                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                <button 
+                    onClick={() => setAkunOpen(!akunOpen)}
+                    className="flex items-center gap-14 p-2 rounded hover:bg-green-500 transition cursor-pointer"
                 >
-                    <FaUsersCog />
-                    <span>Kelola Akun</span>
-                </Link>
+                    <span className="flex items-center gap-3">
+                        <FaUsersCog/>
+                        Kelola Akun
+                    </span>
+                    <FaChevronDown
+                        className={'transition-transform ${akunOpen ? "rotate-180" : ""}'}
+                    />   
+                </button>
+
+                {akunOpen && (
+                    <div className="ml-8 space-y-1">
+                        <Link
+                            href={route("pegawai.dashboard")}
+                            className="block px-4 py-2 rounded hover:bg-green-500 flex items-center gap-2"
+                        >
+                            <FaUsersCog className="text-xs" /> Pegawai
+                        </Link>
+                        <Link
+                            href={route("pegawai.dashboard")}
+                            className="block px-4 py-2 rounded hover:bg-green-500 flex items-center gap-2"
+                        >
+                            <FaUsersCog className="text-xs" /> Instansi
+                        </Link>
+                        <Link
+                            href={route("pegawai.dashboard")}
+                            className="block px-4 py-2 rounded hover:bg-green-500 flex items-center gap-2"
+                        >
+                            <FaUsersCog className="text-xs" /> UMKM
+                        </Link>
+                    </div>
+                )}
                 <Link
                     href={route("pegawai.dashboard")}
                     className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
