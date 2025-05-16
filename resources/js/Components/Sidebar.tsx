@@ -1,5 +1,5 @@
 import React from "react";
-import { FaTh, FaClipboardList, FaStore, FaFileAlt } from "react-icons/fa";
+import { FaTh, FaClipboardList, FaStore, FaFileAlt, FaInbox, FaShareSquare, FaUsersCog, FaCar, FaUserTie, FaShoppingBag } from "react-icons/fa";
 import { Link } from "@inertiajs/react";
 
 const Sidebar: React.FC = () => {
@@ -47,6 +47,55 @@ const Sidebar: React.FC = () => {
                 >
                     <FaFileAlt />
                     <span>Laporan</span>
+                </Link>
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                >
+                    <FaInbox />
+                    <span>Surat Masuk</span>
+                </Link>
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                >
+                    <FaShareSquare />
+                    <span>Disposisi</span>
+                </Link>
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                >
+                    <FaUsersCog />
+                    <span>Kelola Akun</span>
+                </Link>
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                >
+                    <FaFileAlt />
+                    <span>Kelola Layanan</span>
+                </Link>
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                >
+                    <FaCar />
+                    <span>Kelola Mobil</span>
+                </Link>
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                >
+                    <FaUserTie />
+                    <span>Kelola Sopir</span>
+                </Link>
+                <Link
+                    href={route("pegawai.dashboard")}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
+                >
+                    <FaShoppingBag />
+                    <span>Kelola Promosi</span>
                 </Link>
             </ul>
         </div>

@@ -85,7 +85,7 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
 
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block font-medium text-black-700 text-[12px]">
+                                    <label className="block font-medium text-gray-500 text-[12px]">
                                         Jadwal
                                     </label>
                                     <p className="font-bold whitespace-pre-line">
@@ -99,14 +99,14 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
                                 </div>
 
                                 <div>
-                                    <label className="block font-medium text-black-700 text-[12px]">
+                                    <label className="block font-medium text-gray-500 text-[12px]">
                                         Acara
                                     </label>
                                     <p className="font-bold">{booking.acara}</p>
                                 </div>
 
                                 <div>
-                                    <label className="block font-medium text-black-700 text-[12px]">
+                                    <label className="block font-medium text-gray-500 text-[12px]">
                                         Jumlah Peserta
                                     </label>
                                     <p className="font-bold">
@@ -115,7 +115,7 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
                                 </div>
 
                                 <div>
-                                    <label className="block font-medium text-black-700 text-[12px]">
+                                    <label className="block font-medium text-gray-500 text-[12px]">
                                         Layanan
                                     </label>
                                     {booking.layanan.length > 0 ? (
@@ -134,7 +134,7 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
                                 </div>
 
                                 <div>
-                                    <label className="block font-medium text-black-700 text-[12px]">
+                                    <label className="block font-medium text-gray-500 text-[12px]">
                                         Lokasi
                                     </label>
                                     <p className="font-bold">
@@ -143,14 +143,14 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
                                 </div>
 
                                 <div>
-                                    <label className="block font-medium text-black-700 text-[12px]">
+                                    <label className="block font-medium text-gray-500 text-[12px]">
                                         Nomor Telepon
                                     </label>
                                     <p className="font-bold">{booking.no_hp}</p>
                                 </div>
 
                                 <div>
-                                    <label className="block font-medium text-black-700 text-[12px]">
+                                    <label className="block font-medium text-gray-500 text-[12px]">
                                         Surat Permintaan
                                     </label>
                                     {booking.surat ? (
