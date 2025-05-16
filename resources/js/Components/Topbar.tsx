@@ -5,7 +5,7 @@ import { Inertia } from "@inertiajs/inertia";
 
 const Topbar: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const { pegawai } = usePage<any>().props;
+    const user = usePage().props.auth?.user;
 
     const handleLogout = () => {
         Inertia.post(route("pegawai.logout"));
@@ -25,7 +25,7 @@ const Topbar: React.FC = () => {
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center gap-2 font-medium text-sm text-gray-700 hover:text-green-700 transition"
                 >
-                    {pegawai?.nama ?? "Loading..."}
+                    {user?.nama ?? "Loading..."}
                     <FaChevronDown
                         className={`transition-transform duration-200 ${
                             dropdownOpen ? "rotate-180" : ""
