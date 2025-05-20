@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginPegawaiController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\KelolaPegawaiController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -50,6 +51,7 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/booking/{id}', [RiwayatBooking::class, 'showBook'])->name('booking.showbook');
         Route::post('/booking/{id}/verifikasi', [BookingController::class, 'verifikasi'])->name('booking.verif');
         Route::post('/booking/{id}/tolak', [BookingController::class, 'tolak'])->name('booking.tolak');
+        Route::get('/show/user', [KelolaPegawaiController::class, 'show'])->name('user.show');
     });
 });
 
