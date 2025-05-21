@@ -33,6 +33,7 @@ class KelolaUserController extends Controller
                 'nib' => $user->user_type === 'umkm' ? $user->nib : null,
                 'email' => $user->user_type === 'instansi' ? $user->email : null,
                 'pegawai' => $user->pegawai ? ['role' => $user->pegawai->role] : null,
+                'status' => $user->status,
             ];
         });
 
@@ -89,6 +90,23 @@ class KelolaUserController extends Controller
 
         return redirect()->route('user.show', ['type' => $validated['user_type']])
             ->with('success', 'User berhasil ditambahkan');
+    }
+
+    public function updateStatus(Request $request, string $type, int $id){
+        $request->validate([
+            'status' => 'required|in:aktif,nonaktif'
+        ]);
+
+        $user = User::where('id', $id)->where('user_type', $type)->first();
+
+        if(!$user){
+            return response()->json(['message' => 'User tidak ditemukan'], 404);
+        }
+
+        $user->status = $request->input('status');
+        $user->save();
+
+        return response()->json(['message' => 'Status user berhasil diubah']);
     }
 
 }

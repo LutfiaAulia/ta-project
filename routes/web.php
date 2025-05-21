@@ -54,6 +54,7 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/show/user', [KelolaUserController::class, 'show'])->name('user.show');
         Route::get('/create/user', [KelolaUserController::class, 'create'])->name('user.create');
         Route::post('/store/user', [KelolaUserController::class, 'store'])->name('user.store');
+        Route::patch('/status/user/{type}/{id}', [KelolaUserController::class, 'updateStatus'])->name('user.updateStatus');
     });
 });
 

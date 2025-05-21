@@ -8,6 +8,7 @@ type PegawaiUser = {
     id: number;
     nama: string;
     nip: string;
+    status: string;
     pegawai: {
         role: string;
     };
@@ -18,6 +19,7 @@ type InstansiUser = {
     id: number;
     nama: string;
     email: string;
+    status: string;
 };
 
 type UmkmUser = {
@@ -25,6 +27,7 @@ type UmkmUser = {
     id: number;
     nama: string;
     nib: string;
+    status: string;
 };
 
 type UserType = PegawaiUser | InstansiUser | UmkmUser;
@@ -44,6 +47,48 @@ const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
     const filteredUsers = users.filter((user) =>
         user.nama.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    async function toggleStatus(user: UserType) {
+        const newStatus = user.status === "aktif" ? "nonaktif" : "aktif";
+
+        if (
+            confirm(
+                `Yakin ingin ${
+                    newStatus === "aktif" ? "mengaktifkan" : "menonaktifkan"
+                } user "${user.nama}"?`
+            )
+        ) {
+            try {
+                const response = await fetch(
+                    `/pegawai/status/user/${user.type}/${user.id}`,
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN":
+                                document
+                                    .querySelector('meta[name="csrf-token"]')
+                                    ?.getAttribute("content") || "",
+                        },
+                        body: JSON.stringify({ status: newStatus }),
+                    }
+                );
+
+                if (response.ok) {
+                    alert(
+                        `User "${user.nama}" berhasil di${
+                            newStatus === "aktif" ? "aktifkan" : "nonaktifkan"
+                        }.`
+                    );
+                    window.location.reload();
+                } else {
+                    alert("Gagal mengubah status user.");
+                }
+            } catch (error) {
+                alert("Terjadi kesalahan saat mengubah status user.");
+            }
+        }
+    }
 
     return (
         <Layout>
@@ -88,6 +133,7 @@ const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
                                 {userType === "pegawai" && (
                                     <th className="border px-2 py-2">Role</th>
                                 )}
+                                <th className="border px-2 py-2">Status</th>
                                 <th className="border px-2 py-2">Aksi</th>
                             </tr>
                         </thead>
@@ -120,6 +166,9 @@ const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
                                             {user.pegawai.role}
                                         </td>
                                     )}
+                                    <td className="border px-2 py-2 text-center">
+                                        {user.status}
+                                    </td>
 
                                     <td className="border px-2 py-2 text-center space-x-1 w-[200px]">
                                         <Link
@@ -129,20 +178,16 @@ const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
                                             Edit
                                         </Link>
                                         <button
-                                            onClick={() => {
-                                                if (
-                                                    confirm(
-                                                        `Yakin ingin menghapus user "${user.nama}"?`
-                                                    )
-                                                ) {
-                                                    alert(
-                                                        "Fungsi hapus user belum diimplementasikan"
-                                                    );
-                                                }
-                                            }}
-                                            className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+                                            onClick={() => toggleStatus(user)}
+                                            className={`${
+                                                user.status === "aktif"
+                                                    ? "bg-red-500 hover:bg-red-600 text-white"
+                                                    : "bg-green-500 hover:bg-green-600 text-white"
+                                            } px-2 py-1 rounded text-xs min-w-[80px] text-center`}
                                         >
-                                            Hapus
+                                            {user.status === "aktif"
+                                                ? "Nonaktifkan"
+                                                : "Aktifkan"}
                                         </button>
                                     </td>
                                 </tr>
