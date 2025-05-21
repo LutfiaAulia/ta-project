@@ -25,6 +25,7 @@ class LoginPegawaiController extends Controller
             'nip' => $credentials['nip'],
             'password' => $credentials['password'],
             'user_type' => 'pegawai',
+            'status' => 'aktif',
         ])) {
             $request->session()->regenerate();
 

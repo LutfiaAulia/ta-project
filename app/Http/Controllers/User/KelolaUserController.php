@@ -71,6 +71,7 @@ class KelolaUserController extends Controller
             'nip' => $validated['user_type'] === 'pegawai' ? $validated['nip'] : null,
             'nib' => $validated['user_type'] === 'umkm' ? $validated['nib'] : null,
             'user_type' => $validated['user_type'],
+            'status' => 'aktif',
         ]);
 
         if ($validated['user_type'] === 'pegawai') {
@@ -89,4 +90,5 @@ class KelolaUserController extends Controller
         return redirect()->route('user.show', ['type' => $validated['user_type']])
             ->with('success', 'User berhasil ditambahkan');
     }
+
 }

@@ -46,9 +46,9 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'user_type' => 'instansi',
+            'status' => 'aktif',
         ]);
 
-        // Buat data instansi yang terhubung dengan user tersebut
         Instansi::create([
             'user_id' => $user->id,
             'nama_instansi' => $request->nama_instansi,

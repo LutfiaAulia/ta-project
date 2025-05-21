@@ -144,12 +144,6 @@ const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
                                         >
                                             Hapus
                                         </button>
-                                        <Link
-                                            href={`/admin/user/${user.type}/${user.id}`}
-                                            className="bg-blue-200 hover:bg-blue-300 px-2 py-1 rounded text-xs"
-                                        >
-                                            Detail
-                                        </Link>
                                     </td>
                                 </tr>
                             ))}
