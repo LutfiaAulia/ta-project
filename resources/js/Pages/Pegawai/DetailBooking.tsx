@@ -27,7 +27,8 @@ const extractJam = (waktu: string | null | undefined) => {
     if (!waktu) return "-";
     const dateObj = new Date(waktu);
     if (isNaN(dateObj.getTime())) return "-";
-    // Koreksi timezone jika diperlukan (misal -7 jam)
+    
+    // Koreksi timezone
     dateObj.setHours(dateObj.getHours() - 7);
     const jam = dateObj.getHours().toString().padStart(2, "0");
     const menit = dateObj.getMinutes().toString().padStart(2, "0");

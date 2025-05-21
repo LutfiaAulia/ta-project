@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "@/Components/Layout";
 import { PageProps } from "@/types";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 
 type PegawaiUser = {
     type: "pegawai";
@@ -30,7 +30,15 @@ type UmkmUser = {
 type UserType = PegawaiUser | InstansiUser | UmkmUser;
 
 const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
-    const userType = users.length > 0 ? users[0].type : null;
+    const { url } = usePage();
+    const [userType, setUserType] = useState<string | null>(null);
+
+    useEffect(() => {
+        const params = new URLSearchParams(url.split("?")[1]);
+        const typeFromQuery = params.get("type");
+        setUserType(typeFromQuery);
+    }, [url]);
+
     const [searchTerm, setSearchTerm] = useState("");
 
     const filteredUsers = users.filter((user) =>
@@ -52,13 +60,14 @@ const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="border border-gray-300 rounded px-3 py-2 text-xs w-1/3"
                     />
-
-                    <Link
-                        href={`/admin/user/${userType}/create`}
-                        className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded flex items-center justify-center"
-                    >
-                        + Tambah
-                    </Link>
+                    {userType !== "instansi" && userType !== null && (
+                        <Link
+                            href={`/pegawai/create/user?type=${userType}`}
+                            className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded flex items-center justify-center"
+                        >
+                            + Tambah
+                        </Link>
+                    )}
                 </div>
 
                 <div className="overflow-x-auto">

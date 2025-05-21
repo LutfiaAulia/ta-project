@@ -13,11 +13,12 @@ const Topbar: React.FC = () => {
 
     return (
         <div
-            className="flex justify-end items-center px-6 py-4 bg-white border-b shadow-sm fixed z-40"
+            className="flex justify-end items-center px-4 py-6 bg-white border-b shadow-sm fixed z-40"
             style={{
                 paddingLeft: "16rem",
                 width: "calc(100% - 15rem)",
-                top: "1.25rem",
+                top: 0,
+                height: "74px",
             }}
         >
             <div className="relative">
