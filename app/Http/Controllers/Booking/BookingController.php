@@ -15,7 +15,9 @@ class BookingController extends Controller
 {
     public function create(): Response
     {
-        $layananList = Layanan::select('id_layanan as id', 'layanan as nama')->get();
+        $layananList = Layanan::where('status', 'aktif')
+            ->select('id_layanan as id', 'layanan as nama')
+            ->get();
 
         $bookedDates = Booking::pluck('tanggal_mulai')->map(fn($date) => $date->format('Y-m-d'));
 
@@ -42,8 +44,8 @@ class BookingController extends Controller
             'surat' => 'required|file|mimes:pdf|max:200',
         ]);
 
-        if($request->tanggal_mulai === $request->tanggal_akhir) {
-            if(strtotime($request->waktu_akhir) <= strtotime($request->waktu_mulai)) {
+        if ($request->tanggal_mulai === $request->tanggal_akhir) {
+            if (strtotime($request->waktu_akhir) <= strtotime($request->waktu_mulai)) {
                 return back()->withErrors(['waktu_akhir' => 'Waktu akhir harus lebih besar'])->withInput();
             }
         }
