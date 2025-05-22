@@ -18,16 +18,16 @@ interface DetailBookingProps extends PageProps {
         surat: string | null;
         status_booking: string;
         alasan_ditolak?: string;
-        pegawailap?: { id: number; nama: string }[];
+        pegawailap?: { id: number; nama: string; status: string }[];
     };
-    pegawaiLapangan: { id: number; nama: string }[];
+    pegawaiLapangan: { id: number; nama: string; status: string }[];
 }
 
 const extractJam = (waktu: string | null | undefined) => {
     if (!waktu) return "-";
     const dateObj = new Date(waktu);
     if (isNaN(dateObj.getTime())) return "-";
-    
+
     // Koreksi timezone
     dateObj.setHours(dateObj.getHours() - 7);
     const jam = dateObj.getHours().toString().padStart(2, "0");
@@ -182,18 +182,22 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                             <p className="font-bold">{booking.no_hp}</p>
                         </div>
 
-                        {booking.status_booking === "Diterima" && (
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600">
-                                    Pegawai Lapangan
-                                </label>
-                                <ul className="font-bold">
-                                    {pegawaiLapangan.map((pegawai) => (
-                                        <li key={pegawai.id}>{pegawai.nama}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
+                        {booking.status_booking === "Diterima" &&
+                            booking.pegawailap &&
+                            booking.pegawailap.length > 0 && (
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-600">
+                                        Pegawai Lapangan
+                                    </label>
+                                    <ul className="font-bold">
+                                        {booking.pegawailap.map((pegawai) => (
+                                            <li key={pegawai.id}>
+                                                {pegawai.nama}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
 
                         {booking.status_booking === "Ditolak" &&
                             booking.alasan_ditolak && (
@@ -259,31 +263,36 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                         </h2>
 
                         <div className="max-h-48 overflow-y-auto border p-2 rounded mb-4">
-                            {pegawaiLapangan.map((pegawai) => (
-                                <label
-                                    key={pegawai.id}
-                                    className="flex items-center gap-2 mb-1"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        value={pegawai.id}
-                                        checked={selectedPegawai.includes(
-                                            pegawai.id
-                                        )}
-                                        onChange={(e) => {
-                                            const id = Number(e.target.value);
-                                            setSelectedPegawai((prev) =>
-                                                e.target.checked
-                                                    ? [...prev, id]
-                                                    : prev.filter(
-                                                          (val) => val !== id
-                                                      )
-                                            );
-                                        }}
-                                    />
-                                    <span>{pegawai.nama}</span>
-                                </label>
-                            ))}
+                            {pegawaiLapangan
+                                .filter((pegawai) => pegawai.status === "aktif")
+                                .map((pegawai) => (
+                                    <label
+                                        key={pegawai.id}
+                                        className="flex items-center gap-2 mb-1"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            value={pegawai.id}
+                                            checked={selectedPegawai.includes(
+                                                pegawai.id
+                                            )}
+                                            onChange={(e) => {
+                                                const id = Number(
+                                                    e.target.value
+                                                );
+                                                setSelectedPegawai((prev) =>
+                                                    e.target.checked
+                                                        ? [...prev, id]
+                                                        : prev.filter(
+                                                              (val) =>
+                                                                  val !== id
+                                                          )
+                                                );
+                                            }}
+                                        />
+                                        <span>{pegawai.nama}</span>
+                                    </label>
+                                ))}
                         </div>
 
                         <div className="flex justify-end gap-2">

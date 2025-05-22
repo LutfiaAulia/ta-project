@@ -172,10 +172,10 @@ const EditUser: React.FC = () => {
                                 >
                                     <option value="">Pilih Role</option>
                                     <option value="Admin">Admin</option>
-                                    <option value="Kabid">Kabid</option>
-                                    <option value="Lapangan">Lapangan</option>
-                                    <option value="AdmUmum">AdmUmum</option>
-                                    <option value="Kadin">Kadin</option>
+                                    <option value="Kepala Bidang">Kepala Bidang</option>
+                                    <option value="Pegawai Lapangan">Pegawai Lapangan</option>
+                                    <option value="Administrasi Umum">Administrasi Umum</option>
+                                    <option value="Kepala Dinas">Kepala Dinas</option>
                                 </select>
                                 {renderError("role")}
                             </div>

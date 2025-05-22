@@ -59,20 +59,38 @@ class RiwayatBooking extends Controller
 
     public function showBook($id)
     {
-        $booking = Booking::with(['layanan:id_layanan,layanan as nama_layanan', 'instansi'])->findOrFail($id);
+        $booking = Booking::with([
+            'layanan:id_layanan,layanan as nama_layanan',
+            'instansi',
+            'pegawaiLapangan.user:id,nama,status'
+        ])->findOrFail($id);
 
         $pegawaiLapangan = Pegawai::where('role', 'pegawai lapangan')
+            ->whereHas('user', function ($query) {
+                $query->where('status', 'aktif');
+            })
             ->with('user')
             ->get()
             ->map(function ($pegawai) {
                 return [
                     'id' => $pegawai->id,
                     'nama' => $pegawai->user->nama,
+                    'status' => $pegawai->user->status,
                 ];
             });
 
+        $pegawaiTerpilih = $booking->pegawaiLapangan->map(function ($pegawai) {
+            return [
+                'id' => $pegawai->id,
+                'nama' => $pegawai->user->nama,
+                'status' => $pegawai->user->status,
+            ];
+        });
+
         return Inertia::render('Pegawai/DetailBooking', [
-            'booking' => $booking,
+            'booking' => array_merge($booking->toArray(), [
+                'pegawailap' => $pegawaiTerpilih,
+            ]),
             'pegawaiLapangan' => $pegawaiLapangan,
         ]);
     }

@@ -63,7 +63,7 @@ class KelolaUserController extends Controller
             'nik' => 'nullable|string|max:16',
             'no_hp' => 'nullable|string|min:12|max:13',
             'jabatan' => 'nullable|string|max:100',
-            'role' => $request->user_type === 'pegawai' ? 'required|string|in:Admin,Kabid,Lapangan,AdmUmum,Kadin' : '',
+            'role' => $request->user_type === 'pegawai' ? 'required|string|in:Admin,Kepala Bidang,Pegawai Lapangan,Administrasi Umum,Kepala Dinas' : '',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
