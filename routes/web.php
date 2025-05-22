@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginPegawaiController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
+use App\Http\Controllers\Layanan\KelolaLayananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\KelolaUserController;
 use Illuminate\Foundation\Application;
@@ -47,16 +48,24 @@ Route::prefix('pegawai')->group(function () {
 
     Route::middleware(['auth', 'check.user.type:pegawai'])->group(function () {
         Route::get('/dashboard', fn() => Inertia::render('Pegawai/Dashboard'))->name('pegawai.dashboard');
+
         Route::get('/booking/listBooking', [RiwayatBooking::class, 'listAllBooking'])->name('booking.listBooking');
         Route::get('/booking/{id}', [RiwayatBooking::class, 'showBook'])->name('booking.showbook');
         Route::post('/booking/{id}/verifikasi', [BookingController::class, 'verifikasi'])->name('booking.verif');
         Route::post('/booking/{id}/tolak', [BookingController::class, 'tolak'])->name('booking.tolak');
+
         Route::get('/show/user', [KelolaUserController::class, 'show'])->name('user.show');
         Route::get('/create/user', [KelolaUserController::class, 'create'])->name('user.create');
         Route::post('/store/user', [KelolaUserController::class, 'store'])->name('user.store');
         Route::patch('/status/user/{type}/{id}', [KelolaUserController::class, 'updateStatus'])->name('user.updateStatus');
         Route::get('/edit/user/{id}', [KelolaUserController::class, 'edit'])->name('user.edit');
         Route::put('/update/user/{id}', [KelolaUserController::class, 'update'])->name('user.update');
+
+        Route::get('/list/layanan', [KelolaLayananController::class, 'show'])->name('layanan.list');
+        Route::get('/create/layanan', [KelolaLayananController::class, 'create'])->name('layanan.create');
+        Route::post('/store/layanan', [KelolaLayananController::class, 'store'])->name('layanan.store');
+        Route::get('/edit/layanan/{id}', [KelolaLayananController::class, 'edit'])->name('layanan.edit');
+        Route::put('/update/layanan/{id}', [KelolaLayananController::class, 'update'])->name('layanan.update');
     });
 });
 
