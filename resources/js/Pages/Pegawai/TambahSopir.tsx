@@ -2,25 +2,19 @@ import React, { useState } from "react";
 import Layout from "@/Components/Layout";
 import { router } from "@inertiajs/react";
 
-interface Mobil {
-    id_mobil: number;
-    nama_mobil: string;
-    plat_mobil: string;
-}
-
-interface Props {
-    mobil: Mobil;
-}
-
-const EditMobil: React.FC<Props> = ({ mobil }) => {
+const TambahSopir: React.FC = () => {
     const [form, setForm] = useState({
-        nama_mobil: mobil.nama_mobil,
-        plat_mobil: mobil.plat_mobil,
+        nama: "",
+        no_hp: "",
+        alamat: "",
+        status: "aktif",
     });
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
         const { name, value } = e.target;
         setForm((prev) => ({
             ...prev,
@@ -35,10 +29,11 @@ const EditMobil: React.FC<Props> = ({ mobil }) => {
     const validate = () => {
         const newErrors: { [key: string]: string } = {};
 
-        if (!form.nama_mobil.trim())
-            newErrors.nama_mobil = "Nama mobil wajib diisi";
-        if (!form.plat_mobil.trim())
-            newErrors.plat_mobil = "Plat nomor wajib diisi";
+        if (!form.nama.trim())
+            newErrors.nama = "Nama sopir wajib diisi";
+        if (!form.no_hp.trim()) newErrors.no_hp = "Nomor HP wajib diisi";
+        if (!form.no_hp.trim()) newErrors.alamat = "Alamat wajib diisi";
+
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -48,7 +43,7 @@ const EditMobil: React.FC<Props> = ({ mobil }) => {
         e.preventDefault();
         if (!validate()) return;
 
-        router.put(`/pegawai/update/mobil/${mobil.id_mobil}`, form, {
+        router.post("/pegawai/store/sopir", form, {
             onError: (errors) => {
                 setErrors(errors);
             },
@@ -64,32 +59,59 @@ const EditMobil: React.FC<Props> = ({ mobil }) => {
         <Layout>
             <div className="max-w-screen-md mx-auto p-12">
                 <h1 className="text-xl font-semibold mb-6 text-center">
-                    Edit Mobil
+                    Tambah Sopir
                 </h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4 text-sm">
                     <div>
-                        <label className="block mb-1">Nama Mobil</label>
+                        <label className="block mb-1">Nama Sopir</label>
                         <input
                             type="text"
-                            name="nama_mobil"
-                            value={form.nama_mobil}
+                            name="nama"
+                            value={form.nama}
                             onChange={handleChange}
                             className="w-full border px-3 py-2 rounded"
                         />
-                        {renderError("nama_mobil")}
+                        {renderError("nama")}
                     </div>
 
                     <div>
-                        <label className="block mb-1">Plat Nomor</label>
+                        <label className="block mb-1">No. HP</label>
                         <input
                             type="text"
-                            name="plat_mobil"
-                            value={form.plat_mobil}
+                            name="no_hp"
+                            value={form.no_hp}
                             onChange={handleChange}
                             className="w-full border px-3 py-2 rounded"
                         />
-                        {renderError("plat_mobil")}
+                        {renderError("no_hp")}
+                    </div>
+
+                    <div>
+                        <label className="block mb-1">Alamat</label>
+                        <input
+                            type="text"
+                            name="alamat"
+                            value={form.alamat}
+                            onChange={handleChange}
+                            className="w-full border px-3 py-2 rounded"
+                        />
+                        {renderError("alamat")}
+                    </div>
+
+                    <div>
+                        <label className="block mb-1">Status</label>
+                        <select
+                            name="status"
+                            value={form.status}
+                            onChange={handleChange}
+                            className="w-full border px-3 py-2 rounded"
+                        >
+                            <option value="aktif">Aktif</option>
+                            <option value="nonaktif">Nonaktif</option>
+                            <option value="cuti">Cuti</option>
+                        </select>
+                        {renderError("status")}
                     </div>
 
                     <div className="text-right">
@@ -97,7 +119,7 @@ const EditMobil: React.FC<Props> = ({ mobil }) => {
                             type="submit"
                             className="bg-green-500 hover:bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded"
                         >
-                            Update
+                            Simpan
                         </button>
                     </div>
                 </form>
@@ -106,4 +128,4 @@ const EditMobil: React.FC<Props> = ({ mobil }) => {
     );
 };
 
-export default EditMobil;
+export default TambahSopir;

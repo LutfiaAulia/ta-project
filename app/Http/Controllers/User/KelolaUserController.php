@@ -38,7 +38,7 @@ class KelolaUserController extends Controller
             ];
         });
 
-        return Inertia::render('Pegawai/KelolaUser', [
+        return Inertia::render('Pegawai/ListUser', [
             'users' => $users,
             'currentType' => $type,
         ]);

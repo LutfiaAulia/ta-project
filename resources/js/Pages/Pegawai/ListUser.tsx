@@ -32,7 +32,7 @@ type UmkmUser = {
 
 type UserType = PegawaiUser | InstansiUser | UmkmUser;
 
-const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
+const ListUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
     const { url } = usePage();
     const [userType, setUserType] = useState<string | null>(null);
 
@@ -116,7 +116,7 @@ const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full border border-gray-300 text-xs">
+                    <table className="w-full border border-gray-300 text-sm">
                         <thead className="bg-gray-100">
                             <tr>
                                 <th className="border px-2 py-2">No</th>
@@ -221,4 +221,4 @@ const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
     );
 };
 
-export default KelolaUser;
+export default ListUser;

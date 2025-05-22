@@ -3,32 +3,33 @@ import Layout from "@/Components/Layout";
 import { PageProps } from "@/types";
 import { Link } from "@inertiajs/react";
 
-type StatusType = "aktif" | "nonaktif" | "service";
+type StatusType = "aktif" | "nonaktif" | "cuti";
 
-type Mobil = {
-    id_mobil: number;
-    nama_mobil: string;
-    plat_mobil: string;
+type Sopir = {
+    id_sopir: number;
+    nama: string;
+    no_hp: string;
+    alamat: string;
     status: StatusType;
 };
 
-const ListMobil: React.FC<PageProps<{ mobil: Mobil[] }>> = ({ mobil }) => {
-    const statusLabel: Record<StatusType, string> = {
-        aktif: "Aktif",
-        nonaktif: "Nonaktif",
-        service: "Service",
-    };
+const statusLabel: Record<StatusType, string> = {
+    aktif: "Aktif",
+    nonaktif: "Nonaktif",
+    cuti: "Cuti",
+};
 
+const ListSopir: React.FC<PageProps<{ sopir: Sopir[] }>> = ({ sopir }) => {
     return (
         <Layout>
             <div className="p-4 w-full max-w-7xl mx-auto">
                 <h1 className="text-xl font-semibold mb-4 text-center">
-                    Daftar Mobil
+                    Daftar Sopir
                 </h1>
 
                 <div className="flex justify-end mb-4">
                     <Link
-                        href="/pegawai/create/mobil"
+                        href="/pegawai/create/sopir"
                         className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
                     >
                         + Tambah
@@ -42,8 +43,9 @@ const ListMobil: React.FC<PageProps<{ mobil: Mobil[] }>> = ({ mobil }) => {
                                 <th className="border px-2 py-2 text-center w-[50px]">
                                     No
                                 </th>
-                                <th className="border px-2 py-2">Nama Mobil</th>
-                                <th className="border px-2 py-2">Plat Nomor</th>
+                                <th className="border px-2 py-2">Nama Sopir</th>
+                                <th className="border px-2 py-2">No. HP</th>
+                                <th className="border px-2 py-2">Alamat</th>
                                 <th className="border px-2 py-2 text-center">
                                     Status
                                 </th>
@@ -53,16 +55,19 @@ const ListMobil: React.FC<PageProps<{ mobil: Mobil[] }>> = ({ mobil }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {mobil.map((item, index) => (
-                                <tr key={item.id_mobil}>
+                            {sopir.map((item, index) => (
+                                <tr key={item.id_sopir}>
                                     <td className="border px-2 py-2 text-center">
                                         {index + 1}
                                     </td>
                                     <td className="border px-2 py-2">
-                                        {item.nama_mobil}
+                                        {item.nama}
                                     </td>
                                     <td className="border px-2 py-2">
-                                        {item.plat_mobil}
+                                        {item.no_hp}
+                                    </td>
+                                    <td className="border px-2 py-2">
+                                        {item.alamat}
                                     </td>
                                     <td className="border px-2 py-2 text-center">
                                         <span
@@ -79,7 +84,7 @@ const ListMobil: React.FC<PageProps<{ mobil: Mobil[] }>> = ({ mobil }) => {
                                     </td>
                                     <td className="border px-2 py-2 text-center space-x-2">
                                         <Link
-                                            href={`/pegawai/edit/mobil/${item.id_mobil}`}
+                                            href={`/pegawai/edit/sopir/${item.id_sopir}`}
                                             className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
                                         >
                                             Edit
@@ -88,7 +93,7 @@ const ListMobil: React.FC<PageProps<{ mobil: Mobil[] }>> = ({ mobil }) => {
                                             [
                                                 "aktif",
                                                 "nonaktif",
-                                                "service",
+                                                "cuti",
                                             ] as StatusType[]
                                         )
                                             .filter(
@@ -99,7 +104,7 @@ const ListMobil: React.FC<PageProps<{ mobil: Mobil[] }>> = ({ mobil }) => {
                                                 <Link
                                                     key={statusBaru}
                                                     method="put"
-                                                    href={`/pegawai/updateStatus/mobil/${item.id_mobil}`}
+                                                    href={`/pegawai/updateStatus/sopir/${item.id_sopir}`}
                                                     data={{
                                                         status: statusBaru,
                                                     }}
@@ -115,7 +120,7 @@ const ListMobil: React.FC<PageProps<{ mobil: Mobil[] }>> = ({ mobil }) => {
                                                     onClick={(e) => {
                                                         if (
                                                             !confirm(
-                                                                `Yakin ingin mengubah status mobil "${item.nama_mobil}" menjadi ${statusLabel[statusBaru]}?`
+                                                                `Yakin ingin mengubah status sopir "${item.nama}" menjadi ${statusLabel[statusBaru]}?`
                                                             )
                                                         ) {
                                                             e.preventDefault();
@@ -129,13 +134,13 @@ const ListMobil: React.FC<PageProps<{ mobil: Mobil[] }>> = ({ mobil }) => {
                                 </tr>
                             ))}
 
-                            {mobil.length === 0 && (
+                            {sopir.length === 0 && (
                                 <tr>
                                     <td
                                         colSpan={5}
                                         className="text-center py-4 text-gray-500"
                                     >
-                                        Tidak ada mobil tersedia.
+                                        Tidak ada sopir tersedia.
                                     </td>
                                 </tr>
                             )}
@@ -147,4 +152,4 @@ const ListMobil: React.FC<PageProps<{ mobil: Mobil[] }>> = ({ mobil }) => {
     );
 };
 
-export default ListMobil;
+export default ListSopir;

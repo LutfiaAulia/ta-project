@@ -14,7 +14,7 @@ const ListLayanan: React.FC<PageProps<{ layanan: Layanan[] }>> = ({
 }) => {
     return (
         <Layout>
-            <div className="p-4 max-w-screen-md mx-auto">
+            <div className="p-4 w-full max-w-7xl mx-auto">
                 <h1 className="text-xl font-semibold mb-4 text-center">
                     Daftar Layanan
                 </h1>

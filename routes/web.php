@@ -5,6 +5,7 @@ use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
 use App\Http\Controllers\Layanan\KelolaLayananController;
 use App\Http\Controllers\MobilSopir\KelolaMobilController;
+use App\Http\Controllers\MobilSopir\KelolaSopirController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\KelolaUserController;
 use Illuminate\Foundation\Application;
@@ -75,6 +76,13 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/mobil/{id}', [KelolaMobilController::class, 'edit'])->name('mobil.edit');
         Route::put('/update/mobil/{id}', [KelolaMobilController::class, 'update'])->name('mobil.update');
         Route::put('/updateStatus/mobil/{id}', [KelolaMobilController::class, 'updateStatus'])->name('mobil.status');
+
+        Route::get('/list/sopir', [KelolaSopirController::class, 'show'])->name('sopir.list');
+        Route::get('/create/sopir', [KelolaSopirController::class, 'create'])->name('sopir.create');
+        Route::post('/store/sopir', [KelolaSopirController::class, 'store'])->name('sopir.store');
+        Route::get('/edit/sopir/{id}', [KelolaSopirController::class, 'edit'])->name('sopir.edit');
+        Route::put('/update/sopir/{id}', [KelolaSopirController::class, 'update'])->name('sopir.update');
+        Route::put('/updateStatus/sopir/{id}', [KelolaSopirController::class, 'updateStatus'])->name('sopir.status');
     });
 });
 

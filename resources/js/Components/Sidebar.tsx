@@ -128,7 +128,7 @@ const Sidebar: React.FC = () => {
                     <span>Kelola Mobil</span>
                 </Link>
                 <Link
-                    href={route("pegawai.dashboard")}
+                    href={route("sopir.list")}
                     className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
                 >
                     <FaUserTie />
