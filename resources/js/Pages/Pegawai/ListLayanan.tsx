@@ -21,8 +21,8 @@ const ListLayanan: React.FC<PageProps<{ layanan: Layanan[] }>> = ({
 
                 <div className="flex justify-end mb-4">
                     <Link
-                        href={'/pegawai/create/layanan'}
-                        className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-4 py-1 rounded"
+                        href={"/pegawai/create/layanan"}
+                        className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded flex items-center justify-center"
                     >
                         + Tambah
                     </Link>
@@ -38,9 +38,7 @@ const ListLayanan: React.FC<PageProps<{ layanan: Layanan[] }>> = ({
                                 <th className="border px-2 py-2">
                                     Nama Layanan
                                 </th>
-                                <th className="border px-2 py-2">
-                                    Status
-                                </th>
+                                <th className="border px-2 py-2">Status</th>
                                 <th className="border px-2 py-2 text-center w-[180px]">
                                     Aksi
                                 </th>
@@ -55,7 +53,7 @@ const ListLayanan: React.FC<PageProps<{ layanan: Layanan[] }>> = ({
                                     <td className="border px-2 py-2">
                                         {item.layanan}
                                     </td>
-                                    <td className="border px-2 py-2">
+                                    <td className="border px-2 py-2 text-center">
                                         {item.status}
                                     </td>
                                     <td className="border px-2 py-2 text-center space-x-2">
@@ -66,21 +64,40 @@ const ListLayanan: React.FC<PageProps<{ layanan: Layanan[] }>> = ({
                                             Edit
                                         </Link>
                                         <Link
-                                            method="delete"
-                                            href={`/pegawai/layanan/${item.id_layanan}`}
+                                            method="put"
+                                            href={`/pegawai/updateStatus/layanan/${item.id_layanan}`}
+                                            data={{
+                                                status:
+                                                    item.status === "aktif"
+                                                        ? "nonaktif"
+                                                        : "aktif",
+                                            }}
                                             as="button"
-                                            className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+                                            className={`${
+                                                item.status === "aktif"
+                                                    ? "bg-red-500 hover:bg-red-600 text-white"
+                                                    : "bg-green-500 hover:bg-green-600 text-white"
+                                            } px-2 py-1 rounded text-xs min-w-[80px] text-center`}
                                             onClick={(e) => {
                                                 if (
                                                     !confirm(
-                                                        `Hapus layanan "${item.layanan}"?`
+                                                        `Yakin ingin mengubah status layanan "${
+                                                            item.layanan
+                                                        }" menjadi ${
+                                                            item.status ===
+                                                            "aktif"
+                                                                ? "nonaktif"
+                                                                : "aktif"
+                                                        }?`
                                                     )
                                                 ) {
                                                     e.preventDefault();
                                                 }
                                             }}
                                         >
-                                            Hapus
+                                            {item.status === "aktif"
+                                                ? "Nonaktifkan"
+                                                : "Aktifkan"}
                                         </Link>
                                     </td>
                                 </tr>

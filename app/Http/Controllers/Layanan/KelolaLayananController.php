@@ -60,4 +60,16 @@ class KelolaLayananController extends Controller
 
         return redirect()->route('layanan.list')->with('success', 'Layanan berhasil diperbarui.');
     }
+
+    public function updateStatus(Request $request, $id_layanan){
+        $request->validate([
+            'status' => ['required', Rule::in(['aktif', 'nonaktif'])],
+        ]);
+
+        $layanan = Layanan::findOrFail($id_layanan);
+        $layanan->status = $request->status;
+        $layanan->save();
+
+        return redirect()->back()->with('success', 'Status layanan berhasil diperbaharui');
+    }
 }

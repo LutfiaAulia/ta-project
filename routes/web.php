@@ -66,6 +66,7 @@ Route::prefix('pegawai')->group(function () {
         Route::post('/store/layanan', [KelolaLayananController::class, 'store'])->name('layanan.store');
         Route::get('/edit/layanan/{id}', [KelolaLayananController::class, 'edit'])->name('layanan.edit');
         Route::put('/update/layanan/{id}', [KelolaLayananController::class, 'update'])->name('layanan.update');
+        Route::put('/updateStatus/layanan/{id}', [KelolaLayananController::class, 'updateStatus'])->name('layanan.status');
     });
 });
 
