@@ -172,7 +172,7 @@ const KelolaUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
 
                                     <td className="border px-2 py-2 text-center space-x-1 w-[200px]">
                                         <Link
-                                            href={`/admin/user/${user.type}/${user.id}/edit`}
+                                            href={`/pegawai/edit/user/${user.id}`}
                                             className="bg-yellow-300 hover:bg-yellow-400 px-2 py-1 rounded text-xs"
                                         >
                                             Edit
