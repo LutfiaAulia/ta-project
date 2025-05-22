@@ -54,7 +54,18 @@ const ListLayanan: React.FC<PageProps<{ layanan: Layanan[] }>> = ({
                                         {item.layanan}
                                     </td>
                                     <td className="border px-2 py-2 text-center">
-                                        {item.status}
+                                        <span
+                                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                                item.status === "aktif"
+                                                    ? "bg-green-100 text-green-700"
+                                                    : "bg-red-100 text-red-700"
+                                            }`}
+                                        >
+                                            {item.status
+                                                .charAt(0)
+                                                .toUpperCase() +
+                                                item.status.slice(1)}
+                                        </span>
                                     </td>
                                     <td className="border px-2 py-2 text-center space-x-2">
                                         <Link

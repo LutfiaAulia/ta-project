@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('no_hp');
             $table->string('alamat');
+            $table->enum('status', ['aktif', 'nonaktif', 'cuti'])->default('aktif');
             $table->timestamps();
         });
     }

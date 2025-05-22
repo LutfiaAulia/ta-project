@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginPegawaiController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
 use App\Http\Controllers\Layanan\KelolaLayananController;
+use App\Http\Controllers\MobilSopir\KelolaMobilController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\KelolaUserController;
 use Illuminate\Foundation\Application;
@@ -67,6 +68,13 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/layanan/{id}', [KelolaLayananController::class, 'edit'])->name('layanan.edit');
         Route::put('/update/layanan/{id}', [KelolaLayananController::class, 'update'])->name('layanan.update');
         Route::put('/updateStatus/layanan/{id}', [KelolaLayananController::class, 'updateStatus'])->name('layanan.status');
+
+        Route::get('/list/mobil', [KelolaMobilController::class, 'show'])->name('mobil.list');
+        Route::get('/create/mobil', [KelolaMobilController::class, 'create'])->name('mobil.create');
+        Route::post('/store/mobil', [KelolaMobilController::class, 'store'])->name('mobil.store');
+        Route::get('/edit/mobil/{id}', [KelolaMobilController::class, 'edit'])->name('mobil.edit');
+        Route::put('/update/mobil/{id}', [KelolaMobilController::class, 'update'])->name('mobil.update');
+        Route::put('/updateStatus/mobil/{id}', [KelolaMobilController::class, 'updateStatus'])->name('mobil.status');
     });
 });
 

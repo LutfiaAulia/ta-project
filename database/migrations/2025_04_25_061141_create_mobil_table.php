@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('mobil', function (Blueprint $table) {
             $table->id('id_mobil');
-            $table->string('merk_mobil');
+            $table->string('nama_mobil');
             $table->string('plat_mobil');
-            $table->string('tipe_mobil');
-            $table->unsignedBigInteger('id_sopir');
-            
-            $table->foreign('id_sopir')->references('id_sopir')->on('sopir')->onDelete('cascade');
+            $table->string('status');
             $table->timestamps();
         });
     }
