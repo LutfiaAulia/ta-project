@@ -18,6 +18,8 @@ interface Booking {
     lokasi: string;
     no_hp: string;
     surat: string | null;
+    status_booking: string;
+    alasan_ditolak: string;
 }
 
 interface DetailBookingInsProps {
@@ -148,6 +150,17 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
                                     </label>
                                     <p className="font-bold">{booking.no_hp}</p>
                                 </div>
+
+                                {booking.status_booking === "Ditolak" && (
+                                    <div>
+                                        <label className="block font-medium text-gray-500 text-[12px]">
+                                            Alasan Ditolak
+                                        </label>
+                                        <p className="font-bold">
+                                            {booking.alasan_ditolak}
+                                        </p>
+                                    </div>
+                                )}
 
                                 <div>
                                     <label className="block font-medium text-gray-500 text-[12px]">

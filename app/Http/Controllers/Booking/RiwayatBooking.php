@@ -37,6 +37,7 @@ class RiwayatBooking extends Controller
         ]);
     }
 
+    //All (Auth)
     public function showSurat($filename)
     {
         $filePath = storage_path("app/public/surat/{$filename}");
@@ -48,6 +49,7 @@ class RiwayatBooking extends Controller
         abort(404, 'Surat tidak ditemukan');
     }
 
+    //Pegawai
     public function listAllBooking()
     {
         $booking = Booking::with(['instansi.user:id,nama', 'layanan:id_layanan,layanan as nama_layanan'])
