@@ -77,12 +77,16 @@ class BookingController extends Controller
         $request->validate([
             'pegawailap' => 'required|array',
             'pegawailap.*' => 'exists:pegawai,id',
+            'id_mobil' => 'required|exists:mobil,id_mobil',
+            'id_sopir' => 'required|exists:sopir,id_sopir',
         ]);
 
         $booking = Booking::findOrFail($id);
 
         $booking->update([
             'status_booking' => 'Diterima',
+            'id_mobil' => $request->id_mobil,
+            'id_sopir' => $request->id_sopir,
         ]);
 
         $booking->pegawaiLapangan()->attach(array_map('intval', $request->pegawailap));

@@ -19,8 +19,12 @@ interface DetailBookingProps extends PageProps {
         status_booking: string;
         alasan_ditolak?: string;
         pegawailap?: { id: number; nama: string; status: string }[];
+        sopir?: { id: number; nama: string };
+        mobil?: { id: number; nama: string };
     };
     pegawaiLapangan: { id: number; nama: string; status: string }[];
+    mobil: { id: number; nama: string }[];
+    sopir: { id: number; nama: string }[];
 }
 
 const extractJam = (waktu: string | null | undefined) => {
@@ -71,24 +75,34 @@ const formatTanggalDanJam = (
 const DetailBooking: React.FC<DetailBookingProps> = ({
     booking,
     pegawaiLapangan,
+    mobil,
+    sopir,
 }) => {
     const [showModalVerif, setShowModalVerif] = useState(false);
     const [selectedPegawai, setSelectedPegawai] = useState<number[]>([]);
+    const [selectedMobil, setSelectedMobil] = useState<number | null>(null);
+    const [selectedSopir, setSelectedSopir] = useState<number | null>(null);
 
     const handleVerifikasi = () => {
         setShowModalVerif(true);
     };
 
     const submitVerifikasi = () => {
-        if (selectedPegawai.length > 0) {
+        if (selectedPegawai.length > 0 && selectedMobil && selectedSopir) {
             router.post(
                 `/pegawai/booking/${booking.id_booking}/verifikasi`,
-                { pegawailap: selectedPegawai },
+                {
+                    pegawailap: selectedPegawai,
+                    id_mobil: selectedMobil,
+                    id_sopir: selectedSopir,
+                },
                 {
                     preserveScroll: true,
                     onSuccess: () => {
                         setShowModalVerif(false);
                         setSelectedPegawai([]);
+                        setSelectedMobil(null);
+                        setSelectedSopir(null);
                     },
                 }
             );
@@ -199,6 +213,30 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                                 </div>
                             )}
 
+                        {booking.status_booking === "Diterima" &&
+                            booking.sopir && (
+                                <div className="mt-2">
+                                    <label className="block text-xs font-medium text-gray-600">
+                                        Sopir
+                                    </label>
+                                    <p className="font-bold">
+                                        {booking.sopir.nama}
+                                    </p>
+                                </div>
+                            )}
+
+                        {booking.status_booking === "Diterima" &&
+                            booking.mobil && (
+                                <div className="mt-2">
+                                    <label className="block text-xs font-medium text-gray-600">
+                                        Mobil
+                                    </label>
+                                    <p className="font-bold">
+                                        {booking.mobil.nama}
+                                    </p>
+                                </div>
+                            )}
+
                         {booking.status_booking === "Ditolak" &&
                             booking.alasan_ditolak && (
                                 <div>
@@ -293,6 +331,46 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                                         <span>{pegawai.nama}</span>
                                     </label>
                                 ))}
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="block mb-1 text-sm">
+                                Pilih Mobil
+                            </label>
+                            <select
+                                className="w-full border rounded px-3 py-2"
+                                value={selectedMobil ?? ""}
+                                onChange={(e) =>
+                                    setSelectedMobil(Number(e.target.value))
+                                }
+                            >
+                                <option value="">-- Pilih Mobil --</option>
+                                {mobil.map((m) => (
+                                    <option key={m.id} value={m.id}>
+                                        {m.nama}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="block mb-1 text-sm">
+                                Pilih Sopir
+                            </label>
+                            <select
+                                className="w-full border rounded px-3 py-2"
+                                value={selectedSopir ?? ""}
+                                onChange={(e) =>
+                                    setSelectedSopir(Number(e.target.value))
+                                }
+                            >
+                                <option value="">-- Pilih Sopir --</option>
+                                {sopir.map((s) => (
+                                    <option key={s.id} value={s.id}>
+                                        {s.nama}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div className="flex justify-end gap-2">

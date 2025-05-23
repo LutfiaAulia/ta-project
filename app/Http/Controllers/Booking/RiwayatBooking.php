@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Booking;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Mobil;
 use App\Models\Pegawai;
+use App\Models\Sopir;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
@@ -62,7 +64,9 @@ class RiwayatBooking extends Controller
         $booking = Booking::with([
             'layanan:id_layanan,layanan as nama_layanan',
             'instansi',
-            'pegawaiLapangan.user:id,nama,status'
+            'pegawaiLapangan.user:id,nama,status',
+            'mobil:id_mobil,nama_mobil,plat_mobil',
+            'sopir:id_sopir,nama',
         ])->findOrFail($id);
 
         $pegawaiLapangan = Pegawai::where('role', 'pegawai lapangan')
@@ -87,11 +91,39 @@ class RiwayatBooking extends Controller
             ];
         });
 
+        $mobil = Mobil::where('status', 'aktif')
+            ->get(['id_mobil', 'nama_mobil', 'plat_mobil'])
+            ->map(function ($mobil) {
+                return [
+                    'id' => $mobil->id_mobil,
+                    'nama' => $mobil->nama_mobil . ' - ' . $mobil->plat_mobil,
+                ];
+            });
+
+        $sopir = Sopir::where('status', 'aktif')
+            ->get(['id_sopir', 'nama'])
+            ->map(function ($sopir) {
+                return [
+                    'id' => $sopir->id_sopir,
+                    'nama' => $sopir->nama,
+                ];
+            });
+
         return Inertia::render('Pegawai/DetailBooking', [
             'booking' => array_merge($booking->toArray(), [
                 'pegawailap' => $pegawaiTerpilih,
+                'mobil' => $booking->mobil ? [
+                    'id' => $booking->mobil->id_mobil,
+                    'nama' => $booking->mobil->nama_mobil . ' - ' . $booking->mobil->plat_mobil,
+                ] : null,
+                'sopir' => $booking->sopir ? [
+                    'id' => $booking->sopir->id_sopir,
+                    'nama' => $booking->sopir->nama,
+                ] : null,
             ]),
             'pegawaiLapangan' => $pegawaiLapangan,
+            'mobil' => $mobil,
+            'sopir' => $sopir,
         ]);
     }
 }

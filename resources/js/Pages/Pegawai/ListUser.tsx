@@ -49,7 +49,8 @@ const ListUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
     );
 
     async function toggleStatus(user: UserType) {
-        const newStatus = user.status === "aktif" ? "nonaktif" : "aktif";
+        const currentStatus = user.status.toLowerCase();
+        const newStatus = currentStatus === "aktif" ? "nonaktif" : "aktif";
 
         if (
             confirm(

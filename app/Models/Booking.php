@@ -29,6 +29,7 @@ class Booking extends Model
         'nip',
         'id_instansi',
         'id_mobil',
+        'id_sopir',
     ];
 
     protected $casts = [
