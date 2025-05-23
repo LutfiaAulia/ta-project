@@ -33,6 +33,13 @@ export default function BookingIns({
 
     const [successMessage, setSuccessMessage] = useState("");
 
+    // Tanggal besok (hari ini + 1 hari)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // Convert bookedDates string ke array Date untuk excludeDates di datepicker
+    const excludeDatesParsed = bookedDates.map((d) => parseISO(d));
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route("booking.store"), {
@@ -91,7 +98,12 @@ export default function BookingIns({
                                                         isoDate
                                                     );
 
-                                                    if (!data.tanggal_akhir) {
+                                                    // Jika tanggal_akhir kosong atau kurang dari tanggal_mulai, set sama dengan tanggal_mulai
+                                                    if (
+                                                        !data.tanggal_akhir ||
+                                                        data.tanggal_akhir <
+                                                            isoDate
+                                                    ) {
                                                         setData(
                                                             "tanggal_akhir",
                                                             isoDate
@@ -99,13 +111,12 @@ export default function BookingIns({
                                                     }
                                                 }
                                             }}
-                                            minDate={new Date()}
-                                            excludeDates={bookedDates.map((d) =>
-                                                parseISO(d)
-                                            )}
+                                            minDate={tomorrow}
+                                            excludeDates={excludeDatesParsed}
                                             dateFormat="dd-MM-yyyy"
-                                            placeholderText="Pilih Tanggal"
+                                            placeholderText="Pilih Tanggal Mulai"
                                             customInput={<CustomDateInput />}
+                                            required
                                         />
                                         {errors.tanggal_mulai && (
                                             <p className="mt-2 text-xs text-red-500">
@@ -129,11 +140,12 @@ export default function BookingIns({
                                             }
                                             onChange={(date: Date | null) => {
                                                 if (date) {
+                                                    const isoDate = date
+                                                        .toISOString()
+                                                        .split("T")[0];
                                                     setData(
                                                         "tanggal_akhir",
-                                                        date
-                                                            .toISOString()
-                                                            .split("T")[0]
+                                                        isoDate
                                                     );
                                                 }
                                             }}
@@ -142,14 +154,13 @@ export default function BookingIns({
                                                     ? new Date(
                                                           data.tanggal_mulai
                                                       )
-                                                    : new Date()
+                                                    : tomorrow
                                             }
-                                            excludeDates={bookedDates.map((d) =>
-                                                parseISO(d)
-                                            )}
+                                            excludeDates={excludeDatesParsed}
                                             dateFormat="dd-MM-yyyy"
-                                            placeholderText="Pilih Tanggal"
+                                            placeholderText="Pilih Tanggal Akhir"
                                             customInput={<CustomDateInput />}
+                                            required
                                         />
                                         {errors.tanggal_akhir && (
                                             <p className="mt-2 text-xs text-red-500">
@@ -247,6 +258,7 @@ export default function BookingIns({
                                         }
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
                                         required
+                                        min={1}
                                     />
                                     {errors.peserta && (
                                         <p className="mt-2 text-xs text-red-500">
@@ -297,7 +309,6 @@ export default function BookingIns({
                                             </label>
                                         ))}
                                     </div>
-
                                     {errors.layanan && (
                                         <p className="mt-2 text-xs text-red-500">
                                             {errors.layanan}
@@ -323,7 +334,7 @@ export default function BookingIns({
                                 {/* Lokasi */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">
-                                        Lokasi
+                                        Lokasi Acara
                                     </label>
                                     <input
                                         type="text"
@@ -342,22 +353,18 @@ export default function BookingIns({
                                     )}
                                 </div>
 
-                                {/* Nomor Telepon */}
+                                {/* No HP */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">
-                                        Nomor Telepon
+                                        Nomor HP
                                     </label>
                                     <input
-                                        type="text"
+                                        type="tel"
                                         name="no_hp"
-                                        maxLength={13}
                                         value={data.no_hp}
-                                        onChange={(e) => {
-                                            const value = e.target.value;
-                                            if (/^\d*$/.test(value)) {
-                                                setData("no_hp", value);
-                                            }
-                                        }}
+                                        onChange={(e) =>
+                                            setData("no_hp", e.target.value)
+                                        }
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
                                         required
                                     />
@@ -396,14 +403,15 @@ export default function BookingIns({
                                     )}
                                 </div>
 
-                                {/* Tombol Submit */}
-                                <div className="flex justify-end">
+                                <div className="flex justify-center">
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="px-10 py-2.5 bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded-full"
+                                        className="rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700 disabled:opacity-50"
                                     >
-                                        Kirim
+                                        {processing
+                                            ? "Memproses..."
+                                            : "Booking Sekarang"}
                                     </button>
                                 </div>
                             </form>

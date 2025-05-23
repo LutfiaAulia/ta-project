@@ -19,14 +19,31 @@ class BookingController extends Controller
             ->select('id_layanan as id', 'layanan as nama')
             ->get();
 
-        $bookedDates = Booking::pluck('tanggal_mulai')->map(fn($date) => $date->format('Y-m-d'));
+        $bookings = Booking::where('status_booking', 'Diterima')
+            ->select('tanggal_mulai', 'tanggal_akhir')
+            ->get();
+
+        $bookedDates = [];
+
+        foreach ($bookings as $booking) {
+            $start = \Carbon\Carbon::parse($booking->tanggal_mulai);
+            $end = \Carbon\Carbon::parse($booking->tanggal_akhir);
+
+            for ($date = $start; $date->lte($end); $date->addDay()) {
+                $bookedDates[] = $date->format('Y-m-d');
+            }
+        }
+
+        $bookedDates = array_unique($bookedDates);
 
         return Inertia::render('Instansi/BookingIns', [
             'layananList' => $layananList,
             'selectedLayanan' => [],
-            'bookedDates' => $bookedDates,
+            'bookedDates' => array_values($bookedDates),
+            'today' => now()->format('Y-m-d'),
         ]);
     }
+
 
     public function store(Request $request): RedirectResponse
     {
