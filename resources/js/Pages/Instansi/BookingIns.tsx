@@ -403,15 +403,14 @@ export default function BookingIns({
                                     )}
                                 </div>
 
-                                <div className="flex justify-center">
+                                {/* Tombol Submit */}
+                                <div className="flex justify-end">
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700 disabled:opacity-50"
+                                        className="px-10 py-2.5 bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded-full"
                                     >
-                                        {processing
-                                            ? "Memproses..."
-                                            : "Booking Sekarang"}
+                                        Kirim
                                     </button>
                                 </div>
                             </form>
