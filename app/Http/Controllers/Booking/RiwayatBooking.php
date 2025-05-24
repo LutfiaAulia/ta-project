@@ -56,7 +56,7 @@ class RiwayatBooking extends Controller
             ->latest()
             ->get();
 
-        return Inertia::render('Pegawai/ListBooking', [
+        return Inertia::render('Pegawai/Booking/ListBooking', [
             'booking' => $booking,
         ]);
     }
@@ -111,7 +111,7 @@ class RiwayatBooking extends Controller
                 ];
             });
 
-        return Inertia::render('Pegawai/DetailBooking', [
+        return Inertia::render('Pegawai/Booking/DetailBooking', [
             'booking' => array_merge($booking->toArray(), [
                 'pegawailap' => $pegawaiTerpilih,
                 'mobil' => $booking->mobil ? [

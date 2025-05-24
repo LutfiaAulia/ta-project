@@ -14,14 +14,14 @@ class KelolaLayananController extends Controller
     {
         $layanan = Layanan::all();
 
-        return Inertia::render('Pegawai/ListLayanan', [
+        return Inertia::render('Pegawai/Layanan/ListLayanan', [
             'layanan' => $layanan,
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Pegawai/TambahLayanan');
+        return Inertia::render('Pegawai/Layanan/TambahLayanan');
     }
 
     public function store(Request $request)
@@ -39,7 +39,7 @@ class KelolaLayananController extends Controller
     {
         $layanan = Layanan::findOrFail($id_layanan);
 
-        return Inertia::render('Pegawai/EditLayanan', [
+        return Inertia::render('Pegawai/Layanan/EditLayanan', [
             'layanan' => $layanan,
         ]);
     }

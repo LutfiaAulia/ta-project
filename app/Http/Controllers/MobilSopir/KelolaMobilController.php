@@ -14,14 +14,14 @@ class KelolaMobilController extends Controller
     {
         $mobil = Mobil::all();
 
-        return Inertia::render('Pegawai/ListMobil', [
+        return Inertia::render('Pegawai/Mobil/ListMobil', [
             'mobil' => $mobil,
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Pegawai/TambahMobil');
+        return Inertia::render('Pegawai/Mobil/TambahMobil');
     }
 
     public function store(Request $request)
@@ -41,7 +41,7 @@ class KelolaMobilController extends Controller
     {
         $mobil = Mobil::findOrFail($id_mobil);
 
-        return Inertia::render('Pegawai/EditMobil', [
+        return Inertia::render('Pegawai/Mobil/EditMobil', [
             'mobil' => $mobil,
         ]);
     }

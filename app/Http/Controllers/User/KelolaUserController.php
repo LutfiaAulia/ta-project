@@ -38,7 +38,7 @@ class KelolaUserController extends Controller
             ];
         });
 
-        return Inertia::render('Pegawai/ListUser', [
+        return Inertia::render('Pegawai/User/ListUser', [
             'users' => $users,
             'currentType' => $type,
         ]);
@@ -47,7 +47,7 @@ class KelolaUserController extends Controller
     public function create(Request $request): Response
     {
         $type = $request->query('type');
-        return Inertia::render('Pegawai/TambahUser', [
+        return Inertia::render('Pegawai/User/TambahUser', [
             'user_type' => $type,
         ]);
     }
@@ -129,7 +129,7 @@ class KelolaUserController extends Controller
             'nama_instansi' => optional($user->instansi)->nama_instansi,
         ];
 
-        return Inertia::render('Pegawai/EditUser', [
+        return Inertia::render('Pegawai/User/EditUser', [
             'user' => $data,
         ]);
     }

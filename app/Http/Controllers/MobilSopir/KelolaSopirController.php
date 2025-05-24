@@ -14,14 +14,14 @@ class KelolaSopirController extends Controller
     {
         $sopir = Sopir::all();
 
-        return Inertia::render('Pegawai/ListSopir', [
+        return Inertia::render('Pegawai/Sopir/ListSopir', [
             'sopir' => $sopir,
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Pegawai/TambahSopir');
+        return Inertia::render('Pegawai/Sopir/TambahSopir');
     }
 
     public function store(Request $request)
@@ -41,7 +41,7 @@ class KelolaSopirController extends Controller
     {
         $sopir = Sopir::findOrFail($id_sopir);
 
-        return Inertia::render('Pegawai/EditSopir', [
+        return Inertia::render('Pegawai/Sopir/EditSopir', [
             'sopir' => $sopir,
         ]);
     }
