@@ -108,7 +108,7 @@ class BookingController extends Controller
 
         $booking->pegawaiLapangan()->attach(array_map('intval', $request->pegawailap));
 
-        return redirect()->back()->with('success', 'Booking berhasil diverifikasi.');
+        return redirect()->route('booking.listBooking')->with('success', 'Booking berhasil diverifikasi.');
     }
 
     public function tolak(Request $request, $id): RedirectResponse
@@ -124,6 +124,6 @@ class BookingController extends Controller
             'alasan_ditolak' => $request->alasan_ditolak,
         ]);
 
-        return redirect()->back()->with('success', 'Booking berhasil ditolak.');
+        return redirect()->route('booking.listBooking')->with('success', 'Booking berhasil ditolak.');
     }
 }

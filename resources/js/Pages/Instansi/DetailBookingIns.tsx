@@ -78,115 +78,117 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
         >
             <Head title="Detail Booking" />
             <div className="py-12">
-                <div className="mx-auto max-w-7xl px-[3cm] py-[0.5cm]">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg px-[1cm]">
-                        <div className="p-6 text-gray-900">
-                            <h2 className="text-2xl font-semibold mb-6 text-center">
-                                Pembookingan Layanan Mobil Klinik
-                            </h2>
+                <div className="mx-auto max-w-4xl px-6 sm:px-8">
+                    <div className="bg-white shadow-md rounded-lg p-8">
+                        <h2 className="text-3xl font-semibold mb-8 text-center text-gray-900">
+                            Pembookingan Layanan Mobil Klinik
+                        </h2>
 
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="block font-medium text-gray-500 text-[12px]">
-                                        Jadwal
-                                    </label>
-                                    <p className="font-bold whitespace-pre-line">
-                                        {formatJadwalLengkap(
-                                            booking.tanggal_mulai,
-                                            booking.tanggal_akhir,
-                                            booking.waktu_mulai,
-                                            booking.waktu_akhir
-                                        )}
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label className="block font-medium text-gray-500 text-[12px]">
-                                        Acara
-                                    </label>
-                                    <p className="font-bold">{booking.acara}</p>
-                                </div>
-
-                                <div>
-                                    <label className="block font-medium text-gray-500 text-[12px]">
-                                        Jumlah Peserta
-                                    </label>
-                                    <p className="font-bold">
-                                        {booking.peserta}
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label className="block font-medium text-gray-500 text-[12px]">
-                                        Layanan
-                                    </label>
-                                    {booking.layanan.length > 0 ? (
-                                        <ul className="list-disc ml-5 font-bold">
-                                            {booking.layanan.map((layanan) => (
-                                                <li key={layanan.id}>
-                                                    {layanan.nama_layanan}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        <p className="text-gray-500">
-                                            Tidak ada layanan yang dipilih.
-                                        </p>
+                        <dl className="grid grid-cols-1 gap-y-6 text-gray-700">
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500 mb-1">
+                                    Jadwal
+                                </dt>
+                                <dd className="whitespace-pre-line font-semibold text-gray-900">
+                                    {formatJadwalLengkap(
+                                        booking.tanggal_mulai,
+                                        booking.tanggal_akhir,
+                                        booking.waktu_mulai,
+                                        booking.waktu_akhir
                                     )}
-                                </div>
-
-                                <div>
-                                    <label className="block font-medium text-gray-500 text-[12px]">
-                                        Lokasi
-                                    </label>
-                                    <p className="font-bold">
-                                        {booking.lokasi}
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label className="block font-medium text-gray-500 text-[12px]">
-                                        Nomor Telepon
-                                    </label>
-                                    <p className="font-bold">{booking.no_hp}</p>
-                                </div>
-
-                                {booking.status_booking === "Ditolak" && (
-                                    <div>
-                                        <label className="block font-medium text-gray-500 text-[12px]">
-                                            Alasan Ditolak
-                                        </label>
-                                        <p className="font-bold">
-                                            {booking.alasan_ditolak}
-                                        </p>
-                                    </div>
-                                )}
-
-                                <div>
-                                    <label className="block font-medium text-gray-500 text-[12px]">
-                                        Surat Permintaan
-                                    </label>
-                                    {booking.surat ? (
-                                        <a
-                                            href={route("surat.show", {
-                                                filename: booking.surat
-                                                    .split("/")
-                                                    .pop(),
-                                            })}
-                                            className="text-blue-500 font-bold"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            Lihat Surat
-                                        </a>
-                                    ) : (
-                                        <p className="text-gray-500">
-                                            Tidak ada surat yang diunggah.
-                                        </p>
-                                    )}
-                                </div>
+                                </dd>
                             </div>
-                        </div>
+
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500 mb-1">
+                                    Acara
+                                </dt>
+                                <dd className="font-semibold text-gray-900">
+                                    {booking.acara}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500 mb-1">
+                                    Jumlah Peserta
+                                </dt>
+                                <dd className="font-semibold text-gray-900">
+                                    {booking.peserta}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500 mb-1">
+                                    Lokasi
+                                </dt>
+                                <dd className="font-semibold text-gray-900">
+                                    {booking.lokasi}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500 mb-1">
+                                    Nomor Telepon
+                                </dt>
+                                <dd className="font-semibold text-gray-900">
+                                    {booking.no_hp}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500 mb-1">
+                                    Layanan
+                                </dt>
+                                {booking.layanan.length > 0 ? (
+                                    <ul className="list-disc list-inside font-semibold text-gray-900">
+                                        {booking.layanan.map((layanan) => (
+                                            <li key={layanan.id}>
+                                                {layanan.nama_layanan}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="text-gray-500 italic">
+                                        Tidak ada layanan yang dipilih.
+                                    </p>
+                                )}
+                            </div>
+
+                            {booking.status_booking === "Ditolak" && (
+                                <div>
+                                    <dt className="text-sm font-medium text-red-500 mb-1">
+                                        Alasan Ditolak
+                                    </dt>
+                                    <dd className="font-semibold text-red-700">
+                                        {booking.alasan_ditolak}
+                                    </dd>
+                                </div>
+                            )}
+
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500 mb-1">
+                                    Surat Permintaan
+                                </dt>
+                                {booking.surat ? (
+                                    <a
+                                        href={route("surat.show", {
+                                            filename: booking.surat
+                                                .split("/")
+                                                .pop(),
+                                        })}
+                                        className="text-blue-600 font-semibold hover:underline"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Lihat Surat
+                                    </a>
+                                ) : (
+                                    <p className="text-gray-500 italic">
+                                        Tidak ada surat yang diunggah.
+                                    </p>
+                                )}
+                            </div>
+                        </dl>
                     </div>
                 </div>
             </div>
