@@ -7,6 +7,7 @@ use App\Http\Controllers\Layanan\KelolaLayananController;
 use App\Http\Controllers\MobilSopir\KelolaMobilController;
 use App\Http\Controllers\MobilSopir\KelolaSopirController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SuratMasuk\KelolaSuratController;
 use App\Http\Controllers\User\KelolaUserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -83,6 +84,12 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/sopir/{id}', [KelolaSopirController::class, 'edit'])->name('sopir.edit');
         Route::put('/update/sopir/{id}', [KelolaSopirController::class, 'update'])->name('sopir.update');
         Route::put('/updateStatus/sopir/{id}', [KelolaSopirController::class, 'updateStatus'])->name('sopir.status');
+
+        Route::get('/list/surat', [KelolaSuratController::class, 'show'])->name('surat.list');
+        Route::get('/create/surat', [KelolaSuratController::class, 'create'])->name('surat.create');
+        Route::post('/store/surat', [KelolaSuratController::class, 'store'])->name('surat.store');
+        Route::get('/edit/surat/{id}', [KelolaSuratController::class, 'edit'])->name('surat.edit');
+        Route::put('/update/surat/{id}', [KelolaSuratController::class, 'update'])->name('surat.update');
     });
 });
 

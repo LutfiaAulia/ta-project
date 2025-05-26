@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('tgl_surat');
             $table->string('surat');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('id_booking')->constrained('booking')->onDelete('cascade');
             $table->timestamps();
         });
     }
