@@ -7,6 +7,7 @@ use App\Http\Controllers\Layanan\KelolaLayananController;
 use App\Http\Controllers\MobilSopir\KelolaMobilController;
 use App\Http\Controllers\MobilSopir\KelolaSopirController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SuratMasuk\KelolaDisposisiController;
 use App\Http\Controllers\SuratMasuk\KelolaSuratController;
 use App\Http\Controllers\User\KelolaUserController;
 use Illuminate\Foundation\Application;
@@ -91,6 +92,10 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/surat/{id}', [KelolaSuratController::class, 'edit'])->name('surat.edit');
         Route::put('/update/surat/{id}', [KelolaSuratController::class, 'update'])->name('surat.update');
         Route::delete('/destroy/surat/{id}', [KelolaSuratController::class, 'destroy'])->name('surat.destroy');
+
+        Route::get('/list/disposisi', [KelolaDisposisiController::class, 'show'])->name('disposisi.list');
+        Route::get('/create/disposisi/{id}', [KelolaDisposisiController::class, 'create'])->name('disposisi.create');
+        Route::post('/store/disposisi', [KelolaDisposisiController::class, 'store'])->name('disposisi.store');
     });
 });
 

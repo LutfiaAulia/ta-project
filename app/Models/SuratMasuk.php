@@ -33,4 +33,10 @@ class SuratMasuk extends Model
     {
         return $this->belongsTo(Booking::class, 'id_booking');
     }
+
+    public function disposisi()
+    {
+        return $this->hasMany(Disposisi::class, 'id_surat', 'id_surat');
+    }
+    
 }

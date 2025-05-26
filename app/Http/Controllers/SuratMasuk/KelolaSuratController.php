@@ -74,8 +74,6 @@ class KelolaSuratController extends Controller
             return redirect()->back()->withErrors(['msg' => 'Surat masuk sudah dibuat untuk booking ini.']);
         }
 
-        $booking = Booking::with('instansi')->findOrFail($request->id_booking);
-
         SuratMasuk::create([
             'no_surat' => $request->no_surat,
             //'asal_surat' => $booking->instansi->nama_instansi ?? '-',
