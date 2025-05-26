@@ -14,6 +14,8 @@ type Disposisi = {
     };
     surat: {
         no_surat: string;
+        asal_surat: string;
+        perihal?: string;
     };
 };
 
@@ -22,9 +24,9 @@ const ListDisposisi: React.FC<PageProps<{ disposisi: Disposisi[] }>> = ({
 }) => {
     const [search, setSearch] = useState("");
 
-    const handleDelete = (id: number) => {
+    const handleDelete = (id_disposisi: number) => {
         if (confirm("Yakin ingin menghapus disposisi ini?")) {
-            router.delete(`/pegawai/disposisi/${id}`);
+            router.delete(`/pegawai/destroy/disposisi/${id_disposisi}`);
         }
     };
 
@@ -107,10 +109,10 @@ const ListDisposisi: React.FC<PageProps<{ disposisi: Disposisi[] }>> = ({
                                     </td>
                                     <td className="border px-2 py-2 text-center space-x-1">
                                         <Link
-                                            href={`/pegawai/disposisi/${item.id_disposisi}`}
-                                            className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs"
+                                            href={`/pegawai/edit/disposisi/${item.id_disposisi}`}
+                                            className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
                                         >
-                                            Detail
+                                            Edit
                                         </Link>
                                         <button
                                             onClick={() =>
@@ -120,6 +122,12 @@ const ListDisposisi: React.FC<PageProps<{ disposisi: Disposisi[] }>> = ({
                                         >
                                             Hapus
                                         </button>
+                                        <Link
+                                            href={`/pegawai/detail/disposisi/${item.id_disposisi}`}
+                                            className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs"
+                                        >
+                                            Detail
+                                        </Link>
                                     </td>
                                 </tr>
                             ))}
@@ -127,7 +135,7 @@ const ListDisposisi: React.FC<PageProps<{ disposisi: Disposisi[] }>> = ({
                             {filteredDisposisi.length === 0 && (
                                 <tr>
                                     <td
-                                        colSpan={7}
+                                        colSpan={8}
                                         className="text-center py-4 text-gray-500"
                                     >
                                         Tidak ada data disposisi.

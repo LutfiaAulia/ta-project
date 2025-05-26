@@ -96,6 +96,11 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/list/disposisi', [KelolaDisposisiController::class, 'show'])->name('disposisi.list');
         Route::get('/create/disposisi/{id}', [KelolaDisposisiController::class, 'create'])->name('disposisi.create');
         Route::post('/store/disposisi', [KelolaDisposisiController::class, 'store'])->name('disposisi.store');
+        Route::get('/edit/disposisi/{id}', [KelolaDisposisiController::class, 'edit'])->name('disposisi.edit');
+        Route::put('/update/disposisi/{id}', [KelolaDisposisiController::class, 'update'])->name('disposisi.update');
+        Route::delete('/destroy/disposisi/{id}', [KelolaDisposisiController::class, 'destroy'])->name('disposisi.destroy');
+        Route::get('/detail/disposisi/{id}', [KelolaDisposisiController::class, 'detail'])->name('disposisi.detail');
+
     });
 });
 

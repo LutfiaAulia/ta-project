@@ -17,7 +17,7 @@ class KelolaDisposisiController extends Controller
 
         return Inertia::render('Pegawai/Disposisi/ListDisposisi', [
             'disposisi' => $disposisi->map(fn($item) => [
-                'id_disposisi' => $item->id,
+                'id_disposisi' => $item->id_disposisi,
                 'isi' => $item->isi,
                 'tanggal' => $item->tanggal,
                 'tujuan' => $item->tujuan,
@@ -32,9 +32,9 @@ class KelolaDisposisiController extends Controller
         ]);
     }
 
-    public function create($id)
+    public function create($id_disposisi)
     {
-        $surat = SuratMasuk::with('booking.instansi')->findOrFail($id);
+        $surat = SuratMasuk::with('booking.instansi')->findOrFail($id_disposisi);
 
         return Inertia::render('Pegawai/Disposisi/TambahDisposisi', [
             'surat' => [
@@ -68,5 +68,85 @@ class KelolaDisposisiController extends Controller
         ]);
 
         return redirect()->route('disposisi.list')->with('susccess', 'Disposisi berhasil di tambahkan');
+    }
+
+    public function edit($id_disposisi)
+    {
+        $disposisi = Disposisi::with([
+            'pegawai.user',
+            'surat_masuk.booking.instansi'
+        ])->findOrFail($id_disposisi);
+
+        $suratMasuk = $disposisi->surat_masuk;
+        $booking = $suratMasuk?->booking;
+        $instansi = $booking?->instansi;
+
+        return Inertia::render('Pegawai/Disposisi/EditDisposisi', [
+            'disposisi' => [
+                'id_disposisi' => $disposisi->id_disposisi,
+                'id_surat' => $disposisi->id_surat,
+                'isi' => $disposisi->isi,
+                'tanggal' => $disposisi->tanggal,
+                'tujuan' => $disposisi->tujuan,
+                'catatan' => $disposisi->catatan,
+            ],
+            'surat' => [
+                'no_surat' => $suratMasuk->no_surat ?? '-',
+                'asal_surat' => $instansi->nama_instansi ?? '-',
+                'perihal' => $suratMasuk->perihal ?? '-',
+            ],
+        ]);
+    }
+
+    public function update(Request $request, $id_disposisi)
+    {
+        $request->validate([
+            'isi' => 'required|string',
+            'tanggal' => 'required|date',
+            'tujuan' => 'required|string',
+            'catatan' => 'required|string',
+        ]);
+
+        $disposisi = Disposisi::findOrFail($id_disposisi);
+
+        $disposisi->update([
+            'isi' => $request->isi,
+            'tanggal' => $request->tanggal,
+            'tujuan' => $request->tujuan,
+            'catatan' => $request->catatan,
+        ]);
+
+        return redirect()->route('disposisi.list')->with('success', 'Disposisi berhasil diperbarui');
+    }
+
+    public function destroy($id_disposisi)
+    {
+        $disposisi = Disposisi::findOrFail($id_disposisi);
+        $disposisi->delete();
+
+        return redirect()->route('disposisi.list')->with('success', 'Surat masuk berhasil dihapus');
+    }
+
+    public function detail($id_disposisi)
+    {
+        $disposisi = Disposisi::with(['pegawai.user', 'surat_masuk.booking.instansi'])
+            ->findOrFail($id_disposisi);
+
+        return Inertia::render('Pegawai/Disposisi/DetailDisposisi', [
+            'disposisi' => [
+                'isi' => $disposisi->isi,
+                'tanggal' => $disposisi->tanggal,
+                'tujuan' => $disposisi->tujuan,
+                'catatan' => $disposisi->catatan,
+                'user' => [
+                    'nama' => $disposisi->pegawai->user->nama ?? 'Tidak diketahui',
+                ],
+                'surat' => [
+                    'no_surat' => $disposisi->surat_masuk->no_surat ?? '-',
+                    'asal_surat' => $disposisi->surat_masuk?->booking?->instansi?->nama_instansi ?? '-',
+                    'perihal' => $disposisi->surat_masuk->perihal ?? '-',
+                ],
+            ],
+        ]);
     }
 }
