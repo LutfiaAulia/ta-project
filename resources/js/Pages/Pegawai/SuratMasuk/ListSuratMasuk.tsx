@@ -12,6 +12,7 @@ type SuratMasuk = {
         instansi: {
             nama_instansi: string;
         } | null;
+        created_at: string;
     } | null;
 };
 
@@ -20,9 +21,9 @@ const ListSuratMasuk: React.FC<PageProps<{ suratMasuk: SuratMasuk[] }>> = ({
 }) => {
     const [search, setSearch] = useState("");
 
-    const handleDelete = (id: number) => {
+    const handleDelete = (id_surat: number) => {
         if (confirm("Yakin ingin menghapus surat ini?")) {
-            router.delete(`/pegawai/delete/surat-masuk/${id}`);
+            router.delete(`/pegawai/destroy/surat/${id_surat}`);
         }
     };
 
@@ -75,10 +76,10 @@ const ListSuratMasuk: React.FC<PageProps<{ suratMasuk: SuratMasuk[] }>> = ({
                                     No
                                 </th>
                                 <th className="border px-2 py-2">
-                                    Nomor Surat
+                                    Tanggal Diterima
                                 </th>
                                 <th className="border px-2 py-2">
-                                    Tanggal Surat
+                                    Nomor Surat
                                 </th>
                                 <th className="border px-2 py-2">Pengirim</th>
                                 <th className="border px-2 py-2">Perihal</th>
@@ -94,10 +95,10 @@ const ListSuratMasuk: React.FC<PageProps<{ suratMasuk: SuratMasuk[] }>> = ({
                                         {index + 1}
                                     </td>
                                     <td className="border px-2 py-2">
-                                        {item.no_surat}
+                                        {formatTanggal(item.booking?.created_at || "-")}
                                     </td>
                                     <td className="border px-2 py-2">
-                                        {formatTanggal(item.tgl_surat)}
+                                        {item.no_surat}
                                     </td>
                                     <td className="border px-2 py-2">
                                         {item.booking?.instansi

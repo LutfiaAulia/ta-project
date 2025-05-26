@@ -113,7 +113,8 @@ class KelolaSuratController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id_surat){
+    public function update(Request $request, $id_surat)
+    {
         $request->validate([
             'no_surat' => 'required|string|max:255',
             'tgl_surat' => 'required|string',
@@ -131,5 +132,13 @@ class KelolaSuratController extends Controller
         ]);
 
         return redirect()->route('surat.list')->with('success', 'Surat masuk bershasil diperbaharui');
+    }
+
+    public function destroy($id_surat)
+    {
+        $surat = SuratMasuk::findOrFail($id_surat);
+        $surat->delete();
+
+        return redirect()->route('surat.list')->with('success', 'Surat masuk berhasil dihapus');
     }
 }

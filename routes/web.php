@@ -90,6 +90,7 @@ Route::prefix('pegawai')->group(function () {
         Route::post('/store/surat', [KelolaSuratController::class, 'store'])->name('surat.store');
         Route::get('/edit/surat/{id}', [KelolaSuratController::class, 'edit'])->name('surat.edit');
         Route::put('/update/surat/{id}', [KelolaSuratController::class, 'update'])->name('surat.update');
+        Route::delete('/destroy/surat/{id}', [KelolaSuratController::class, 'destroy'])->name('surat.destroy');
     });
 });
 
