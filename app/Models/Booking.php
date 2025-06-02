@@ -64,4 +64,9 @@ class Booking extends Model
     {
         return $this->belongsToMany(Layanan::class, 'booking_layanan', 'id_booking', 'id_layanan');
     }
+
+    public function bookingPelayananUmkm()
+    {
+        return $this->hasMany(BookingPelayananUmkm::class, 'id_booking');
+    }
 }

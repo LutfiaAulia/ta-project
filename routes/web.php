@@ -6,6 +6,7 @@ use App\Http\Controllers\Booking\RiwayatBooking;
 use App\Http\Controllers\Layanan\KelolaLayananController;
 use App\Http\Controllers\MobilSopir\KelolaMobilController;
 use App\Http\Controllers\MobilSopir\KelolaSopirController;
+use App\Http\Controllers\PelayananUmkm\KelolaPelayananUmkmController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuratMasuk\KelolaDisposisiController;
 use App\Http\Controllers\SuratMasuk\KelolaSuratController;
@@ -101,6 +102,10 @@ Route::prefix('pegawai')->group(function () {
         Route::delete('/destroy/disposisi/{id}', [KelolaDisposisiController::class, 'destroy'])->name('disposisi.destroy');
         Route::get('/detail/disposisi/{id}', [KelolaDisposisiController::class, 'detail'])->name('disposisi.detail');
 
+        Route::get('/list/bookingdilaksanakan', [KelolaPelayananUmkmController::class, 'show'])->name('bookinglaksana.list');
+        Route::get('/list/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'showUmkm'])->name('umkmlayan.list');
+        Route::get('/create/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'create'])->name('umkmlayan.create');
+        Route::post('/store/umkmlayan', [KelolaPelayananUmkmController::class, 'store'])->name('umkmlayan.store');
     });
 });
 

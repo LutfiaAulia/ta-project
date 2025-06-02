@@ -49,7 +49,7 @@ const Sidebar: React.FC = () => {
                     <span>List Booking</span>
                 </Link>
                 <Link
-                    href={route("pegawai.dashboard")}
+                    href={route("bookinglaksana.list")}
                     className="flex items-center gap-3 p-2 rounded hover:bg-green-500 transition cursor-pointer"
                 >
                     <FaStore />

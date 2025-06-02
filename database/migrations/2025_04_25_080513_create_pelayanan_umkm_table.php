@@ -9,26 +9,27 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('pelayanan_umkm', function (Blueprint $table) {
             $table->id('id_pelayanan');
-            $table->string('nik');
-            $table->string('nama');
-            $table->string('jenis_kelamin');
-            $table->string('tempat_lahir');
-            $table->date('tanggal_lahir');
-            $table->string('email');
-            $table->string('jenis_usaha');
+            $table->string('nama_lengkap');
+            $table->string('nik', 16);
+            $table->text('alamat_lengkap');
+            $table->string('email')->nullable();
+            $table->string('no_hp');
             $table->string('nama_usaha');
-            $table->string('alamat usaha');
-            $table->string('layanan');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->unsignedBigInteger('id_booking');
-            $table->foreign('id_booking')->references('id_booking')->on('booking')->onDelete('cascade');
+            $table->string('bentuk_usaha');
+            $table->string('sektor_usaha');
+            $table->string('legalitas_usaha')->nullable();
+            $table->string('pembiayaan')->nullable();
+            $table->string('nib')->nullable();
+            $table->text('alamat_usaha');
+            $table->bigInteger('modal_usaha')->nullable();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
