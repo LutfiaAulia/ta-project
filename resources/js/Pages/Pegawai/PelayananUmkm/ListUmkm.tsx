@@ -93,12 +93,29 @@ const ListUmkm: React.FC<ListUmkmProps> = ({ umkm, id_booking }) => {
                                         <td className="border px-2 py-2">
                                             {u.layanan}
                                         </td>
-                                        <td className="border px-2 py-2 text-center">
+                                        <td className="border px-2 py-2 text-center space-x-1">
                                             <Link
-                                                href={`/pegawai/umkm/${id_booking}/${u.id}`}
-                                                className="bg-blue-100 hover:bg-blue-200 text-xs px-2 py-1 rounded"
+                                                href={`/pegawai/edit/umkmlayan/${u.id}`}
+                                                className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
                                             >
-                                                Lihat
+                                                Edit
+                                            </Link>
+                                            <Link
+                                                method="delete"
+                                                as="button"
+                                                href={`/pegawai/destroy/umkmlayan/${u.id}`}
+                                                className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+                                                onClick={(e) => {
+                                                    if (
+                                                        !confirm(
+                                                            "Yakin ingin menghapus UMKM ini?"
+                                                        )
+                                                    ) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                            >
+                                                Hapus
                                             </Link>
                                         </td>
                                     </tr>

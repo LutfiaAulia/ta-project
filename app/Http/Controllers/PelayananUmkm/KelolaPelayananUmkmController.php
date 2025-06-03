@@ -126,4 +126,101 @@ class KelolaPelayananUmkmController extends Controller
 
         return redirect()->route('umkmlayan.list', ['id' => $request->id_booking])->with('success', 'Data UMKM berhasil disimpan.');
     }
+
+    public function edit($id)
+    {
+        $booking = BookingPelayananUmkm::with('pelayanan')->findOrFail($id);
+        $layanan = Layanan::select('id_layanan', 'layanan')->where('status', 'aktif')->get();
+
+        return Inertia::render('Pegawai/PelayananUmkm/EditUmkm', [
+            'umkm' => [
+                'id' => $booking->id,
+                'id_pelayanan' => $booking->id_pelayanan,
+
+                'nama_lengkap' => $booking->pelayanan->nama_lengkap,
+                'nik' => $booking->pelayanan->nik,
+                'alamat_lengkap' => $booking->pelayanan->alamat_lengkap,
+                'email' => $booking->pelayanan->email,
+                'no_hp' => $booking->pelayanan->no_hp,
+                'nama_usaha' => $booking->pelayanan->nama_usaha,
+                'bentuk_usaha' => $booking->pelayanan->bentuk_usaha,
+                'sektor_usaha' => $booking->pelayanan->sektor_usaha,
+                'legalitas_usaha' => $booking->pelayanan->legalitas_usaha,
+                'pembiayaan' => $booking->pelayanan->pembiayaan,
+                'nib' => $booking->pelayanan->nib,
+                'alamat_usaha' => $booking->pelayanan->alamat_usaha,
+                'modal_usaha' => $booking->pelayanan->modal_usaha,
+
+                'id_layanan' => $booking->id_layanan,
+                'total_aset' => $booking->total_aset,
+                'omset' => $booking->omset,
+                'pengeluaran' => $booking->pengeluaran,
+                'pendapat_bersih' => $booking->pendapat_bersih,
+                'pelatihan' => $booking->pelatihan,
+                'permasalahan' => $booking->permasalahan,
+            ],
+            'layanan' => $layanan,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'nik' => 'required|string|max:50',
+            'nama_usaha' => 'required|string|max:255',
+            'nib' => 'required|string|max:100',
+
+            'modal_usaha' => 'required',
+            'total_aset' => 'required',
+            'omset' => 'required',
+            'pengeluaran' => 'required',
+            'pendapat_bersih' => 'required',
+            'id_layanan' => 'required|integer',
+        ]);
+
+        $booking = BookingPelayananUmkm::findOrFail($id);
+        $umkm = PelayananUmkm::findOrFail($booking->id_pelayanan);
+
+        $umkm->update([
+            'nama_lengkap' => $request->nama_lengkap,
+            'nik' => $request->nik,
+            'alamat_lengkap' => $request->alamat_lengkap,
+            'email' => $request->email,
+            'no_hp' => $request->no_hp,
+            'nama_usaha' => $request->nama_usaha,
+            'bentuk_usaha' => $request->bentuk_usaha,
+            'sektor_usaha' => $request->sektor_usaha,
+            'legalitas_usaha' => $request->legalitas_usaha,
+            'pembiayaan' => $request->pembiayaan,
+            'nib' => $request->nib,
+            'alamat_usaha' => $request->alamat_usaha,
+            'modal_usaha' => $request->modal_usaha,
+        ]);
+
+        $booking->update([
+            'id_layanan' => $request->id_layanan,
+            'total_aset' => $request->total_aset,
+            'omset' => $request->omset,
+            'pengeluaran' => $request->pengeluaran,
+            'pendapat_bersih' => $request->pendapat_bersih,
+            'pelatihan' => $request->pelatihan,
+            'permasalahan' => $request->permasalahan,
+        ]);
+
+        $id_booking = $booking->id_booking;
+
+        return redirect()->route('umkmlayan.list', ['id' => $id_booking])
+            ->with('success', 'Data UMKM berhasil diperbarui');
+    }
+
+    public function destroy($id)
+    {
+        $bookingPelayananUmkm = BookingPelayananUmkm::findOrFail($id);
+        $id_booking = $bookingPelayananUmkm->id_booking;
+        $bookingPelayananUmkm->delete();
+
+        return redirect()->route('umkmlayan.list', ['id' => $id_booking])
+            ->with('success', 'Data UMKM berhasil dihapus.');
+    }
 }

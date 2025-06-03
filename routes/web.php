@@ -106,6 +106,9 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/list/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'showUmkm'])->name('umkmlayan.list');
         Route::get('/create/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'create'])->name('umkmlayan.create');
         Route::post('/store/umkmlayan', [KelolaPelayananUmkmController::class, 'store'])->name('umkmlayan.store');
+        Route::get('/edit/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'edit'])->name('umkmlayan.edit');
+        Route::put('/update/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'update'])->name('umkmlayan.update');
+        Route::delete('/destroy/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'destroy'])->name('umkmlayan.destroy');
     });
 });
 

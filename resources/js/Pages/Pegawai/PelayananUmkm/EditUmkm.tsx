@@ -7,59 +7,40 @@ type Layanan = {
     layanan: string;
 };
 
-type TambahUmkmProps = {
-    layanan: Layanan[];
+type Umkm = {
+    nama_lengkap: string;
+    nik: string;
+    alamat_lengkap: string;
+    email: string;
+    no_hp: string;
+    nama_usaha: string;
+    bentuk_usaha: string;
+    sektor_usaha: string;
+    legalitas_usaha: string;
+    pembiayaan: string;
+    nib: string;
+    alamat_usaha: string;
+    modal_usaha: string;
+    total_aset: string;
+    omset: string;
+    pengeluaran: string;
+    pendapat_bersih: string;
+    pelatihan: string;
+    permasalahan: string;
+    id_layanan: string;
     id_booking: number;
+    id?: number;
 };
 
-const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
-    const [form, setForm] = useState({
-        // PelayananUmkm
-        nama_lengkap: "",
-        nik: "",
-        alamat_lengkap: "",
-        email: "",
-        no_hp: "",
-        nama_usaha: "",
-        bentuk_usaha: "",
-        sektor_usaha: "",
-        legalitas_usaha: "",
-        pembiayaan: "",
-        nib: "",
-        alamat_usaha: "",
-        modal_usaha: "",
+type EditUmkmProps = {
+    layanan: Layanan[];
+    umkm: Umkm;
+};
 
-        // BookingPelayananUmkm
-        total_aset: "",
-        omset: "",
-        pengeluaran: "",
-        pendapat_bersih: "",
-        pelatihan: "",
-        permasalahan: "",
-        id_layanan: "",
-
-        id_booking,
-    });
+const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
+    const [form, setForm] = useState<Umkm>({ ...umkm });
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-    useEffect(() => {
-        setForm((prev) => ({
-            ...prev,
-            id_booking,
-        }));
-    }, [id_booking]);
-
-    const numberFields = new Set([
-        "nik",
-        "no_hp",
-        "nib",
-        "modal_usaha",
-        "total_aset",
-        "omset",
-        "pengeluaran",
-        "pendapat_bersih",
-    ]);
 
     const handleChange = (
         e: React.ChangeEvent<
@@ -67,28 +48,14 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
         >
     ) => {
         const { name, value } = e.target;
-
-        if (numberFields.has(name)) {
-            if (value === "" || /^\d*$/.test(value)) {
-                setForm((prev) => ({
-                    ...prev,
-                    [name]: value,
-                }));
-                setErrors((prev) => ({
-                    ...prev,
-                    [name]: "",
-                }));
-            }
-        } else {
-            setForm((prev) => ({
-                ...prev,
-                [name]: value,
-            }));
-            setErrors((prev) => ({
-                ...prev,
-                [name]: "",
-            }));
-        }
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+        setErrors((prev) => ({
+            ...prev,
+            [name]: "",
+        }));
     };
 
     const validate = () => {
@@ -119,17 +86,17 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
         e.preventDefault();
         if (!validate()) return;
 
-        router.post("/pegawai/store/umkmlayan", form, {
+        router.put(`/pegawai/update/umkmlayan/${form.id}`, form, {
             onError: (errors) => setErrors(errors),
             onSuccess: () => {
-                console.log("Data berhasil dikirim");
+                console.log("Data berhasil diperbarui");
             },
         });
     };
 
     const renderInput = (
         label: string,
-        name: string,
+        name: keyof Umkm,
         type: string = "text"
     ) => (
         <div>
@@ -137,11 +104,9 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
             <input
                 type={type}
                 name={name}
-                value={form[name as keyof typeof form]}
+                value={form[name] || ""}
                 onChange={handleChange}
                 className="w-full border px-3 py-2 rounded"
-                inputMode={numberFields.has(name) ? "numeric" : undefined}
-                pattern={numberFields.has(name) ? "[0-9]*" : undefined}
             />
             {errors[name] && (
                 <p className="text-red-500 text-xs mt-1">{errors[name]}</p>
@@ -153,7 +118,7 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
         <Layout>
             <div className="max-w-screen-lg mx-auto p-12">
                 <h1 className="text-xl font-semibold mb-6 text-center">
-                    Tambah UMKM Terlayani
+                    Edit Data UMKM
                 </h1>
 
                 <form
@@ -161,23 +126,22 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
                     className="grid grid-cols-2 gap-6 text-sm"
                 >
                     {renderInput("Nama Lengkap", "nama_lengkap")}
-                    {renderInput("NIK", "nik", "text")}
+                    {renderInput("NIK", "nik")}
                     {renderInput("Email", "email")}
-                    {renderInput("No HP", "no_hp", "text")}
+                    {renderInput("No HP", "no_hp")}
                     {renderInput("Alamat Lengkap", "alamat_lengkap")}
                     {renderInput("Nama Usaha", "nama_usaha")}
                     {renderInput("Bentuk Usaha", "bentuk_usaha")}
                     {renderInput("Sektor Usaha", "sektor_usaha")}
                     {renderInput("Legalitas Usaha", "legalitas_usaha")}
                     {renderInput("Pembiayaan", "pembiayaan")}
-                    {renderInput("NIB", "nib", "text")}
+                    {renderInput("NIB", "nib")}
                     {renderInput("Alamat Usaha", "alamat_usaha")}
-                    {renderInput("Modal Usaha", "modal_usaha", "text")}
-
-                    {renderInput("Total Aset", "total_aset", "text")}
-                    {renderInput("Omset", "omset", "text")}
-                    {renderInput("Pengeluaran", "pengeluaran", "text")}
-                    {renderInput("Pendapat Bersih", "pendapat_bersih", "text")}
+                    {renderInput("Modal Usaha", "modal_usaha")}
+                    {renderInput("Total Aset", "total_aset")}
+                    {renderInput("Omset", "omset")}
+                    {renderInput("Pengeluaran", "pengeluaran")}
+                    {renderInput("Pendapat Bersih", "pendapat_bersih")}
                     {renderInput("Pelatihan yang Dibutuhkan", "pelatihan")}
 
                     {/* Dropdown Layanan */}
@@ -222,9 +186,9 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
                     <div className="col-span-2 text-right">
                         <button
                             type="submit"
-                            className="bg-green-500 hover:bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded"
+                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold text-sm px-4 py-2 rounded"
                         >
-                            Simpan
+                            Update
                         </button>
                     </div>
                 </form>
@@ -233,4 +197,4 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
     );
 };
 
-export default TambahUmkmPeg;
+export default EditUmkm;
