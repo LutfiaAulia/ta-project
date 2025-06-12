@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "@/Components/Layout";
 import { Link } from "@inertiajs/react";
 
 type LaporanEntry = {
     id_laporan: number;
-    jadwal: string;
+    tanggal_mulai: string;
+    tanggal_akhir: string;
+    waktu_mulai: string;
+    waktu_akhir: string;
     judul: string;
     lokasi: string;
     nama_penulis: string;
@@ -12,6 +15,49 @@ type LaporanEntry = {
 
 type ListLaporanProps = {
     laporan: LaporanEntry[];
+};
+
+const extractJam = (waktu: string | null | undefined) => {
+    if (!waktu) return "-";
+    const dateObj = new Date(waktu);
+    if (isNaN(dateObj.getTime())) return "-";
+    dateObj.setHours(dateObj.getHours() - 7); // Koreksi zona waktu
+    const jam = dateObj.getHours().toString().padStart(2, "0");
+    const menit = dateObj.getMinutes().toString().padStart(2, "0");
+    return `${jam}:${menit}`;
+};
+
+const formatTanggalDanJam = (
+    tanggalMulai: string,
+    tanggalAkhir: string,
+    waktuMulai: string,
+    waktuAkhir: string
+) => {
+    const mulai = new Date(tanggalMulai);
+    const akhir = new Date(tanggalAkhir);
+
+    const opsiTanggal: Intl.DateTimeFormatOptions = {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    };
+
+    const tgl =
+        tanggalMulai === tanggalAkhir
+            ? mulai.toLocaleDateString("id-ID", opsiTanggal)
+            : `${mulai.getDate()} - ${akhir.getDate()} ${akhir.toLocaleDateString(
+                  "id-ID",
+                  { month: "long", year: "numeric" }
+              )}`;
+
+    const jam = `${extractJam(waktuMulai)} - ${extractJam(waktuAkhir)} WIB`;
+
+    return (
+        <>
+            <div>{tgl}</div>
+            <div className="text-gray-500 text-[10px]">{jam}</div>
+        </>
+    );
 };
 
 const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
@@ -26,7 +72,9 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                 lapor.judul.toLowerCase().includes(keyword) ||
                 lapor.lokasi.toLowerCase().includes(keyword) ||
                 lapor.nama_penulis.toLowerCase().includes(keyword) ||
-                new Date(lapor.jadwal).toLocaleDateString().includes(keyword)
+                new Date(lapor.tanggal_mulai)
+                    .toLocaleDateString("id-ID")
+                    .includes(keyword)
         );
         setFilteredLaporan(filtered);
     }, [search, laporan]);
@@ -55,18 +103,17 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full border border-gray-300 text-sm">
+                    <table className="w-full border border-gray-300 text-xs">
                         <thead className="bg-gray-100">
                             <tr>
                                 <th className="border px-2 py-2">No</th>
                                 <th className="border px-2 py-2">Jadwal</th>
-                                <th className="border px-2 py-2">Judul</th>
+                                <th className="border px-2 py-2 w-[370px] truncate">Judul</th>
                                 <th className="border px-2 py-2">Lokasi</th>
                                 <th className="border px-2 py-2">
                                     Nama Penulis
                                 </th>
-                                <th className="border px-2 py-2">Aksi</th>{" "}
-                                {/* Tambah kolom aksi */}
+                                <th className="border px-2 py-2">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,10 +123,13 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                                         <td className="border px-2 py-2 text-center">
                                             {index + 1}
                                         </td>
-                                        <td className="border px-2 py-2">
-                                            {new Date(
-                                                lapor.jadwal
-                                            ).toLocaleDateString()}
+                                        <td className="border px-2 py-2 text-center whitespace-nowrap">
+                                            {formatTanggalDanJam(
+                                                lapor.tanggal_mulai,
+                                                lapor.tanggal_akhir,
+                                                lapor.waktu_mulai,
+                                                lapor.waktu_akhir
+                                            )}
                                         </td>
                                         <td className="border px-2 py-2">
                                             {lapor.judul}

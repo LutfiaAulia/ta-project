@@ -25,7 +25,7 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
         kesimpulan: "",
         saran: "",
         nama_penulis: "",
-        foto_dokumentasi: [] as File[],
+        foto_dokumentasi: [] as { file: File; preview: string }[],
     });
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -40,12 +40,28 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
         setErrors((prev) => ({ ...prev, [name]: "" }));
     };
 
-    // Khusus untuk input file multiple
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         const filesArray = Array.from(e.target.files);
-        setForm((prev) => ({ ...prev, foto_dokumentasi: filesArray }));
+
+        const withPreviews = filesArray.map((file) => ({
+            file,
+            preview: URL.createObjectURL(file),
+        }));
+
+        setForm((prev) => ({
+            ...prev,
+            foto_dokumentasi: withPreviews,
+        }));
+
         setErrors((prev) => ({ ...prev, foto_dokumentasi: "" }));
+    };
+
+    const removeImage = (index: number) => {
+        const updated = [...form.foto_dokumentasi];
+        URL.revokeObjectURL(updated[index].preview);
+        updated.splice(index, 1);
+        setForm((prev) => ({ ...prev, foto_dokumentasi: updated }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -63,7 +79,7 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
         formData.append("saran", form.saran);
         formData.append("nama_penulis", form.nama_penulis);
 
-        form.foto_dokumentasi.forEach((file) => {
+        form.foto_dokumentasi.forEach(({ file }) => {
             formData.append("foto_dokumentasi[]", file);
         });
 
@@ -93,7 +109,6 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
                     className="space-y-4 text-sm"
                     encType="multipart/form-data"
                 >
-                    {/* Pilihan Booking */}
                     <div>
                         <label className="block mb-1">Booking</label>
                         <select
@@ -105,125 +120,60 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
                             <option value="">-- Pilih Booking --</option>
                             {booking.map((b) => (
                                 <option key={b.id_booking} value={b.id_booking}>
-                                    {b.nama_instansi} ( {b.tanggal_mulai} -{" "}
-                                    {b.tanggal_akhir} )
+                                    {b.nama_instansi} ({b.tanggal_mulai} -{" "}
+                                    {b.tanggal_akhir})
                                 </option>
                             ))}
                         </select>
                         {renderError("id_booking")}
                     </div>
+                    {[
+                        { label: "Judul", name: "judul", type: "input" },
+                        { label: "Dasar", name: "dasar", type: "textarea" },
+                        { label: "Maksud", name: "maksud", type: "textarea" },
+                        { label: "Tujuan", name: "tujuan", type: "textarea" },
+                        { label: "Biaya", name: "biaya", type: "textarea" },
+                        {
+                            label: "Ringkasan Pelaksana",
+                            name: "ringkasan_pelaksana",
+                            type: "textarea",
+                        },
+                        {
+                            label: "Kesimpulan",
+                            name: "kesimpulan",
+                            type: "textarea",
+                        },
+                        { label: "Saran", name: "saran", type: "textarea" },
+                        {
+                            label: "Nama Penulis",
+                            name: "nama_penulis",
+                            type: "input",
+                        },
+                    ].map((field) => (
+                        <div key={field.name}>
+                            <label className="block mb-1">{field.label}</label>
+                            {field.type === "input" ? (
+                                <input
+                                    type="text"
+                                    name={field.name}
+                                    value={(form as any)[field.name]}
+                                    onChange={handleChange}
+                                    className="w-full border px-3 py-2 rounded"
+                                />
+                            ) : (
+                                <textarea
+                                    name={field.name}
+                                    value={(form as any)[field.name]}
+                                    onChange={handleChange}
+                                    className="w-full border px-3 py-2 rounded"
+                                    rows={3}
+                                />
+                            )}
+                            {renderError(field.name)}
+                        </div>
+                    ))}
 
-                    {/* Input text dan textarea lain */}
-                    <div>
-                        <label className="block mb-1">Judul</label>
-                        <input
-                            type="text"
-                            name="judul"
-                            value={form.judul}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                        />
-                        {renderError("judul")}
-                    </div>
-
-                    <div>
-                        <label className="block mb-1">Dasar</label>
-                        <textarea
-                            name="dasar"
-                            value={form.dasar}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                            rows={3}
-                        />
-                        {renderError("dasar")}
-                    </div>
-
-                    <div>
-                        <label className="block mb-1">Maksud</label>
-                        <textarea
-                            name="maksud"
-                            value={form.maksud}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                            rows={3}
-                        />
-                        {renderError("maksud")}
-                    </div>
-
-                    <div>
-                        <label className="block mb-1">Tujuan</label>
-                        <textarea
-                            name="tujuan"
-                            value={form.tujuan}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                            rows={3}
-                        />
-                        {renderError("tujuan")}
-                    </div>
-
-                    <div>
-                        <label className="block mb-1">Biaya</label>
-                        <textarea
-                            name="biaya"
-                            value={form.biaya}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                        />
-                        {renderError("biaya")}
-                    </div>
-
-                    <div>
-                        <label className="block mb-1">
-                            Ringkasan Pelaksana
-                        </label>
-                        <textarea
-                            name="ringkasan_pelaksana"
-                            value={form.ringkasan_pelaksana}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                            rows={4}
-                        />
-                        {renderError("ringkasan_pelaksana")}
-                    </div>
-
-                    <div>
-                        <label className="block mb-1">Kesimpulan</label>
-                        <textarea
-                            name="kesimpulan"
-                            value={form.kesimpulan}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                            rows={3}
-                        />
-                        {renderError("kesimpulan")}
-                    </div>
-
-                    <div>
-                        <label className="block mb-1">Saran</label>
-                        <textarea
-                            name="saran"
-                            value={form.saran}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                            rows={3}
-                        />
-                        {renderError("saran")}
-                    </div>
-
-                    <div>
-                        <label className="block mb-1">Nama Penulis</label>
-                        <input
-                            type="text"
-                            name="nama_penulis"
-                            value={form.nama_penulis}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                        />
-                        {renderError("nama_penulis")}
-                    </div>
-
-                    {/* Upload Foto Dokumentasi */}
+                    {/* Upload dan Preview Gambar */}
                     <div>
                         <label className="block mb-1">Foto Dokumentasi</label>
                         <input
@@ -235,6 +185,27 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
                             className="w-full"
                         />
                         {renderError("foto_dokumentasi")}
+
+                        {form.foto_dokumentasi.length > 0 && (
+                            <div className="mt-3 grid grid-cols-3 gap-2">
+                                {form.foto_dokumentasi.map((item, index) => (
+                                    <div key={index} className="relative">
+                                        <img
+                                            src={item.preview}
+                                            alt={`Preview ${index + 1}`}
+                                            className="w-full h-32 object-cover rounded border"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeImage(index)}
+                                            className="absolute top-1 right-1 bg-red-600 text-white rounded-full px-1 text-xs"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <div className="text-right">

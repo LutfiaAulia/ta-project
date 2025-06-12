@@ -114,6 +114,9 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/list/laporan', [KelolaLaporanController::class, 'show'])->name('laporan.list');
         Route::get('/create/laporan', [KelolaLaporanController::class, 'create'])->name('laporan.create');
         Route::post('/store/laporan', [KelolaLaporanController::class, 'store'])->name('laporan.store');
+        Route::get('/edit/laporan/{id}', [KelolaLaporanController::class, 'edit'])->name('laporan.edit');
+        Route::put('/update/laporan/{id}', [KelolaLaporanController::class, 'update'])->name('laporan.update');
+        Route::delete('/destroy/laporan/{id}', [KelolaLaporanController::class, 'destroy'])->name('laporan.destroy');
     });
 });
 
