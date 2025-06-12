@@ -43,7 +43,7 @@ class KelolaPelayananUmkmController extends Controller
             ->get()
             ->map(function ($item) use ($id_booking) {
                 return [
-                    'id' => $item->id,
+                    'id_bopel' => $item->id_bopel,
                     'id_booking' => $id_booking,
                     'nama_lengkap' => $item->pelayanan->nama_lengkap,
                     'nik' => $item->pelayanan->nik,
@@ -134,7 +134,7 @@ class KelolaPelayananUmkmController extends Controller
 
         return Inertia::render('Pegawai/PelayananUmkm/EditUmkm', [
             'umkm' => [
-                'id' => $booking->id,
+                'id_bopel' => $booking->id_bopel,
                 'id_pelayanan' => $booking->id_pelayanan,
 
                 'nama_lengkap' => $booking->pelayanan->nama_lengkap,

@@ -10,6 +10,7 @@ class BookingPelayananUmkm extends Model
     use HasFactory;
 
     protected $table = 'booking_pelayananumkm';
+    protected $primaryKey = 'id_bopel';
 
     protected $fillable = [
         'id_booking',

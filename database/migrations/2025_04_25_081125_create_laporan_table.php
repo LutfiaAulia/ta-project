@@ -21,9 +21,7 @@ return new class extends Migration
             $table->longText('ringkasan_pelaksana');
             $table->longText('kesimpulan');
             $table->longText('saran');
-            $table->text('penutup');
             $table->string('nama_penulis');
-            $table->string('ttd');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->unsignedBigInteger('id_pelayanan');
             $table->foreign('id_pelayanan')->references('id_pelayanan')->on('pelayanan_umkm')->onDelete('cascade');

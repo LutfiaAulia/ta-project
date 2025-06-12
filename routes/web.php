@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginPegawaiController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
+use App\Http\Controllers\Laporan\KelolaLaporanController;
 use App\Http\Controllers\Layanan\KelolaLayananController;
 use App\Http\Controllers\MobilSopir\KelolaMobilController;
 use App\Http\Controllers\MobilSopir\KelolaSopirController;
@@ -109,6 +110,10 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'edit'])->name('umkmlayan.edit');
         Route::put('/update/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'update'])->name('umkmlayan.update');
         Route::delete('/destroy/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'destroy'])->name('umkmlayan.destroy');
+
+        Route::get('/list/laporan', [KelolaLaporanController::class, 'show'])->name('laporan.list');
+        Route::get('/create/laporan', [KelolaLaporanController::class, 'create'])->name('laporan.create');
+        Route::post('/store/laporan', [KelolaLaporanController::class, 'store'])->name('laporan.store');
     });
 });
 

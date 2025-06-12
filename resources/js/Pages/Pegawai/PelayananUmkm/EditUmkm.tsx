@@ -29,7 +29,7 @@ type Umkm = {
     permasalahan: string;
     id_layanan: string;
     id_booking: number;
-    id?: number;
+    id_bopel?: number;
 };
 
 type EditUmkmProps = {
@@ -86,7 +86,7 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
         e.preventDefault();
         if (!validate()) return;
 
-        router.put(`/pegawai/update/umkmlayan/${form.id}`, form, {
+        router.put(`/pegawai/update/umkmlayan/${form.id_bopel}`, form, {
             onError: (errors) => setErrors(errors),
             onSuccess: () => {
                 console.log("Data berhasil diperbarui");
