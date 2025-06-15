@@ -10,6 +10,8 @@ use App\Http\Controllers\MobilSopir\KelolaMobilController;
 use App\Http\Controllers\MobilSopir\KelolaSopirController;
 use App\Http\Controllers\PelayananUmkm\KelolaPelayananUmkmController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Promosi\KelolaDataUmkmController;
+use App\Http\Controllers\Promosi\KelolaPromosiController;
 use App\Http\Controllers\SuratMasuk\KelolaDisposisiController;
 use App\Http\Controllers\SuratMasuk\KelolaSuratController;
 use App\Http\Controllers\User\KelolaUserController;
@@ -132,10 +134,10 @@ Route::prefix('umkm')->group(function(){
         Route::get('/dashboard', fn() => Inertia::render('Umkm/DashboardUmkm'))->name('umkm.dashboard');
 
         //Data Umkm
-        Route::get('/data/umkm', [LoginUmkmController::class, 'show'])->name('umkm.data');
+        Route::get('/data/umkm', [KelolaDataUmkmController::class, 'show'])->name('umkm.data');
 
         //Produk Umkm
-        Route::get('/list/produk', [LoginUmkmController::class, 'show'])->name('umkm.produk');
+        Route::get('/list/produk', [KelolaPromosiController::class, 'show'])->name('umkm.produk');
 
     });
 });
