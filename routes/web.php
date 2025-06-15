@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginPegawaiController;
+use App\Http\Controllers\Auth\LoginUmkmController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
 use App\Http\Controllers\Laporan\KelolaLaporanController;
@@ -35,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'verified', 'check.user.type:instansi'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Instansi/DashboardIns'))->name('dashboard');
 
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -117,6 +119,17 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/laporan/{id}', [KelolaLaporanController::class, 'edit'])->name('laporan.edit');
         Route::put('/update/laporan/{id}', [KelolaLaporanController::class, 'update'])->name('laporan.update');
         Route::delete('/destroy/laporan/{id}', [KelolaLaporanController::class, 'destroy'])->name('laporan.destroy');
+    });
+});
+
+// ========== ROUTE UNTUK UMKM (user_type: umkm) ========== //
+Route::prefix('umkm')->group(function(){
+    Route::get('/login', [LoginUmkmController::class, 'showLoginForm'])->name('umkm.login.form');
+    Route::post('/login', [LoginUmkmController::class, 'login'])->name('umkm.login');
+    Route::post('/logout', [LoginUmkmController::class, 'logout'])->name('umkm.logout');
+
+    Route::middleware(['auth', 'check.user.type:umkm'])->group(function () {
+        Route::get('/dashboard', fn() => Inertia::render('Umkm/DashboardUmkm'))->name('umkm.dashboard');
     });
 });
 
