@@ -52,7 +52,7 @@ export default function Welcome({ auth }: any) {
                                 Booking Mobil Klinik
                             </Link>
                             <Link
-                                href="#"
+                                href={route("umkm.login.form")}
                                 className="bg-green-200 text-green-900 px-6 py-3 rounded-md font-semibold hover:bg-green-300 transition"
                             >
                                 Lihat Produk UMKM
