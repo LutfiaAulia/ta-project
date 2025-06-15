@@ -29,9 +29,9 @@ const SidebarUmkm: React.FC = () => {
                 </Link>
 
                 <Link
-                    href={route("umkm.dashboard")}
+                    href={route("umkm.data")}
                     className={`flex items-center gap-3 p-2 rounded ${
-                        route().current("umkm.dashboard")
+                        route().current("umkm.data")
                             ? "bg-green-500"
                             : "hover:bg-green-500"
                     } transition cursor-pointer`}
@@ -41,9 +41,9 @@ const SidebarUmkm: React.FC = () => {
                 </Link>
 
                 <Link
-                    href={route("umkm.dashboard")}
+                    href={route("umkm.produk")}
                     className={`flex items-center gap-3 p-2 rounded ${
-                        route().current("umkm.dashboard")
+                        route().current("umkm.produk")
                             ? "bg-green-500"
                             : "hover:bg-green-500"
                     } transition cursor-pointer`}

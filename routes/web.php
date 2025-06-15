@@ -130,6 +130,13 @@ Route::prefix('umkm')->group(function(){
 
     Route::middleware(['auth', 'check.user.type:umkm'])->group(function () {
         Route::get('/dashboard', fn() => Inertia::render('Umkm/DashboardUmkm'))->name('umkm.dashboard');
+
+        //Data Umkm
+        Route::get('/data/umkm', [LoginUmkmController::class, 'show'])->name('umkm.data');
+
+        //Produk Umkm
+        Route::get('/list/produk', [LoginUmkmController::class, 'show'])->name('umkm.produk');
+
     });
 });
 
