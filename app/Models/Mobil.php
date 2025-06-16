@@ -22,14 +22,4 @@ class Mobil extends Model
     {
         return $this->hasMany(Booking::class, 'id_mobil', 'id_mobil');
     }
-
-    public function sedangDigunakan($tanggalMulai, $tanggalAkhir, $waktuMulai, $waktuAkhir)
-    {
-        return $this->booking()
-            ->whereDate('tanggal_mulai', '<=', $tanggalAkhir)
-            ->whereDate('tanggal_akhir', '>=', $tanggalMulai)
-            ->whereTime('waktu_mulai', '<=', $waktuAkhir)
-            ->whereTime('waktu_akhir', '>=', $waktuMulai)
-            ->exists();
-    }
 }
