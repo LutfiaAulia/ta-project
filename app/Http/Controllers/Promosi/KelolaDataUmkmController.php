@@ -5,11 +5,94 @@ namespace App\Http\Controllers\Promosi;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Umkm;
+use App\Models\SosialMedia;
+use Illuminate\Support\Facades\Storage;
 
 class KelolaDataUmkmController extends Controller
 {
-    public function show()
+    public function show(Request $request)
     {
-        return Inertia::render('Umkm/IdentitasUmkm');
+        $user = $request->user();
+
+        $umkm = Umkm::with(['identitas', 'identitas.sosial_media'])
+            ->where('user_id', $user->id)
+            ->first();
+
+        return Inertia::render('Umkm/IdentitasUmkm', [
+            'umkm' => $umkm,
+        ]);
+    }
+
+
+    public function update(Request $request)
+    {
+        $user = $request->user();
+        $umkm = Umkm::where('user_id', $user->id)->firstOrFail();
+        $identitas = $umkm->identitas;
+
+        $validated = $request->validate([
+            'jenis_usaha' => 'required|string|max:255',
+            'nama_usaha' => 'required|string|max:255',
+            'alamat_usaha' => 'required|string|max:255',
+            'no_hp' => 'required|string|max:13',
+            'deskripsi' => 'nullable|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'foto_usaha' => 'nullable|image|max:2048',
+            'instagram' => 'nullable|string|max:255',
+            'whatsapp' => 'nullable|string|max:255',
+            'facebook' => 'nullable|string|max:255',
+        ]);
+
+        $umkm->update([
+            'no_hp' => $validated['no_hp'],
+        ]);
+
+        $identitasData = [
+            'jenis_usaha' => $validated['jenis_usaha'],
+            'nama_usaha' => $validated['nama_usaha'],
+            'alamat_usaha' => $validated['alamat_usaha'],
+            'deskripsi' => $validated['deskripsi'] ?? null,
+            'latitude' => $validated['latitude'] ?? null,
+            'longitude' => $validated['longitude'] ?? null,
+        ];
+
+    if ($request->hasFile('foto_usaha')) {
+        if ($identitas && $identitas->foto_usaha) {
+            Storage::disk('public')->delete($identitas->foto_usaha);
+        }
+
+        $fotoPath = $request->file('foto_usaha')->store('foto_usaha', 'public');
+        $identitasData['foto_usaha'] = $fotoPath;
+    }
+
+    $identitas = $umkm->identitas()->updateOrCreate([], $identitasData);
+
+        $sosmedData = [
+            'instagram' => $validated['instagram'],
+            'whatsapp' => $validated['whatsapp'],
+            'facebook' => $validated['facebook'],
+        ];
+
+        foreach ($sosmedData as $platform => $url) {
+            if ($url) {
+                SosialMedia::updateOrCreate(
+                    [
+                        'platform' => $platform,
+                        'id_identitas' => $identitas->id_identitas,
+                    ],
+                    [
+                        'url' => $url
+                    ]
+                );
+            } else {
+                SosialMedia::where('platform', $platform)
+                    ->where('id_identitas', $identitas->id_identitas)
+                    ->delete();
+            }
+        }
+
+        return back()->with('success', 'Data berhasil diperbarui.');
     }
 }

@@ -135,6 +135,7 @@ Route::prefix('umkm')->group(function(){
 
         //Data Umkm
         Route::get('/data/umkm', [KelolaDataUmkmController::class, 'show'])->name('umkm.data');
+        Route::post('/update-data/umkm', [KelolaDataUmkmController::class, 'update'])->name('umkm.update-data');
 
         //Produk Umkm
         Route::get('/list/produk', [KelolaPromosiController::class, 'show'])->name('umkm.produk');

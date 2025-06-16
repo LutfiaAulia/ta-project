@@ -33,4 +33,9 @@ class Umkm extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function identitas()
+    {
+        return $this->hasOne(IdentitasUmkm::class, 'id_umkm');
+    }
 }
