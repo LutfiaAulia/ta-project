@@ -6,6 +6,7 @@ const TambahProduk: React.FC = () => {
     const [form, setForm] = useState({
         nama_produk: "",
         kategori_produk: "",
+        sub_kategori: "",
         harga_produk: "",
         deskripsi_produk: "",
         foto_produk: null as File | null,
@@ -28,6 +29,7 @@ const TambahProduk: React.FC = () => {
         const data = new FormData();
         data.append("nama_produk", form.nama_produk);
         data.append("kategori_produk", form.kategori_produk);
+        data.append("sub_kategori", form.sub_kategori);
         data.append("harga_produk", form.harga_produk);
         data.append("deskripsi_produk", form.deskripsi_produk);
         if (form.foto_produk) {
@@ -40,7 +42,9 @@ const TambahProduk: React.FC = () => {
     return (
         <Layout>
             <div className="max-w-7xl mx-auto p-6">
-                <h1 className="text-2xl font-bold mb-6 p-10">Tambah Produk UMKM</h1>
+                <h1 className="text-2xl font-bold mb-6 p-10">
+                    Tambah Produk UMKM
+                </h1>
 
                 <form
                     onSubmit={handleSubmit}
@@ -69,6 +73,20 @@ const TambahProduk: React.FC = () => {
                                 type="text"
                                 name="kategori_produk"
                                 value={form.kategori_produk}
+                                onChange={handleChange}
+                                className="w-full border rounded px-4 py-2"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block mb-1 font-semibold">
+                                Sub Kategori
+                            </label>
+                            <input
+                                type="text"
+                                name="sub_kategori"
+                                value={form.sub_kategori}
                                 onChange={handleChange}
                                 className="w-full border rounded px-4 py-2"
                                 required

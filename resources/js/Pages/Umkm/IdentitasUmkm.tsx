@@ -11,7 +11,10 @@ type SosialMedia = {
 type IdentitasData = {
     jenis_usaha?: string;
     nama_usaha?: string;
-    alamat_usaha?: string;
+    kabupaten_kota?: string;
+    kecamatan?: string;
+    kanagarian_kelurahan?: string;
+    alamat_detail?: string;
     deskripsi?: string;
     latitude?: string;
     longitude?: string;
@@ -28,7 +31,6 @@ const IdentitasUmkm: React.FC = () => {
     const { props } = usePage<PageProps>();
     const umkm = props.umkm as UmkmData | undefined;
 
-    // Fungsi untuk mendapatkan url sosial media berdasar platform, dari identitas.sosial_media
     function getSosmed(platform: string) {
         return (
             umkm?.identitas?.sosial_media?.find(
@@ -42,7 +44,10 @@ const IdentitasUmkm: React.FC = () => {
     const [form, setForm] = useState({
         jenis_usaha: umkmIdentitas?.jenis_usaha || "",
         nama_usaha: umkmIdentitas?.nama_usaha || "",
-        alamat_usaha: umkmIdentitas?.alamat_usaha || "",
+        kabupaten_kota: umkmIdentitas?.kabupaten_kota || "",
+        kecamatan: umkmIdentitas?.kecamatan || "",
+        kanagarian_kelurahan: umkmIdentitas?.kanagarian_kelurahan || "",
+        alamat_detail: umkmIdentitas?.alamat_detail || "",
         no_hp: umkm?.no_hp || "",
         instagram: getSosmed("instagram"),
         whatsapp: getSosmed("whatsapp"),
@@ -57,7 +62,10 @@ const IdentitasUmkm: React.FC = () => {
         setForm({
             jenis_usaha: umkmIdentitas?.jenis_usaha || "",
             nama_usaha: umkmIdentitas?.nama_usaha || "",
-            alamat_usaha: umkmIdentitas?.alamat_usaha || "",
+            kabupaten_kota: umkmIdentitas?.kabupaten_kota || "",
+            kecamatan: umkmIdentitas?.kecamatan || "",
+            kanagarian_kelurahan: umkmIdentitas?.kanagarian_kelurahan || "",
+            alamat_detail: umkmIdentitas?.alamat_detail || "",
             no_hp: umkm?.no_hp || "",
             instagram: getSosmed("instagram"),
             whatsapp: getSosmed("whatsapp"),
@@ -137,15 +145,54 @@ const IdentitasUmkm: React.FC = () => {
                     </div>
 
                     <div className="grid gap-2">
-                        <label>Alamat Usaha</label>
+                        <label>Kabupaten/Kota</label>
                         <input
                             type="text"
-                            name="alamat_usaha"
-                            value={form.alamat_usaha}
+                            name="kabupaten_kota"
+                            value={form.kabupaten_kota}
                             onChange={handleChange}
                             className="border p-2 rounded"
                             disabled={!isEditing}
-                            placeholder="Isi alamat usaha"
+                            placeholder="contoh: Kabupaten Agam"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label>Kecamatan</label>
+                        <input
+                            type="text"
+                            name="kecamatan"
+                            value={form.kecamatan}
+                            onChange={handleChange}
+                            className="border p-2 rounded"
+                            disabled={!isEditing}
+                            placeholder="contoh: Kecamatan Ampek Angkek"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label>Kanagarian/Kelurahan</label>
+                        <input
+                            type="text"
+                            name="kanagarian_kelurahan"
+                            value={form.kanagarian_kelurahan}
+                            onChange={handleChange}
+                            className="border p-2 rounded"
+                            disabled={!isEditing}
+                            placeholder="contoh: Kanagarian Lambah"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label>Detail Alamat Usaha</label>
+                        <input
+                            type="text"
+                            name="alamat_detail"
+                            value={form.alamat_detail}
+                            onChange={handleChange}
+                            className="border p-2 rounded"
+                            disabled={!isEditing}
+                            placeholder="contoh: Taratak, Jorong Kotohilalang"
                         />
                     </div>
 
@@ -202,7 +249,7 @@ const IdentitasUmkm: React.FC = () => {
                                 <input
                                     type="text"
                                     name="whatsapp"
-                                    placeholder="https://wa.me/..."
+                                    placeholder="https://wa.me/628xxxxxxxxxx"
                                     value={form.whatsapp}
                                     onChange={handleChange}
                                     className="border p-2 rounded"
@@ -392,8 +439,16 @@ const IdentitasUmkm: React.FC = () => {
                                                 "",
                                             nama_usaha:
                                                 umkmIdentitas?.nama_usaha || "",
-                                            alamat_usaha:
-                                                umkmIdentitas?.alamat_usaha ||
+                                            kabupaten_kota:
+                                                umkmIdentitas?.kabupaten_kota ||
+                                                "",
+                                            kecamatan:
+                                                umkmIdentitas?.kecamatan || "",
+                                            kanagarian_kelurahan:
+                                                umkmIdentitas?.kanagarian_kelurahan ||
+                                                "",
+                                            alamat_detail:
+                                                umkmIdentitas?.alamat_detail ||
                                                 "",
                                             no_hp: umkm?.no_hp || "",
                                             instagram: getSosmed("instagram"),

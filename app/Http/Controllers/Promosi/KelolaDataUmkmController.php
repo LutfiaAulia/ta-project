@@ -34,7 +34,10 @@ class KelolaDataUmkmController extends Controller
         $validated = $request->validate([
             'jenis_usaha' => 'required|string|max:255',
             'nama_usaha' => 'required|string|max:255',
-            'alamat_usaha' => 'required|string|max:255',
+            'kabupaten_kota' => 'required|string|max:255',
+            'kecamatan' => 'required|string|max:255',
+            'kanagarian_kelurahan' => 'required|string|max:255',
+            'alamat_detail' => 'required|string|max:255',
             'no_hp' => 'required|string|max:13',
             'deskripsi' => 'nullable|string',
             'latitude' => 'nullable|numeric',
@@ -52,7 +55,10 @@ class KelolaDataUmkmController extends Controller
         $identitasData = [
             'jenis_usaha' => $validated['jenis_usaha'],
             'nama_usaha' => $validated['nama_usaha'],
-            'alamat_usaha' => $validated['alamat_usaha'],
+            'kabupaten_kota' => $validated['kabupaten_kota'],
+            'kecamatan' => $validated['kecamatan'],
+            'kanagarian_kelurahan' => $validated['kanagarian_kelurahan'],
+            'alamat_detail' => $validated['alamat_detail'],
             'deskripsi' => $validated['deskripsi'] ?? null,
             'latitude' => $validated['latitude'] ?? null,
             'longitude' => $validated['longitude'] ?? null,
