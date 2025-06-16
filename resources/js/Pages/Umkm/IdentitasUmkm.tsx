@@ -162,34 +162,96 @@ const IdentitasUmkm: React.FC = () => {
                         />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <input
-                            type="text"
-                            name="instagram"
-                            placeholder="https://instagram.com/namamu"
-                            value={form.instagram}
-                            onChange={handleChange}
-                            className="border p-2 rounded"
-                            disabled={!isEditing}
-                        />
-                        <input
-                            type="text"
-                            name="whatsapp"
-                            placeholder="https://wa.me/..."
-                            value={form.whatsapp}
-                            onChange={handleChange}
-                            className="border p-2 rounded"
-                            disabled={!isEditing}
-                        />
-                        <input
-                            type="text"
-                            name="facebook"
-                            placeholder="https://facebook.com/namamu"
-                            value={form.facebook}
-                            onChange={handleChange}
-                            className="border p-2 rounded"
-                            disabled={!isEditing}
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Instagram */}
+                        <div className="flex flex-col">
+                            <label className="font-semibold text-sm mb-1">
+                                Instagram
+                            </label>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="instagram"
+                                    placeholder="https://instagram.com/namamu"
+                                    value={form.instagram}
+                                    onChange={handleChange}
+                                    className="border p-2 rounded"
+                                />
+                            ) : (
+                                <a
+                                    href={form.instagram}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`truncate p-2 rounded bg-gray-100 hover:bg-blue-100 transition-all text-blue-600 ${
+                                        form.instagram
+                                            ? ""
+                                            : "text-gray-400 pointer-events-none"
+                                    }`}
+                                >
+                                    {form.instagram || "Tidak ada Instagram"}
+                                </a>
+                            )}
+                        </div>
+
+                        {/* WhatsApp */}
+                        <div className="flex flex-col">
+                            <label className="font-semibold text-sm mb-1">
+                                WhatsApp
+                            </label>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="whatsapp"
+                                    placeholder="https://wa.me/..."
+                                    value={form.whatsapp}
+                                    onChange={handleChange}
+                                    className="border p-2 rounded"
+                                />
+                            ) : (
+                                <a
+                                    href={form.whatsapp}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`truncate p-2 rounded bg-gray-100 hover:bg-blue-100 transition-all text-blue-600 ${
+                                        form.whatsapp
+                                            ? ""
+                                            : "text-gray-400 pointer-events-none"
+                                    }`}
+                                >
+                                    {form.whatsapp || "Tidak ada WhatsApp"}
+                                </a>
+                            )}
+                        </div>
+
+                        {/* Facebook */}
+                        <div className="flex flex-col">
+                            <label className="font-semibold text-sm mb-1">
+                                Facebook
+                            </label>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="facebook"
+                                    placeholder="https://facebook.com/namamu"
+                                    value={form.facebook}
+                                    onChange={handleChange}
+                                    className="border p-2 rounded"
+                                />
+                            ) : (
+                                <a
+                                    href={form.facebook}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`truncate p-2 rounded bg-gray-100 hover:bg-blue-100 transition-all text-blue-600 ${
+                                        form.facebook
+                                            ? ""
+                                            : "text-gray-400 pointer-events-none"
+                                    }`}
+                                >
+                                    {form.facebook || "Tidak ada Facebook"}
+                                </a>
+                            )}
+                        </div>
                     </div>
 
                     <div className="grid gap-2">
