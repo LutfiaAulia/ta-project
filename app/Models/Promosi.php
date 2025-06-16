@@ -15,18 +15,19 @@ class Promosi extends Model
     protected $fillable = [
         'nama_produk',
         'kategori_produk',
+        'sub_kategori',
         'harga_produk',
         'deskripsi_produk',
         'foto_produk',
-        'user_id',
+        'id_umkm',
         'user_type',
     ];
 
     /**
      * Relasi ke model User.
      */
-    public function user()
+    public function umkm()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Umkm::class, 'id_umkm');
     }
 }

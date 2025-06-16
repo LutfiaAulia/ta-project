@@ -140,6 +140,7 @@ Route::prefix('umkm')->group(function(){
         //Produk Umkm
         Route::get('/list/produk', [KelolaPromosiController::class, 'show'])->name('umkm.produk');
         Route::get('/create/produk', [KelolaPromosiController::class, 'create'])->name('umkm.create');
+        Route::post('/store/produk', [KelolaPromosiController::class, 'store'])->name('umkm.store');
 
     });
 });

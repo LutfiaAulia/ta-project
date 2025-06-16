@@ -1,115 +1,125 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from "@/Components/LayoutUmkm";
-import { PageProps } from "@/types";
-import { Link } from "@inertiajs/react";
+import { usePage, router, Link } from "@inertiajs/react";
 
-type Promosi = {
-    id: number;
+interface Produk {
+    id_promosi: number;
     nama_produk: string;
-    deskripsi: string;
-    harga: number;
-};
+    deskripsi_produk: string;
+    harga_produk: number;
+}
 
-const ListProdukUMKM: React.FC<PageProps<{ promosi: Promosi[] }>> = ({
-    promosi,
-}) => {
+const ProdukUmkm: React.FC = () => {
+    const { promosi = [] } = usePage().props as { promosi?: Produk[] };
+    const [search, setSearch] = useState("");
+
+    const handleEdit = (id: number) => {
+        router.visit(`/umkm/produk/${id}/edit`);
+    };
+
+    const handleDelete = (id: number) => {
+        if (confirm("Yakin ingin menghapus produk ini?")) {
+            router.delete(`/umkm/produk/${id}`);
+        }
+    };
+
+    const filteredProduk = promosi.filter((produk) =>
+        produk.nama_produk.toLowerCase().includes(search.toLowerCase())
+    );
+
     return (
         <Layout>
-            <div className="p-4 w-full max-w-7xl mx-auto">
-                <h1 className="text-2xl font-bold mb-6">Produk UMKM</h1>
+            <div className="max-w-6xl mx-auto p-4">
+                <h1 className="text-2xl font-bold mb-4">Produk UMKM</h1>
 
                 <div className="flex justify-between items-center mb-4">
                     <input
                         type="text"
-                        placeholder="Search"
-                        className="border border-gray-300 rounded px-3 py-1 text-sm w-64"
+                        placeholder="Cari produk..."
+                        className="border px-3 py-2 rounded text-sm w-1/3"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                     />
                     <Link
                         href="/umkm/create/produk"
-                        className="bg-green-500 hover:bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded"
+                        className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
                     >
                         + Tambah
                     </Link>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full border border-gray-300 text-sm">
-                        <thead className="bg-gray-100">
-                            <tr>
-                                <th className="border px-2 py-2 text-center w-[40px]">
-                                    No
-                                </th>
-                                <th className="border px-2 py-2 w-[200px]">
-                                    Nama Produk
-                                </th>
-                                <th className="border px-2 py-2">Deskripsi</th>
-                                <th className="border px-2 py-2 text-center w-[100px]">
-                                    Harga
-                                </th>
-                                <th className="border px-2 py-2 text-center w-[80px]">
-                                    Aksi
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {promosi.length > 0 ? (
-                                promosi.map((item, index) => (
-                                    <tr key={item.id}>
-                                        <td className="border px-2 py-2 text-center">
-                                            {index + 1}
-                                        </td>
-                                        <td className="border px-2 py-2">
-                                            {item.nama_produk}
-                                        </td>
-                                        <td className="border px-2 py-2">
-                                            {item.deskripsi}
-                                        </td>
-                                        <td className="border px-2 py-2 text-center">
-                                            {item.harga.toLocaleString("id-ID")}
-                                        </td>
-                                        <td className="border px-2 py-2 text-center space-x-2">
-                                            <Link
-                                                href={`/umkm/edit/produk/${item.id}`}
-                                                className="inline-block text-yellow-500 hover:text-yellow-600"
-                                            >
-                                                Edit
-                                            </Link>
-                                            <Link
-                                                as="button"
-                                                method="delete"
-                                                href={`/umkm/delete/produk/${item.id}`}
-                                                className="inline-block text-red-500 hover:text-red-600"
-                                                onClick={(e) => {
-                                                    if (
-                                                        !confirm(
-                                                            `Yakin ingin menghapus produk "${item.nama_produk}"?`
-                                                        )
-                                                    ) {
-                                                        e.preventDefault();
-                                                    }
-                                                }}
-                                            >
-                                                Hapus
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td
-                                        colSpan={5}
-                                        className="text-center py-4 text-gray-500"
-                                    >
-                                        Tidak ada produk UMKM.
+                <table className="w-full table-auto border border-gray-300 text-xs">
+                    <thead>
+                        <tr className="bg-gray-100">
+                            <th className="border px-2 py-2 w-[50px]">No</th>
+                            <th className="border px-4 py-2 text-center">
+                                Nama Produk
+                            </th>
+                            <th className="border px-4 py-2 text-center">
+                                Deskripsi
+                            </th>
+                            <th className="border px-4 py-2 text-center w-[200px]">
+                                Harga
+                            </th>
+                            <th className="border px-4 py-2 text-center w-[200px]">
+                                Aksi
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredProduk.length > 0 ? (
+                            filteredProduk.map((produk, index) => (
+                                <tr key={produk.id_promosi}>
+                                    <td className="border px-2 py-2 text-center">
+                                        {index + 1}
+                                    </td>
+                                    <td className="border px-4 py-2 flex items-center space-x-3">
+                                        {produk.nama_produk}
+                                    </td>
+                                    <td className="border px-4 py-2">
+                                        {produk.deskripsi_produk}
+                                    </td>
+                                    <td className="border px-4 py-2 text-right">
+                                        Rp{" "}
+                                        {produk.harga_produk.toLocaleString(
+                                            "id-ID"
+                                        )}
+                                    </td>
+                                    <td className="border px-4 py-2 text-center space-x-2">
+                                        <button
+                                            onClick={() =>
+                                                handleEdit(produk.id_promosi)
+                                            }
+                                            className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                handleDelete(produk.id_promosi)
+                                            }
+                                            className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+                                        >
+                                            Hapus
+                                        </button>
                                     </td>
                                 </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                            ))
+                        ) : (
+                            <tr>
+                                <td
+                                    colSpan={5}
+                                    className="text-center py-4 text-gray-500"
+                                >
+                                    Belum ada produk yang ditambahkan.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
         </Layout>
     );
 };
 
-export default ListProdukUMKM;
+export default ProdukUmkm;
