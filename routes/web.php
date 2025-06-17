@@ -125,7 +125,7 @@ Route::prefix('pegawai')->group(function () {
 });
 
 // ========== ROUTE UNTUK UMKM (user_type: umkm) ========== //
-Route::prefix('umkm')->group(function(){
+Route::prefix('umkm')->group(function () {
     Route::get('/login', [LoginUmkmController::class, 'showLoginForm'])->name('umkm.login.form');
     Route::post('/login', [LoginUmkmController::class, 'login'])->name('umkm.login');
     Route::post('/logout', [LoginUmkmController::class, 'logout'])->name('umkm.logout');
@@ -141,6 +141,9 @@ Route::prefix('umkm')->group(function(){
         Route::get('/list/produk', [KelolaPromosiController::class, 'show'])->name('umkm.produk');
         Route::get('/create/produk', [KelolaPromosiController::class, 'create'])->name('umkm.create');
         Route::post('/store/produk', [KelolaPromosiController::class, 'store'])->name('umkm.store');
+        Route::get('/edit/produk/{id}', [KelolaPromosiController::class, 'edit'])->name('umkm.edit');
+        Route::put('/update/produk/{id}', [KelolaPromosiController::class, 'update'])->name('umkm.update');
+        Route::delete('/destroy/produk/{id}', [KelolaPromosiController::class, 'destroy'])->name('umkm.destroy');
 
     });
 });

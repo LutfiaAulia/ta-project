@@ -14,12 +14,12 @@ const ProdukUmkm: React.FC = () => {
     const [search, setSearch] = useState("");
 
     const handleEdit = (id: number) => {
-        router.visit(`/umkm/produk/${id}/edit`);
+        router.visit(`/umkm/edit/produk/${id}`);
     };
 
     const handleDelete = (id: number) => {
         if (confirm("Yakin ingin menghapus produk ini?")) {
-            router.delete(`/umkm/produk/${id}`);
+            router.delete(`/umkm/destroy/produk/${id}`);
         }
     };
 
@@ -52,7 +52,7 @@ const ProdukUmkm: React.FC = () => {
                     <thead>
                         <tr className="bg-gray-100">
                             <th className="border px-2 py-2 w-[50px]">No</th>
-                            <th className="border px-4 py-2 text-center">
+                            <th className="border px-4 py-2 text-center w-[200px]">
                                 Nama Produk
                             </th>
                             <th className="border px-4 py-2 text-center">
@@ -73,7 +73,7 @@ const ProdukUmkm: React.FC = () => {
                                     <td className="border px-2 py-2 text-center">
                                         {index + 1}
                                     </td>
-                                    <td className="border px-4 py-2 flex items-center space-x-3">
+                                    <td className="border px-4 py-2">
                                         {produk.nama_produk}
                                     </td>
                                     <td className="border px-4 py-2">

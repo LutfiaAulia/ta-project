@@ -1,18 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "@/Components/LayoutUmkm";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
-const TambahProduk: React.FC = () => {
+interface Produk {
+    id_promosi: number;
+    nama_produk: string;
+    kategori_produk: string;
+    sub_kategori: string;
+    harga_produk: string;
+    deskripsi_produk: string;
+    foto_produk?: string;
+}
+
+const EditProduk: React.FC = () => {
+    const { props } = usePage();
+    const produk = props.produk as Produk;
+
     const [form, setForm] = useState({
-        nama_produk: "",
-        kategori_produk: "",
-        sub_kategori: "",
-        harga_produk: "",
-        deskripsi_produk: "",
+        nama_produk: produk.nama_produk,
+        kategori_produk: produk.kategori_produk,
+        sub_kategori: produk.sub_kategori,
+        harga_produk: produk.harga_produk,
+        deskripsi_produk: produk.deskripsi_produk,
         foto_produk: null as File | null,
     });
 
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(
+        produk.foto_produk ? `/storage/${produk.foto_produk}` : null
+    );
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -44,17 +59,17 @@ const TambahProduk: React.FC = () => {
         if (form.foto_produk) {
             data.append("foto_produk", form.foto_produk);
         }
+        data.append("_method", "PUT");
 
-        router.post("/umkm/store/produk", data);
+        router.post(`/umkm/update/produk/${produk.id_promosi}`, data, {
+            forceFormData: true,
+        });
     };
 
     return (
         <Layout>
             <div className="max-w-7xl mx-auto p-6">
-                <h1 className="text-2xl font-bold mb-6 p-10">
-                    Tambah Produk UMKM
-                </h1>
-
+                <h1 className="text-2xl font-bold mb-3 p-10">Edit Produk</h1>
                 <form
                     onSubmit={handleSubmit}
                     className="grid grid-cols-1 md:grid-cols-2 gap-6"
@@ -133,13 +148,7 @@ const TambahProduk: React.FC = () => {
                                 />
                             ) : (
                                 <span className="text-sm px-2">
-                                    Drag image here
-                                    <br />
-                                    or
-                                    <br />
-                                    <span className="text-green-600 underline">
-                                        Browse image
-                                    </span>
+                                    Klik untuk unggah
                                 </span>
                             )}
                             <input
@@ -186,4 +195,4 @@ const TambahProduk: React.FC = () => {
     );
 };
 
-export default TambahProduk;
+export default EditProduk;
