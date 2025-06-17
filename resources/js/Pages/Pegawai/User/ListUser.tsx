@@ -72,6 +72,7 @@ const ListUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
                                     ?.getAttribute("content") || "",
                         },
                         body: JSON.stringify({ status: newStatus }),
+                        credentials: "include",
                     }
                 );
 
