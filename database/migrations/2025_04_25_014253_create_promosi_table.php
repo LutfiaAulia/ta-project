@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id('id_promosi');
             $table->string('nama_produk');
             $table->string('kategori_produk');
+            $table->string('sub_kategori');
             $table->integer('harga_produk');
             $table->text('deskripsi_produk');
             $table->string('foto_produk');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('id_umkm')->nullable();
             $table->enum('user_type', ['pegawai', 'umkm']);
+
+            $table->foreign('id_umkm')->references('id')->on('umkm')->nullOnDelete();
             $table->timestamps();
         });
     }

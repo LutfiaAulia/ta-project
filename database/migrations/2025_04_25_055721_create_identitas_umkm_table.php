@@ -13,12 +13,18 @@ return new class extends Migration
     {
         Schema::create('identitas_umkm', function (Blueprint $table) {
             $table->id('id_identitas');
+            $table->unsignedBigInteger('id_umkm');
             $table->string('nama_usaha');
             $table->string('jenis_usaha');
-            $table->string('alamat_usaha');
-            $table->string('lokasi');
+            $table->string('kabupaten_kota');
+            $table->string('kecamatan');
+            $table->string('kanagarian_kelurahan');
+            $table->text('alamat_detail');
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->text('deskripsi');
-            $table->foreignId('id')->constrained('umkm')->onDelete('cascade');
+            $table->string('foto_usaha')->nullable();
+            $table->foreign('id_umkm')->references('id')->on('umkm')->onDelete('cascade');
             $table->timestamps();
         });
     }

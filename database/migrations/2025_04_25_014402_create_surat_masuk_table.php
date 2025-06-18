@@ -20,8 +20,11 @@ return new class extends Migration
             $table->date('tgl_diterima');
             $table->date('tgl_surat');
             $table->string('surat');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('id_booking')->constrained('booking')->onDelete('cascade');
+            $table->unsignedBigInteger('id_pegawai')->nullable();
+            $table->unsignedBigInteger('id_booking')->nullable();
+
+            $table->foreign('id_pegawai')->references('id')->on('pegawai')->nullOnDelete();
+            $table->foreign('id_booking')->references('id_booking')->on('booking')->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -22,9 +22,11 @@ return new class extends Migration
             $table->longText('kesimpulan');
             $table->longText('saran');
             $table->string('nama_penulis');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->unsignedBigInteger('id_pelayanan');
-            $table->foreign('id_pelayanan')->references('id_pelayanan')->on('pelayanan_umkm')->onDelete('cascade');
+            $table->unsignedBigInteger('id_pegawai')->nullable();
+            $table->unsignedBigInteger('id_booking')->nullable();
+
+            $table->foreign('id_pegawai')->references('id')->on('pegawai')->nullOnDelete();
+            $table->foreign('id_booking')->references('id_booking')->on('booking')->nullOnDelete();
             $table->timestamps();
         });
     }

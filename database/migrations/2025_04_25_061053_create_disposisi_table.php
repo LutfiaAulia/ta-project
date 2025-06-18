@@ -18,8 +18,10 @@ return new class extends Migration
             $table->text('tujuan');
             $table->text('catatan');
             $table->unsignedBigInteger('id_surat');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreign('id_surat')->references('id_surat')->on('surat_masuk')->onDelete('cascade');
+            $table->unsignedBigInteger('id_pegawai');
+
+            $table->foreign('id_surat')->references('id_surat')->on('surat_masuk')->cascadeOnDelete();
+            $table->foreign('id_pegawai')->references('id')->on('pegawai')->cascadeOnDelete();
             $table->timestamps();
         });
     }

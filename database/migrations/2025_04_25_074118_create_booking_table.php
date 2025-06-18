@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('booking', function (Blueprint $table) {
             $table->id('id_booking');
-            $table->dateTime('jadwal');
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_akhir');
+            $table->time('waktu_mulai');
+            $table->time('waktu_akhir');
             $table->text('acara');
             $table->integer('peserta');
             $table->string('layanan');
@@ -23,7 +26,13 @@ return new class extends Migration
             $table->string('pegawailap')->nullable();
             $table->text('alasan_ditolak')->nullable();
             $table->string('status_booking');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('id_instansi')->nullable();
+            $table->unsignedBigInteger('id_mobil')->nullable();
+            $table->unsignedBigInteger('id_sopir')->nullable();
+
+            $table->foreign('id_instansi')->references('id')->on('instansi')->nullOnDelete();
+            $table->foreign('id_mobil')->references('id_mobil')->on('mobil')->nullOnDelete();
+            $table->foreign('id_sopir')->references('id_sopir')->on('sopir')->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nip')->unique();
-            $table->string('nama');
             $table->string('no_hp');
             $table->string('jabatan')->nullable();
             $table->string('role');
