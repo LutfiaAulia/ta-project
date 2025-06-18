@@ -59,7 +59,7 @@ class KelolaUserController extends Controller
             'user_type' => 'required|in:pegawai,umkm',
             'nama' => 'required|string|max:255',
             'nip' => 'nullable|string|max:18',
-            'nib' => 'nullable|string|max:13',
+            'nib' => 'nullable|string|max:16',
             'nik' => 'nullable|string|max:16',
             'no_hp' => 'nullable|string|min:12|max:13',
             'jabatan' => 'nullable|string|max:100',

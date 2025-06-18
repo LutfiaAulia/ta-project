@@ -29,7 +29,6 @@ class KelolaMobilController extends Controller
         $validated = $request->validate([
             'nama_mobil' => 'required|string|max:255',
             'plat_mobil' => 'required|string|max:10',
-
         ]);
 
         Mobil::create($validated);

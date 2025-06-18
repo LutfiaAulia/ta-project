@@ -19,7 +19,6 @@ return new class extends Migration
             $table->time('waktu_akhir');
             $table->text('acara');
             $table->integer('peserta');
-            $table->string('layanan');
             $table->string('lokasi');
             $table->string('no_hp');
             $table->string('surat');
