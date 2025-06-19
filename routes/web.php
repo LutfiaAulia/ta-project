@@ -121,6 +121,12 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/laporan/{id}', [KelolaLaporanController::class, 'edit'])->name('laporan.edit');
         Route::put('/update/laporan/{id}', [KelolaLaporanController::class, 'update'])->name('laporan.update');
         Route::delete('/destroy/laporan/{id}', [KelolaLaporanController::class, 'destroy'])->name('laporan.destroy');
+
+        Route::get('/kelola/promosi', [KelolaPromosiController::class, 'index'])->name('pegawai.kelola.promosi');
+        Route::get('/show/promosi', [KelolaPromosiController::class, 'showPegawai'])->name('pegawai.show.promosi');
+        Route::get('/edit/produk/{id}', [KelolaPromosiController::class, 'editPegawai'])->name('pegawai.edit.produk');
+        Route::put('/update/produk/{id}', [KelolaPromosiController::class, 'updatePegawai'])->name('pegawai.update.produk');
+        Route::delete('/destroy/produk/{id}', [KelolaPromosiController::class, 'destroyPegawai'])->name('pegawai.destroy.produk');
     });
 });
 
@@ -144,7 +150,6 @@ Route::prefix('umkm')->group(function () {
         Route::get('/edit/produk/{id}', [KelolaPromosiController::class, 'edit'])->name('umkm.edit');
         Route::put('/update/produk/{id}', [KelolaPromosiController::class, 'update'])->name('umkm.update');
         Route::delete('/destroy/produk/{id}', [KelolaPromosiController::class, 'destroy'])->name('umkm.destroy');
-
     });
 });
 

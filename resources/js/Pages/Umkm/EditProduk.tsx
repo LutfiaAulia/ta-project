@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import Layout from "@/Components/LayoutUmkm";
+import React, { useState } from "react";
+import LayoutUmkm from "@/Components/LayoutUmkm";
+import LayoutPegawai from "@/Components/Layout";
 import { router, usePage } from "@inertiajs/react";
 
 interface Produk {
@@ -12,9 +13,14 @@ interface Produk {
     foto_produk?: string;
 }
 
-const EditProduk: React.FC = () => {
+interface Props {
+    userType: "umkm" | "pegawai";
+}
+
+const EditProduk: React.FC<Props> = ({ userType }) => {
     const { props } = usePage();
     const produk = props.produk as Produk;
+    const id_umkm = props.id_umkm as number | undefined;
 
     const [form, setForm] = useState({
         nama_produk: produk.nama_produk,
@@ -59,12 +65,22 @@ const EditProduk: React.FC = () => {
         if (form.foto_produk) {
             data.append("foto_produk", form.foto_produk);
         }
+        if (id_umkm) {
+            data.append("id_umkm", id_umkm.toString());
+        }
         data.append("_method", "PUT");
 
-        router.post(`/umkm/update/produk/${produk.id_promosi}`, data, {
+        const route =
+            userType === "umkm"
+                ? `/umkm/update/produk/${produk.id_promosi}`
+                : `/pegawai/update/produk/${produk.id_promosi}`;
+
+        router.post(route, data, {
             forceFormData: true,
         });
     };
+
+    const Layout = userType === "umkm" ? LayoutUmkm : LayoutPegawai;
 
     return (
         <Layout>

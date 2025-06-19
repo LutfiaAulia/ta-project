@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Layout from "@/Components/LayoutUmkm";
+import LayoutUmkm from "@/Components/LayoutUmkm";
+import LayoutPegawai from "@/Components/Layout";
 import { usePage, router, Link } from "@inertiajs/react";
 
 interface Produk {
@@ -9,23 +10,21 @@ interface Produk {
     harga_produk: number;
 }
 
+interface PageProps {
+    promosi?: Produk[];
+    user_type?: string;
+}
+
 const ProdukUmkm: React.FC = () => {
-    const { promosi = [] } = usePage().props as { promosi?: Produk[] };
+    const { promosi = [], user_type } = usePage().props as PageProps;
     const [search, setSearch] = useState("");
-
-    const handleEdit = (id: number) => {
-        router.visit(`/umkm/edit/produk/${id}`);
-    };
-
-    const handleDelete = (id: number) => {
-        if (confirm("Yakin ingin menghapus produk ini?")) {
-            router.delete(`/umkm/destroy/produk/${id}`);
-        }
-    };
 
     const filteredProduk = promosi.filter((produk) =>
         produk.nama_produk.toLowerCase().includes(search.toLowerCase())
     );
+
+    // Pilih layout sesuai user_type
+    const Layout = user_type === "umkm" ? LayoutUmkm : LayoutPegawai;
 
     return (
         <Layout>
@@ -40,12 +39,14 @@ const ProdukUmkm: React.FC = () => {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <Link
-                        href="/umkm/create/produk"
-                        className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
-                    >
-                        + Tambah
-                    </Link>
+                    {user_type === "umkm" && (
+                        <Link
+                            href="/umkm/create/produk"
+                            className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
+                        >
+                            + Tambah
+                        </Link>
+                    )}
                 </div>
 
                 <table className="w-full table-auto border border-gray-300 text-xs">
@@ -86,22 +87,44 @@ const ProdukUmkm: React.FC = () => {
                                         )}
                                     </td>
                                     <td className="border px-4 py-2 text-center space-x-2">
-                                        <button
-                                            onClick={() =>
-                                                handleEdit(produk.id_promosi)
-                                            }
-                                            className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                handleDelete(produk.id_promosi)
-                                            }
-                                            className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
-                                        >
-                                            Hapus
-                                        </button>
+                                        {(user_type === "umkm" ||
+                                            user_type === "pegawai") && (
+                                            <>
+                                                <button
+                                                    onClick={() =>
+                                                        router.visit(
+                                                            user_type === "umkm"
+                                                                ? `/umkm/edit/produk/${produk.id_promosi}`
+                                                                : `/pegawai/edit/produk/${produk.id_promosi}`
+                                                        )
+                                                    }
+                                                    className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        if (
+                                                            confirm(
+                                                                "Yakin ingin menghapus produk ini?"
+                                                            )
+                                                        ) {
+                                                            const route =
+                                                                user_type ===
+                                                                "umkm"
+                                                                    ? `/umkm/destroy/produk/${produk.id_promosi}`
+                                                                    : `/pegawai/destroy/produk/${produk.id_promosi}`;
+                                                            router.delete(
+                                                                route
+                                                            );
+                                                        }
+                                                    }}
+                                                    className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+                                                >
+                                                    Hapus
+                                                </button>
+                                            </>
+                                        )}
                                     </td>
                                 </tr>
                             ))
