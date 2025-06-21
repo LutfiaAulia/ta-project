@@ -15,6 +15,9 @@ interface Booking {
     acara: string;
     peserta: number;
     layanan: Layanan[];
+    kabupaten_kota: string;
+    kecamatan: string;
+    kenagarian_kelurahan: string;
     lokasi: string;
     no_hp: string;
     surat: string | null;
@@ -114,6 +117,33 @@ export default function DetailBookingIns({ booking }: DetailBookingInsProps) {
                                 </dt>
                                 <dd className="font-semibold text-gray-900">
                                     {booking.peserta}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500 mb-1">
+                                    Kabupaten/Kota
+                                </dt>
+                                <dd className="font-semibold text-gray-900">
+                                    {booking.kabupaten_kota}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500 mb-1">
+                                    Kecamatan
+                                </dt>
+                                <dd className="font-semibold text-gray-900">
+                                    {booking.kecamatan}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500 mb-1">
+                                    Kenagarian/Kelurahan
+                                </dt>
+                                <dd className="font-semibold text-gray-900">
+                                    {booking.kenagarian_kelurahan}
                                 </dd>
                             </div>
 

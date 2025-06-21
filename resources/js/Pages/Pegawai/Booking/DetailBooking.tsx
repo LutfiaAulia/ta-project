@@ -13,6 +13,9 @@ interface DetailBookingProps extends PageProps {
         acara: string;
         peserta: number;
         layanan: { id: number; nama_layanan: string }[];
+        kabupaten_kota: string;
+        kecamatan: string;
+        kenagarian_kelurahan: string;
         lokasi: string;
         no_hp: string;
         surat: string | null;
@@ -159,7 +162,11 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                             </ul>
                         </DetailItem>
 
+                        <DetailItem label="Kabupaten/Kota">{booking.kabupaten_kota}</DetailItem>
+                        <DetailItem label="Kecamatan">{booking.kecamatan}</DetailItem>
+                        <DetailItem label="Kenagarian/Kelurahan">{booking.kenagarian_kelurahan}</DetailItem>
                         <DetailItem label="Lokasi">{booking.lokasi}</DetailItem>
+
                         <DetailItem label="Nomor HP">
                             {booking.no_hp}
                         </DetailItem>

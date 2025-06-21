@@ -9,6 +9,7 @@ type Layanan = {
 
 type Umkm = {
     nama_lengkap: string;
+    jenis_kelamin: string;
     nik: string;
     alamat_lengkap: string;
     email: string;
@@ -61,6 +62,7 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
     const validate = () => {
         const requiredFields = [
             "nama_lengkap",
+            "jenis_kelamin",
             "nik",
             "nama_usaha",
             "nib",
@@ -126,6 +128,28 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
                     className="grid grid-cols-2 gap-6 text-sm"
                 >
                     {renderInput("Nama Lengkap", "nama_lengkap")}
+                    
+                    <div>
+                        <label className="block mb-1 capitalize">
+                            Jenis Kelamin
+                        </label>
+                        <select
+                            name="jenis_kelamin"
+                            value={form.jenis_kelamin}
+                            onChange={handleChange}
+                            className="w-full border px-3 py-2 rounded"
+                        >
+                            <option value="">-- Pilih Jenis Kelamin --</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                        {errors.jenis_kelamin && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.jenis_kelamin}
+                            </p>
+                        )}
+                    </div>
+
                     {renderInput("NIK", "nik")}
                     {renderInput("Email", "email")}
                     {renderInput("No HP", "no_hp")}

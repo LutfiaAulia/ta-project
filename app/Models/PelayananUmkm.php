@@ -15,6 +15,7 @@ class PelayananUmkm extends Model
 
     protected $fillable = [
         'nama_lengkap',
+        'jenis_kelamin',
         'nik',
         'alamat_lengkap',
         'email',

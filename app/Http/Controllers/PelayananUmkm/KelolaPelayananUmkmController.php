@@ -73,6 +73,7 @@ class KelolaPelayananUmkmController extends Controller
     {
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
+            'jenis_kelamin' => 'required|string|max:255',
             'nik' => 'required|string|max:20',
             'alamat_lengkap' => 'nullable|string',
             'email' => 'nullable|email',
@@ -98,6 +99,7 @@ class KelolaPelayananUmkmController extends Controller
 
         $pelayanan = PelayananUmkm::create([
             'nama_lengkap' => $request->nama_lengkap,
+            'jenis_kelamin' => $request->jenis_kelamin,
             'nik' => $request->nik,
             'alamat_lengkap' => $request->alamat_lengkap,
             'email' => $request->email,
@@ -138,6 +140,7 @@ class KelolaPelayananUmkmController extends Controller
                 'id_pelayanan' => $booking->id_pelayanan,
 
                 'nama_lengkap' => $booking->pelayanan->nama_lengkap,
+                'jenis_kelamin' => $booking->pelayanan->jenis_kelamin,
                 'nik' => $booking->pelayanan->nik,
                 'alamat_lengkap' => $booking->pelayanan->alamat_lengkap,
                 'email' => $booking->pelayanan->email,
@@ -167,6 +170,7 @@ class KelolaPelayananUmkmController extends Controller
     {
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
+            'jenis_kelamin' => 'required|string|max:255',
             'nik' => 'required|string|max:50',
             'nama_usaha' => 'required|string|max:255',
             'nib' => 'required|string|max:100',
@@ -184,6 +188,7 @@ class KelolaPelayananUmkmController extends Controller
 
         $umkm->update([
             'nama_lengkap' => $request->nama_lengkap,
+            'jenis_kelamin' => $request->jenis_kelamin,
             'nik' => $request->nik,
             'alamat_lengkap' => $request->alamat_lengkap,
             'email' => $request->email,

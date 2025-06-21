@@ -26,6 +26,9 @@ export default function BookingIns({
         acara: "",
         peserta: "",
         layanan: selectedLayanan?.map(String) ?? [],
+        kabupaten_kota: "",
+        kecamatan: "",
+        kenagarian_kelurahan: "",
         lokasi: "",
         no_hp: "",
         surat: null as File | null,
@@ -33,11 +36,9 @@ export default function BookingIns({
 
     const [successMessage, setSuccessMessage] = useState("");
 
-    // Tanggal besok (hari ini + 1 hari)
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // Convert bookedDates string ke array Date untuk excludeDates di datepicker
     const excludeDatesParsed = bookedDates.map((d) => parseISO(d));
 
     const submit: FormEventHandler = (e) => {
@@ -234,6 +235,7 @@ export default function BookingIns({
                                         onChange={(e) =>
                                             setData("acara", e.target.value)
                                         }
+                                        placeholder="Contoh: Pelatihan Digital Marketing"
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
                                         required
                                     />
@@ -256,6 +258,7 @@ export default function BookingIns({
                                         onChange={(e) =>
                                             setData("peserta", e.target.value)
                                         }
+                                        placeholder="Contoh: 50"
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
                                         required
                                         min={1}
@@ -331,6 +334,75 @@ export default function BookingIns({
                                     )}
                                 </div>
 
+                                {/* Kabupaten/Kota */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        Kabupaten/Kota
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="kabupaten/kota"
+                                        value={data.kabupaten_kota}
+                                        onChange={(e) =>
+                                            setData("kabupaten_kota", e.target.value)
+                                        }
+                                        placeholder="Contoh: Kabupaten Agam"
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
+                                        required
+                                    />
+                                    {errors.kabupaten_kota && (
+                                        <p className="mt-2 text-xs text-red-500">
+                                            {errors.kabupaten_kota}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Kecamatan */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        Kecamatan
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="kecamatan"
+                                        value={data.kecamatan}
+                                        onChange={(e) =>
+                                            setData("kecamatan", e.target.value)
+                                        }
+                                        placeholder="Contoh: Kecamatan Ampek Angkek"
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
+                                        required
+                                    />
+                                    {errors.kecamatan && (
+                                        <p className="mt-2 text-xs text-red-500">
+                                            {errors.kecamatan}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Kenagarian/Kelurahan */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        Kenagarian/Kelurahan
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="kenagaraian_kelurahan"
+                                        value={data.kenagarian_kelurahan}
+                                        onChange={(e) =>
+                                            setData("kenagarian_kelurahan", e.target.value)
+                                        }
+                                        placeholder="Contoh: Lambah"
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
+                                        required
+                                    />
+                                    {errors.kenagarian_kelurahan && (
+                                        <p className="mt-2 text-xs text-red-500">
+                                            {errors.kenagarian_kelurahan}
+                                        </p>
+                                    )}
+                                </div>
+
                                 {/* Lokasi */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">
@@ -343,6 +415,7 @@ export default function BookingIns({
                                         onChange={(e) =>
                                             setData("lokasi", e.target.value)
                                         }
+                                        placeholder="Contoh: Kantor Camat Ampek Angkek"
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
                                         required
                                     />
@@ -365,6 +438,7 @@ export default function BookingIns({
                                         onChange={(e) =>
                                             setData("no_hp", e.target.value)
                                         }
+                                        placeholder="Contoh: 08xxxxxxxxxx"
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
                                         required
                                     />
