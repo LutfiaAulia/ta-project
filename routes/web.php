@@ -12,6 +12,7 @@ use App\Http\Controllers\PelayananUmkm\KelolaPelayananUmkmController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Promosi\KelolaDataUmkmController;
 use App\Http\Controllers\Promosi\KelolaPromosiController;
+use App\Http\Controllers\Promosi\KelolaShowPromosiController;
 use App\Http\Controllers\SuratMasuk\KelolaDisposisiController;
 use App\Http\Controllers\SuratMasuk\KelolaSuratController;
 use App\Http\Controllers\User\KelolaUserController;
@@ -28,6 +29,7 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+Route::get('/list/umkm/promosi', [KelolaShowPromosiController::class, 'show'])->name('list.umkm.promosi');
 
 // ==================== ROUTE UNTUK DIAKSES BANYAK ROLE ==================== //
 Route::middleware(['auth'])->group(function () {

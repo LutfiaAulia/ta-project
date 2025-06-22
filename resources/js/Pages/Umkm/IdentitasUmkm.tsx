@@ -153,7 +153,7 @@ const IdentitasUmkm: React.FC = () => {
                             onChange={handleChange}
                             className="border p-2 rounded"
                             disabled={!isEditing}
-                            placeholder="contoh: Kabupaten Agam"
+                            placeholder="contoh: Kabupaten Agam/ Kota Padang"
                         />
                     </div>
 
@@ -179,7 +179,7 @@ const IdentitasUmkm: React.FC = () => {
                             onChange={handleChange}
                             className="border p-2 rounded"
                             disabled={!isEditing}
-                            placeholder="contoh: Kanagarian Lambah"
+                            placeholder="contoh: Nagari Lambah/ Kelurahan Padang Barat"
                         />
                     </div>
 

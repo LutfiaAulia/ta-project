@@ -52,7 +52,7 @@ export default function Welcome({ auth }: any) {
                                 Booking Mobil Klinik
                             </Link>
                             <Link
-                                href={route("umkm.login.form")}
+                                href={route("list.umkm.promosi")}
                                 className="bg-green-200 text-green-900 px-6 py-3 rounded-md font-semibold hover:bg-green-300 transition"
                             >
                                 Lihat Produk UMKM
@@ -100,90 +100,6 @@ export default function Welcome({ auth }: any) {
                             alt="Dokter"
                             className="rounded-full w-80 h-80 object-cover border-4 border-white shadow-md"
                         />
-                    </div>
-                </section>
-
-                {/* Produk UMKM */}
-                <section className="bg-white px-6 py-16">
-                    <h3 className="text-2xl font-semibold mb-10 text-center">
-                        Dukung Produk Lokal UMKM
-                    </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-10">
-                        {[
-                            {
-                                img: "/keripik-balado.png",
-                                name: "Keripik Balado",
-                                price: "Rp 15.000",
-                            },
-                            {
-                                img: "/batik.png",
-                                name: "Batik Tulis",
-                                price: "Rp 200.000",
-                            },
-                            {
-                                img: "/kopi.png",
-                                name: "Kopi Bubuk",
-                                price: "Rp 30.000",
-                            },
-                            {
-                                img: "/tas-tenun.png",
-                                name: "Tas Tenun",
-                                price: "Rp 150.000",
-                            },
-                        ].map((product, idx) => (
-                            <div key={idx} className="text-center">
-                                <img
-                                    src={product.img}
-                                    alt={product.name}
-                                    className="h-32 mx-auto mb-2 object-contain"
-                                />
-                                <p className="font-medium">{product.name}</p>
-                                <p className="text-sm text-gray-600">
-                                    {product.price}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="text-center">
-                        <Link
-                            href="#"
-                            className="bg-green-700 text-white px-6 py-2 rounded hover:bg-green-800 transition"
-                        >
-                            Lihat Semua Produk
-                        </Link>
-                    </div>
-                </section>
-
-                {/* Testimoni */}
-                <section className="bg-green-50 px-6 py-16">
-                    <h3 className="text-2xl font-semibold mb-10 text-center">
-                        Apa Kata Pelaku UMKM?
-                    </h3>
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {[
-                            {
-                                name: "Budi, Pengrajin Anyaman",
-                                quote: "Dengan layanan mobil klinik UMKM, saya bisa mengurus NIB lebih cepat.",
-                            },
-                            {
-                                name: "Sari, Pemilik Kopi Minang",
-                                quote: "Produk saya bisa dipromosikan lebih luas. Terima kasih Dinas UMKM!",
-                            },
-                            {
-                                name: "Andi, Pengusaha Batik",
-                                quote: "Program pelatihan sangat membantu menaikkan kualitas produk saya.",
-                            },
-                        ].map((item, idx) => (
-                            <div
-                                key={idx}
-                                className="bg-white p-5 rounded-lg shadow text-sm"
-                            >
-                                <p className="mb-3">"{item.quote}"</p>
-                                <p className="font-medium text-green-700">
-                                    – {item.name}
-                                </p>
-                            </div>
-                        ))}
                     </div>
                 </section>
 
