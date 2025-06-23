@@ -35,4 +35,9 @@ class IdentitasUmkm extends Model
     {
         return $this->hasMany(SosialMedia::class, 'id_identitas');
     }
+
+    public function kategori_umkm()
+    {
+        return $this->belongsToMany(Kategori::class, 'umkm_kategori', 'id_identitas', 'id_kategori');
+    }
 }

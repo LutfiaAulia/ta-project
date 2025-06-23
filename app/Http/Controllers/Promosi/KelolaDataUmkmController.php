@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Promosi;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Umkm;
@@ -15,12 +16,13 @@ class KelolaDataUmkmController extends Controller
     {
         $user = $request->user();
 
-        $umkm = Umkm::with(['identitas', 'identitas.sosial_media'])
+        $umkm = Umkm::with(['identitas', 'identitas.sosial_media', 'identitas.kategori_umkm'])
             ->where('user_id', $user->id)
             ->first();
 
         return Inertia::render('Umkm/IdentitasUmkm', [
             'umkm' => $umkm,
+            'kategori_umkm' => Kategori::select('id_kategori', 'nama_kategori')->get(),
         ]);
     }
 
@@ -46,6 +48,8 @@ class KelolaDataUmkmController extends Controller
             'instagram' => 'nullable|string|max:255',
             'whatsapp' => 'nullable|string|max:255',
             'facebook' => 'nullable|string|max:255',
+            'kategori_umkm' => 'nullable|array',
+            'kategori_umkm.*' => 'integer|exists:kategori,id_kategori',
         ]);
 
         $umkm->update([
@@ -64,16 +68,18 @@ class KelolaDataUmkmController extends Controller
             'longitude' => $validated['longitude'] ?? null,
         ];
 
-    if ($request->hasFile('foto_usaha')) {
-        if ($identitas && $identitas->foto_usaha) {
-            Storage::disk('public')->delete($identitas->foto_usaha);
+        if ($request->hasFile('foto_usaha')) {
+            if ($identitas && $identitas->foto_usaha) {
+                Storage::disk('public')->delete($identitas->foto_usaha);
+            }
+
+            $fotoPath = $request->file('foto_usaha')->store('foto_usaha', 'public');
+            $identitasData['foto_usaha'] = $fotoPath;
         }
 
-        $fotoPath = $request->file('foto_usaha')->store('foto_usaha', 'public');
-        $identitasData['foto_usaha'] = $fotoPath;
-    }
-
-    $identitas = $umkm->identitas()->updateOrCreate([], $identitasData);
+        $identitas = $umkm->identitas()->updateOrCreate([], $identitasData);
+        $kategoriIds = $request->input('kategori_umkm', []);
+        $identitas->kategori_umkm()->sync($kategoriIds);
 
         $sosmedData = [
             'instagram' => $validated['instagram'],

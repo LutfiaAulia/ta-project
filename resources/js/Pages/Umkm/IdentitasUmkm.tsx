@@ -8,6 +8,11 @@ type SosialMedia = {
     url: string;
 };
 
+type Kategori = {
+    id_kategori: number;
+    nama_kategori: string;
+};
+
 type IdentitasData = {
     jenis_usaha?: string;
     nama_usaha?: string;
@@ -20,6 +25,7 @@ type IdentitasData = {
     longitude?: string;
     foto_usaha?: string | null;
     sosial_media?: SosialMedia[];
+    kategori_umkm?: Kategori[];
 };
 
 type UmkmData = {
@@ -30,6 +36,11 @@ type UmkmData = {
 const IdentitasUmkm: React.FC = () => {
     const { props } = usePage<PageProps>();
     const umkm = props.umkm as UmkmData | undefined;
+    const kategoriList =
+        (props.kategori_umkm as {
+            id_kategori: number;
+            nama_kategori: string;
+        }[]) || [];
 
     function getSosmed(platform: string) {
         return (
@@ -56,6 +67,8 @@ const IdentitasUmkm: React.FC = () => {
         latitude: umkmIdentitas?.latitude || "",
         longitude: umkmIdentitas?.longitude || "",
         foto_usaha: null as File | null,
+        kategori_umkm:
+            umkmIdentitas?.kategori_umkm?.map((k) => k.id_kategori) || [],
     });
 
     useEffect(() => {
@@ -74,10 +87,13 @@ const IdentitasUmkm: React.FC = () => {
             latitude: umkmIdentitas?.latitude || "",
             longitude: umkmIdentitas?.longitude || "",
             foto_usaha: null,
+            kategori_umkm:
+                umkmIdentitas?.kategori_umkm?.map((k) => k.id_kategori) || [],
         });
     }, [umkmIdentitas, umkm]);
 
     const [isEditing, setIsEditing] = useState(false);
+    const [showKategori, setShowKategori] = useState(false);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -91,12 +107,27 @@ const IdentitasUmkm: React.FC = () => {
         setForm((prev) => ({ ...prev, foto_usaha: file }));
     };
 
+    const handleKategoriChange = (id: number, checked: boolean) => {
+        setForm((prev) => ({
+            ...prev,
+            kategori_umkm: checked
+                ? [...prev.kategori_umkm, id]
+                : prev.kategori_umkm.filter((val) => val !== id),
+        }));
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         const data = new FormData();
         Object.entries(form).forEach(([key, value]) => {
-            if (value !== null) data.append(key, value as string | Blob);
+            if (key === "kategori_umkm") {
+                (value as number[]).forEach((id) =>
+                    data.append("kategori_umkm[]", id.toString())
+                );
+            } else if (value !== null) {
+                data.append(key, value as string | Blob);
+            }
         });
 
         router.post("/umkm/update-data/umkm", data, {
@@ -142,6 +173,74 @@ const IdentitasUmkm: React.FC = () => {
                             disabled={!isEditing}
                             placeholder="Isi nama usaha"
                         />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label className="flex items-center justify-between">
+                            Kategori UMKM
+                            {isEditing && (
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowKategori(!showKategori)
+                                    }
+                                    className="text-blue-600 text-sm underline"
+                                >
+                                    {showKategori ? "Sembunyikan" : "Tampilkan"}
+                                </button>
+                            )}
+                        </label>
+
+                        {!isEditing ? (
+                            <div className="text-sm text-gray-800">
+                                {form.kategori_umkm.length > 0 ? (
+                                    kategoriList
+                                        .filter((k) =>
+                                            form.kategori_umkm.includes(
+                                                k.id_kategori
+                                            )
+                                        )
+                                        .map((k) => (
+                                            <span
+                                                key={k.id_kategori}
+                                                className="inline-block bg-blue-100 text-blue-700 px-2 py-1 mr-2 mb-1 rounded"
+                                            >
+                                                {k.nama_kategori}
+                                            </span>
+                                        ))
+                                ) : (
+                                    <span className="text-gray-500 italic">
+                                        Belum memilih kategori
+                                    </span>
+                                )}
+                            </div>
+                        ) : (
+                            showKategori && (
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    {kategoriList.map((kategori) => (
+                                        <label
+                                            key={kategori.id_kategori}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                value={kategori.id_kategori}
+                                                checked={form.kategori_umkm.includes(
+                                                    kategori.id_kategori
+                                                )}
+                                                onChange={(e) =>
+                                                    handleKategoriChange(
+                                                        kategori.id_kategori,
+                                                        e.target.checked
+                                                    )
+                                                }
+                                            />
+                                            {kategori.nama_kategori}
+                                        </label>
+                                    ))}
+                                </div>
+                            )
+                        )}
                     </div>
 
                     <div className="grid gap-2">
@@ -461,6 +560,10 @@ const IdentitasUmkm: React.FC = () => {
                                             longitude:
                                                 umkmIdentitas?.longitude || "",
                                             foto_usaha: null,
+                                            kategori_umkm:
+                                                umkmIdentitas?.kategori_umkm?.map(
+                                                    (k) => k.id_kategori
+                                                ) || [],
                                         });
                                     }}
                                     className="border px-4 py-2 rounded text-red-600 border-red-500 hover:bg-red-50"

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Link } from "@inertiajs/react";
+
 import {
     Search,
     MapPin,
@@ -6,8 +8,6 @@ import {
     Instagram,
     MessageCircle,
     ArrowLeft,
-    Star,
-    Heart,
     Share2,
 } from "lucide-react";
 
@@ -27,20 +27,16 @@ interface UMKM {
     address: string;
     description: string;
     image: string;
-    rating: number;
     phone: string;
     instagram: string;
     whatsapp: string;
     products: Product[];
-    isOpen: boolean;
-    tags: string[];
 }
 
 const ListUmkm: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedUMKM, setSelectedUMKM] = useState<UMKM | null>(null);
     const [selectedCategory, setSelectedCategory] = useState("Semua");
-    const [favorites, setFavorites] = useState<number[]>([]);
 
     const umkmData: UMKM[] = [
         {
@@ -52,12 +48,9 @@ const ListUmkm: React.FC = () => {
             description:
                 "Produsen kerupuk kulit sapi berkualitas tinggi dengan cita rasa tradisional yang autentik. Dibuat dari bahan pilihan dan proses tradisional yang telah turun temurun.",
             image: "/api/placeholder/400/300",
-            rating: 4.8,
             phone: "+62 812-3456-7890",
             instagram: "@kerupukkulitsapi_pasaman",
             whatsapp: "6281234567890",
-            isOpen: true,
-            tags: ["Halal", "Tradisional", "Kemasan Vakum"],
             products: [
                 {
                     id: 1,
@@ -94,12 +87,9 @@ const ListUmkm: React.FC = () => {
             description:
                 "Rendang daging sapi autentik dengan bumbu tradisional Minangkabau. Dimasak dengan santan kelapa dan rempah-rempah pilihan.",
             image: "/api/placeholder/400/300",
-            rating: 4.9,
             phone: "+62 811-2345-6789",
             instagram: "@rendang_authentic_padang",
             whatsapp: "6281123456789",
-            isOpen: true,
-            tags: ["Halal", "Autentik", "Tahan Lama"],
             products: [
                 {
                     id: 4,
@@ -126,12 +116,9 @@ const ListUmkm: React.FC = () => {
             description:
                 "Pengrajin songket tradisional Minangkabau dengan motif dan kualitas terbaik. Dibuat dengan teknik tenun tradisional yang telah berusia ratusan tahun.",
             image: "/api/placeholder/400/300",
-            rating: 4.7,
             phone: "+62 813-4567-8901",
             instagram: "@songket_pandaisikek",
             whatsapp: "6281345678901",
-            isOpen: true,
-            tags: ["Handmade", "Tradisional", "Premium"],
             products: [
                 {
                     id: 6,
@@ -169,12 +156,6 @@ const ListUmkm: React.FC = () => {
         return matchesSearch && matchesCategory;
     });
 
-    const toggleFavorite = (id: number) => {
-        setFavorites((prev) =>
-            prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id]
-        );
-    };
-
     const UMKMCard: React.FC<{ umkm: UMKM }> = ({ umkm }) => (
         <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer transform hover:-translate-y-1">
             <div className="relative">
@@ -188,31 +169,6 @@ const ListUmkm: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(umkm.id);
-                    }}
-                    className={`absolute top-3 right-3 p-2 rounded-full transition-colors ${
-                        favorites.includes(umkm.id)
-                            ? "bg-red-500 text-white"
-                            : "bg-white text-gray-400 hover:text-red-500"
-                    }`}
-                >
-                    <Heart
-                        size={16}
-                        fill={
-                            favorites.includes(umkm.id)
-                                ? "currentColor"
-                                : "none"
-                        }
-                    />
-                </button>
-                {umkm.isOpen && (
-                    <div className="absolute top-3 left-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                        Buka
-                    </div>
-                )}
             </div>
 
             <div className="p-6">
@@ -220,28 +176,11 @@ const ListUmkm: React.FC = () => {
                     <h3 className="font-bold text-lg text-gray-800 group-hover:text-blue-600 transition-colors">
                         {umkm.name}
                     </h3>
-                    <div className="flex items-center text-yellow-500">
-                        <Star size={16} fill="currentColor" />
-                        <span className="ml-1 text-sm text-gray-600">
-                            {umkm.rating}
-                        </span>
-                    </div>
                 </div>
 
                 <div className="flex items-start text-gray-600 mb-3">
                     <MapPin size={16} className="mt-1 mr-2 flex-shrink-0" />
                     <span className="text-sm">{umkm.location}</span>
-                </div>
-
-                <div className="flex flex-wrap gap-2 mb-4">
-                    {umkm.tags.map((tag, index) => (
-                        <span
-                            key={index}
-                            className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full"
-                        >
-                            {tag}
-                        </span>
-                    ))}
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -296,16 +235,6 @@ const ListUmkm: React.FC = () => {
                                     {selectedUMKM.description}
                                 </p>
                                 <div className="flex items-center gap-4">
-                                    <div className="flex items-center">
-                                        <Star
-                                            size={20}
-                                            fill="currentColor"
-                                            className="text-yellow-300"
-                                        />
-                                        <span className="ml-1 text-lg font-semibold">
-                                            {selectedUMKM.rating}
-                                        </span>
-                                    </div>
                                     <div className="flex items-center">
                                         <MapPin size={16} className="mr-1" />
                                         <span>{selectedUMKM.location}</span>
@@ -435,9 +364,12 @@ const ListUmkm: React.FC = () => {
                                 </p>
                             </div>
                         </div>
-                        <button className="bg-white/20 px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-colors">
+                        <Link
+                            href="/umkm/login"
+                            className="bg-white/20 px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-colors"
+                        >
                             Login
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Search Bar */}
