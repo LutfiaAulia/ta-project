@@ -13,21 +13,20 @@ import {
 
 interface Product {
     id: number;
-    name: string;
-    price: string;
-    image: string;
-    description: string;
+    nama_produk: string;
+    harga_produk: string;
+    foto_produk: string;
+    deskripsi_produk: string;
 }
-
 interface UMKM {
     id: number;
-    name: string;
-    category: string;
-    location: string;
-    address: string;
-    description: string;
-    image: string;
-    phone: string;
+    nama_usaha: string;
+    kategori: string;
+    lokasi: string;
+    alamat_detail: string;
+    deskripsi: string;
+    foto_usaha: string;
+    no_hp: string;
     instagram: string;
     whatsapp: string;
     products: Product[];
@@ -41,99 +40,102 @@ const ListUmkm: React.FC = () => {
     const umkmData: UMKM[] = [
         {
             id: 1,
-            name: "Kerupuk Kulit Sapi",
-            category: "Makanan & Minuman",
-            location: "Kabupaten Pasaman, Nagari Panti Selatan",
-            address: "Jl. Raya Panti Selatan No. 123, Kabupaten Pasaman",
-            description:
+            nama_usaha: "Kerupuk Kulit Sapi",
+            kategori: "Makanan & Minuman",
+            lokasi: "Kabupaten Pasaman, Nagari Panti Selatan",
+            alamat_detail: "Jl. Raya Panti Selatan No. 123, Kabupaten Pasaman",
+            deskripsi:
                 "Produsen kerupuk kulit sapi berkualitas tinggi dengan cita rasa tradisional yang autentik. Dibuat dari bahan pilihan dan proses tradisional yang telah turun temurun.",
-            image: "/api/placeholder/400/300",
-            phone: "+62 812-3456-7890",
+            foto_usaha: "/api/placeholder/400/300",
+            no_hp: "+62 812-3456-7890",
             instagram: "@kerupukkulitsapi_pasaman",
             whatsapp: "6281234567890",
             products: [
                 {
                     id: 1,
-                    name: "Kerupuk Kulit Sapi Original",
-                    price: "Rp 15.000",
-                    image: "/api/placeholder/200/150",
-                    description:
+                    nama_produk: "Kerupuk Kulit Sapi Original",
+                    harga_produk: "Rp 15.000",
+                    foto_produk: "/api/placeholder/200/150",
+                    deskripsi_produk:
                         "Kerupuk kulit sapi dengan rasa original yang gurih dan renyah",
                 },
                 {
                     id: 2,
-                    name: "Kerupuk Kulit Sapi Pedas",
-                    price: "Rp 17.000",
-                    image: "/api/placeholder/200/150",
-                    description:
+                    nama_produk: "Kerupuk Kulit Sapi Pedas",
+                    harga_produk: "Rp 17.000",
+                    foto_produk: "/api/placeholder/200/150",
+                    deskripsi_produk:
                         "Kerupuk kulit sapi dengan bumbu pedas yang menggugah selera",
                 },
                 {
                     id: 3,
-                    name: "Kerupuk Kulit Sapi Balado",
-                    price: "Rp 18.000",
-                    image: "/api/placeholder/200/150",
-                    description:
+                    nama_produk: "Kerupuk Kulit Sapi Balado",
+                    harga_produk: "Rp 18.000",
+                    foto_produk: "/api/placeholder/200/150",
+                    deskripsi_produk:
                         "Kerupuk kulit sapi dengan cita rasa balado khas Minang",
                 },
             ],
         },
         {
             id: 2,
-            name: "Rendang Daging Sapi",
-            category: "Makanan & Minuman",
-            location: "Kota Padang, Kelurahan Padang Barat",
-            address: "Jl. Sudirman No. 45, Padang Barat, Padang",
-            description:
+            nama_usaha: "Rendang Daging Sapi",
+            kategori: "Makanan & Minuman",
+            lokasi: "Kota Padang, Kelurahan Padang Barat",
+            alamat_detail: "Jl. Sudirman No. 45, Padang Barat, Padang",
+            deskripsi:
                 "Rendang daging sapi autentik dengan bumbu tradisional Minangkabau. Dimasak dengan santan kelapa dan rempah-rempah pilihan.",
-            image: "/api/placeholder/400/300",
-            phone: "+62 811-2345-6789",
+            foto_usaha: "/api/placeholder/400/300",
+            no_hp: "+62 811-2345-6789",
             instagram: "@rendang_authentic_padang",
             whatsapp: "6281123456789",
             products: [
                 {
                     id: 4,
-                    name: "Rendang Daging Sapi 250gr",
-                    price: "Rp 45.000",
-                    image: "/api/placeholder/200/150",
-                    description: "Rendang daging sapi premium kemasan 250 gram",
+                    nama_produk: "Rendang Daging Sapi 250gr",
+                    harga_produk: "Rp 45.000",
+                    foto_produk: "/api/placeholder/200/150",
+                    deskripsi_produk:
+                        "Rendang daging sapi premium kemasan 250 gram",
                 },
                 {
                     id: 5,
-                    name: "Rendang Daging Sapi 500gr",
-                    price: "Rp 85.000",
-                    image: "/api/placeholder/200/150",
-                    description: "Rendang daging sapi premium kemasan 500 gram",
+                    nama_produk: "Rendang Daging Sapi 500gr",
+                    harga_produk: "Rp 85.000",
+                    foto_produk: "/api/placeholder/200/150",
+                    deskripsi_produk:
+                        "Rendang daging sapi premium kemasan 500 gram",
                 },
             ],
         },
         {
             id: 3,
-            name: "Kerajinan Songket",
-            category: "Kerajinan",
-            location: "Kabupaten Tanah Datar, Nagari Pandai Sikek",
-            address: "Jl. Songket Raya No. 12, Pandai Sikek, Tanah Datar",
-            description:
+            nama_usaha: "Kerajinan Songket",
+            kategori: "Kerajinan",
+            lokasi: "Kabupaten Tanah Datar, Nagari Pandai Sikek",
+            alamat_detail: "Jl. Songket Raya No. 12, Pandai Sikek, Tanah Datar",
+            deskripsi:
                 "Pengrajin songket tradisional Minangkabau dengan motif dan kualitas terbaik. Dibuat dengan teknik tenun tradisional yang telah berusia ratusan tahun.",
-            image: "/api/placeholder/400/300",
-            phone: "+62 813-4567-8901",
+            foto_usaha: "/api/placeholder/400/300",
+            no_hp: "+62 813-4567-8901",
             instagram: "@songket_pandaisikek",
             whatsapp: "6281345678901",
             products: [
                 {
                     id: 6,
-                    name: "Songket Motif Pucuk Rebung",
-                    price: "Rp 850.000",
-                    image: "/api/placeholder/200/150",
-                    description:
+                    nama_produk: "Songket Motif Pucuk Rebung",
+                    harga_produk: "Rp 850.000",
+                    foto_produk: "/api/placeholder/200/150",
+                    deskripsi_produk:
                         "Songket dengan motif pucuk rebung khas Minangkabau",
                 },
                 {
                     id: 7,
-                    name: "Songket Motif Balapak",
-                    price: "Rp 950.000",
-                    image: "/api/placeholder/200/150",
-                    description: "Songket dengan motif balapak yang elegan",
+                    nama_produk: "Songket Motif Balapak",
+                    harga_produk: "Rp 950.000",
+                    foto_produk: "/api/placeholder/200/150",
+                    deskripsi_produk:
+                        "Songket dengan motif balapak yang elegan",
                 },
             ],
         },
@@ -149,10 +151,10 @@ const ListUmkm: React.FC = () => {
 
     const filteredUMKM = umkmData.filter((umkm) => {
         const matchesSearch =
-            umkm.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            umkm.location.toLowerCase().includes(searchTerm.toLowerCase());
+            umkm.nama_usaha.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            umkm.lokasi.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory =
-            selectedCategory === "Semua" || umkm.category === selectedCategory;
+            selectedCategory === "Semua" || umkm.kategori === selectedCategory;
         return matchesSearch && matchesCategory;
     });
 
@@ -162,10 +164,10 @@ const ListUmkm: React.FC = () => {
                 <div className="h-48 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
                     <div className="text-white text-center p-4">
                         <div className="text-2xl font-bold mb-2">
-                            {umkm.name}
+                            {umkm.nama_usaha}
                         </div>
                         <div className="text-sm opacity-90">
-                            {umkm.category}
+                            {umkm.kategori}
                         </div>
                     </div>
                 </div>
@@ -174,13 +176,13 @@ const ListUmkm: React.FC = () => {
             <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
                     <h3 className="font-bold text-lg text-gray-800 group-hover:text-blue-600 transition-colors">
-                        {umkm.name}
+                        {umkm.nama_usaha}
                     </h3>
                 </div>
 
                 <div className="flex items-start text-gray-600 mb-3">
                     <MapPin size={16} className="mt-1 mr-2 flex-shrink-0" />
-                    <span className="text-sm">{umkm.location}</span>
+                    <span className="text-sm">{umkm.lokasi}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -223,21 +225,21 @@ const ListUmkm: React.FC = () => {
                             <div className="w-32 h-32 bg-white/20 rounded-2xl flex items-center justify-center">
                                 <div className="text-center">
                                     <div className="text-xl font-bold">
-                                        {selectedUMKM.name}
+                                        {selectedUMKM.nama_usaha}
                                     </div>
                                 </div>
                             </div>
                             <div className="flex-1">
                                 <h1 className="text-3xl font-bold mb-2">
-                                    {selectedUMKM.name}
+                                    {selectedUMKM.nama_usaha}
                                 </h1>
                                 <p className="text-lg opacity-90 mb-3">
-                                    {selectedUMKM.description}
+                                    {selectedUMKM.deskripsi}
                                 </p>
                                 <div className="flex items-center gap-4">
                                     <div className="flex items-center">
                                         <MapPin size={16} className="mr-1" />
-                                        <span>{selectedUMKM.location}</span>
+                                        <span>{selectedUMKM.lokasi}</span>
                                     </div>
                                 </div>
                             </div>
@@ -260,7 +262,7 @@ const ListUmkm: React.FC = () => {
                                             Alamat
                                         </label>
                                         <p className="font-medium">
-                                            {selectedUMKM.address}
+                                            {selectedUMKM.alamat_detail}
                                         </p>
                                     </div>
                                     <div>
@@ -268,7 +270,7 @@ const ListUmkm: React.FC = () => {
                                             Telepon
                                         </label>
                                         <p className="font-medium">
-                                            {selectedUMKM.phone}
+                                            {selectedUMKM.no_hp}
                                         </p>
                                     </div>
                                     <div>
@@ -315,24 +317,21 @@ const ListUmkm: React.FC = () => {
                                         <div className="h-48 bg-gradient-to-br from-orange-300 to-red-400 flex items-center justify-center">
                                             <div className="text-white text-center">
                                                 <div className="text-lg font-semibold">
-                                                    {product.name}
+                                                    {product.nama_produk}
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="p-6">
                                             <h4 className="font-bold text-lg mb-2">
-                                                {product.name}
+                                                {product.nama_produk}
                                             </h4>
                                             <p className="text-gray-600 text-sm mb-3">
-                                                {product.description}
+                                                {product.deskripsi_produk}
                                             </p>
                                             <div className="flex items-center justify-between">
                                                 <span className="text-2xl font-bold text-blue-600">
-                                                    {product.price}
+                                                    {product.harga_produk}
                                                 </span>
-                                                <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:from-blue-600 hover:to-purple-700 transition-all">
-                                                    Pesan Sekarang
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -352,18 +351,21 @@ const ListUmkm: React.FC = () => {
                 <div className="max-w-6xl mx-auto px-6 py-8">
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center">
-                            <div className="bg-white/20 p-3 rounded-xl mr-4">
-                                <div className="w-8 h-8 bg-white/40 rounded"></div>
-                            </div>
+                            <img
+                                src="/logo.png"
+                                alt="Logo"
+                                className="w-12 h-12 object-contain mr-4"
+                            />
                             <div>
                                 <h1 className="text-2xl font-bold">
                                     UMKM Sumatera Barat
                                 </h1>
                                 <p className="opacity-90">
-                                    Dinas Koperasi UKM Provinsi Sumatera Barat
+                                    Dinas Koperasi dan UMKM Provinsi Sumatera Barat
                                 </p>
                             </div>
                         </div>
+
                         <Link
                             href="/umkm/login"
                             className="bg-white/20 px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-colors"
