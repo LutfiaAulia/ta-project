@@ -38,4 +38,9 @@ class Umkm extends Model
     {
         return $this->hasOne(IdentitasUmkm::class, 'id_umkm');
     }
+
+    public function promosi()
+    {
+        return $this->hasMany(Promosi::class, 'id_umkm');
+    }
 }
