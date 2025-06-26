@@ -165,7 +165,7 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                                                 Hapus
                                             </Link>
                                             <Link
-                                                href={`/pegawai/laporan/pdf/${lapor.id_laporan}`}
+                                                href={`/pegawai/tampilan/laporan/${lapor.id_laporan}`}
                                                 className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs"
                                                 target="_blank"
                                             >

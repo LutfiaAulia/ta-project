@@ -1,12 +1,12 @@
 import React from "react";
 import { usePage } from "@inertiajs/react";
 
-interface PreviewData {
+interface LaporanData {
     judul: string;
     dasar: string;
     maksud: string;
     tujuan: string;
-    personil: Array<{ nama: string;}>;
+    personil: Array<{ nama: string }>;
     tanggal_mulai: string;
     tanggal_akhir: string;
     biaya: string;
@@ -15,7 +15,7 @@ interface PreviewData {
     pelakuUsaha: Array<{
         nama_lengkap: string;
         no_hp: string;
-        jenisKelamin: string;
+        jenis_kelamin: string;
         kenagarian_kelurahan: string;
         email?: string;
     }>;
@@ -24,11 +24,16 @@ interface PreviewData {
     nama_penulis: string;
     durasi: number;
     tanggalLaporan: string;
+    dokumentasi: Array<{
+        id_dokumentasi: number;
+        nama_file: string;
+        path_file: string;
+    }>;
 }
 
 const LaporanTemplate: React.FC = () => {
     const { laporan = null } = usePage().props as {
-        laporan?: PreviewData | null;
+        laporan?: LaporanData | null;
     };
 
     if (!laporan) {
@@ -49,27 +54,39 @@ const LaporanTemplate: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gray-100 font-times text-[12pt]">
             <div className="max-w-4xl mx-auto bg-white min-h-screen print:shadow-none print:max-w-none print:mx-0">
-                <div className="p-8 print:p-6">
+                <div className="p-8 print:p-0">
                     {/* Header */}
                     <div className="text-center mb-8">
-                        <div className="mb-4">
-                            <h1 className="text-lg font-bold mb-2">
-                                PEMERINTAH PROVINSI SUMATERA BARAT
-                            </h1>
-                            <h2 className="text-lg font-bold mb-4">
-                                DINAS KOPERASI UKM
-                            </h2>
-                            <p className="text-sm">
-                                Jalan Khatib Sulaiman No. 11. (0751) 7055292 –
-                                7055298 Fax. (0751) 7052701 Padang
-                            </p>
+                        <div className="flex items-center justify-center mb-4">
+                            {/* Logo */}
+                            <div className="mr-4">
+                                <img
+                                    src="/logo.png"
+                                    alt="Logo"
+                                    className="w-20 h-20 object-contain"
+                                />
+                            </div>
+
+                            {/* Teks Header */}
+                            <div>
+                                <h1 className="text-[14pt] font-bold">
+                                    PEMERINTAH PROVINSI SUMATERA BARAT
+                                </h1>
+                                <h2 className="text-[24pt] font-bold mb-1">
+                                    DINAS KOPERASI UKM
+                                </h2>
+                                <p className="text-[10pt]">
+                                    Jalan Khatib Sulaiman No. 11. (0751) 7055292
+                                    – 7055298 Fax. (0751) 7052701 Padang
+                                </p>
+                            </div>
                         </div>
+
                         <div className="border-t-2 border-black w-full my-4"></div>
-                        <h3 className="text-base font-bold">
-                            LAPORAN PERJALANAN DINAS DALAM RANGKA FASILITASI
-                            MILLENNIAL ENTREPRENEUR
+                        <h3 className=" text-[14pt] font-bold">
+                            {laporan.judul}
                         </h3>
                     </div>
 
@@ -93,103 +110,109 @@ const LaporanTemplate: React.FC = () => {
                     {/* Detail Laporan */}
                     <div className="space-y-4">
                         {/* Dasar */}
-                            <div className="flex">
-                                <span className="w-8 font-medium">I.</span>
-                                <div>
-                                    <span className="font-medium">Dasar</span>
-                                    <span className="ml-8">
-                                        : {laporan.dasar}
-                                    </span>
-                                </div>
+                        <div className="flex mb-2">
+                            <div className="w-36 flex">
+                                <span className="mr-2 font-medium">I.</span>
+                                <span className="font-medium">Dasar</span>
                             </div>
+                            <div className="flex-1 flex">
+                                <span className="mr-2">:</span>
+                                <p className="flex-1 text-justify">
+                                    {laporan.dasar}
+                                </p>
+                            </div>
+                        </div>
 
                         {/* Maksud */}
-                        <div>
-                            <div className="flex">
-                                <span className="w-8 font-medium">II.</span>
-                                <div>
-                                    <span className="font-medium">Maksud</span>
-                                    <span className="ml-4">
-                                        : {laporan.maksud}
-                                    </span>
-                                </div>
+                        <div className="flex mb-2">
+                            <div className="w-36 flex">
+                                <span className="mr-2 font-medium">II.</span>
+                                <span className="font-medium">Maksud</span>
                             </div>
-                            <div className="ml-16">
-                                Millennial Entrepreneur.
+                            <div className="flex-1 flex">
+                                <span className="mr-2">:</span>
+                                <p className="flex-1 text-justify">
+                                    {laporan.maksud}
+                                </p>
                             </div>
                         </div>
 
                         {/* Tujuan */}
-                        <div>
-                            <div className="flex">
-                                <span className="w-8 font-medium">III.</span>
-                                <div>
-                                    <span className="font-medium">Tujuan</span>
-                                    <span className="ml-6">
-                                        : {laporan.tujuan}
-                                    </span>
-                                </div>
+                        <div className="flex mb-2">
+                            <div className="w-36 flex">
+                                <span className="mr-2 font-medium">III.</span>
+                                <span className="font-medium">Tujuan</span>
+                            </div>
+                            <div className="flex-1 flex">
+                                <span className="mr-2">:</span>
+                                <p className="flex-1 text-justify">
+                                    {laporan.tujuan}
+                                </p>
                             </div>
                         </div>
 
                         {/* Personil */}
-                        <div>
-                            <div className="flex">
-                                <span className="w-8 font-medium">IV.</span>
+                        <div className="flex mb-2">
+                            <div className="w-36 flex">
+                                <span className="mr-2 font-medium">IV.</span>
                                 <span className="font-medium">Personil</span>
-                                <span className="ml-6">:</span>
                             </div>
-                            <div className="ml-16">
-                                {laporan.personil.map((person, index) => (
-                                    <div key={index} className="flex">
-                                        <span className="w-8">
-                                            {index + 1}.
-                                        </span>
-                                        <span>
-                                            {person.nama}
-                                        </span>
-                                    </div>
-                                ))}
+                            <div className="flex-1 flex">
+                                <span className="mr-2">:</span>
+                                <div>
+                                    {laporan.personil.map((person, index) => (
+                                        <div key={index} className="flex">
+                                            <span className="w-8">
+                                                {index + 1}.
+                                            </span>
+                                            <span>{person.nama}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
                         {/* Jadwal */}
-                        <div>
-                            <div className="flex">
-                                <span className="w-8 font-medium">V.</span>
-                                <div>
-                                    <span className="font-medium">Jadwal</span>
-                                    <span className="ml-8">
-                                        : {formatDate(laporan.tanggal_mulai)} -{" "}
-                                        {formatDate(laporan.tanggal_akhir)} (
-                                        {laporan.durasi} hari)
-                                    </span>
-                                </div>
+                        <div className="flex mb-2">
+                            <div className="w-36 flex">
+                                <span className="mr-2 font-medium">V.</span>
+                                <span className="font-medium">Jadwal</span>
+                            </div>
+                            <div className="flex-1 flex">
+                                <span className="mr-2">:</span>
+                                <p className="flex-1 text-justify">
+                                    {formatDate(laporan.tanggal_mulai)} -{" "}
+                                    {formatDate(laporan.tanggal_akhir)} (
+                                    {laporan.durasi} hari)
+                                </p>
                             </div>
                         </div>
 
                         {/* Biaya */}
-                            <div className="flex">
-                                <span className="w-8 font-medium">VI.</span>
-                                <div>
-                                    <span className="font-medium">Biaya</span>
-                                    <span className="ml-10">
-                                        : {laporan.biaya}
-                                    </span>
-                                </div>
+                        <div className="flex mb-2">
+                            <div className="w-36 flex">
+                                <span className="mr-2 font-medium">VI.</span>
+                                <span className="font-medium">Biaya</span>
                             </div>
+                            <div className="flex-1 flex">
+                                <span className="mr-2">:</span>
+                                <p className="flex-1 text-justify">
+                                    {laporan.biaya}
+                                </p>
+                            </div>
+                        </div>
 
                         {/* Pelaksanaan */}
                         <div>
-                            <div className="flex">
-                                <span className="w-8 font-medium">VII.</span>
+                            <div className="flex mb-2">
+                                <span className="mr-2 font-medium">VII.</span>
                                 <span className="font-medium">PELAKSANAAN</span>
                             </div>
-                            <div className="ml-16 text-justify">
-                                <p className="mb-4">
+                            <div className="flex-1 text-justify">
+                                <p className="mb-4 ml-10 indent-8">
                                     {laporan.ringkasan_pelaksanaan}
                                 </p>
-                                <p className="font-medium mb-4">
+                                <p className="font-medium mb-4 ml-10 indent-8">
                                     Berikut data pelaku usaha yang sudah
                                     difasilitasi {laporan.layanan}:
                                 </p>
@@ -233,10 +256,12 @@ const LaporanTemplate: React.FC = () => {
                                                         pelaku.no_hp}
                                                 </td>
                                                 <td className="border border-black px-2 py-1 text-center">
-                                                    {pelaku.jenisKelamin}
+                                                    {pelaku.jenis_kelamin}
                                                 </td>
                                                 <td className="border border-black px-2 py-1 text-center">
-                                                    {pelaku.kenagarian_kelurahan}
+                                                    {
+                                                        pelaku.kenagarian_kelurahan
+                                                    }
                                                 </td>
                                             </tr>
                                         )
@@ -247,15 +272,15 @@ const LaporanTemplate: React.FC = () => {
 
                         {/* Kesimpulan dan Saran */}
                         <div className="mt-8">
-                            <div className="flex">
-                                <span className="w-8 font-medium">VIII.</span>
+                            <div className="flex mb-2">
+                                <span className="mr-2 font-medium">VIII.</span>
                                 <span className="font-medium">
                                     KESIMPULAN DAN SARAN
                                 </span>
                             </div>
 
                             {/* Kesimpulan */}
-                            <div className="ml-16 mt-4">
+                            <div className="ml-10 mt-2">
                                 <div className="font-medium mb-2">
                                     a. Kesimpulan
                                 </div>
@@ -274,7 +299,7 @@ const LaporanTemplate: React.FC = () => {
                             </div>
 
                             {/* Saran */}
-                            <div className="ml-16 mt-6">
+                            <div className="ml-10 mt-4">
                                 <div className="font-medium mb-2">b. Saran</div>
                                 <div className="ml-4">
                                     {laporan.saran.map((item, index) => (
@@ -292,11 +317,11 @@ const LaporanTemplate: React.FC = () => {
                         </div>
 
                         {/* Penutup */}
-                        <div className="mt-8 text-justify">
+                        <div className="mt-8 text-justify indent-8">
                             <p>
                                 Demikianlah laporan perjalanan dinas ini kami
-                                sampaikan kepada Bapak sebagai bahan masukan,
-                                arahan, dan petunjuk selanjutnya. Terima kasih.
+                                sampaikan sebagai bahan masukan, arahan, dan
+                                petunjuk selanjutnya kami ucapkan terima kasih.
                             </p>
                         </div>
 
@@ -310,7 +335,7 @@ const LaporanTemplate: React.FC = () => {
                                     a/n Yang melakukan perjalanan dinas
                                 </p>
                                 <div className="mt-16 mb-2">
-                                    <div className="w-32 border-b border-black"></div>
+                                    <div className="w-40"></div>
                                 </div>
                                 <p className="font-medium">
                                     {laporan.nama_penulis}
@@ -320,20 +345,35 @@ const LaporanTemplate: React.FC = () => {
 
                         {/* Dokumentasi */}
                         <div className="mt-12 print:break-before-page">
-                            <h3 className="font-bold text-center mb-6">
+                            <h3 className="font-bold text-center mb-6 text-[14pt]">
                                 Dokumentasi
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
-                                {[1, 2, 3, 4, 5, 6].map((num) => (
-                                    <div
-                                        key={num}
-                                        className="border border-gray-300 h-48 flex items-center justify-center bg-gray-50"
-                                    >
-                                        <span className="text-gray-500">
-                                            Foto Dokumentasi {num}
-                                        </span>
-                                    </div>
-                                ))}
+                                {laporan.dokumentasi.length > 0
+                                    ? laporan.dokumentasi.map((doc, index) => (
+                                          <div
+                                              key={doc.id_dokumentasi}
+                                              className="border border-gray-300 h-48 flex items-center justify-center bg-gray-50 overflow-hidden"
+                                          >
+                                              <img
+                                                  src={`/storage/${doc.path_file}`}
+                                                  alt={`Dokumentasi ${
+                                                      index + 1
+                                                  }`}
+                                                  className="h-full w-full object-cover"
+                                              />
+                                          </div>
+                                      ))
+                                    : [1, 2, 3, 4, 5, 6].map((num) => (
+                                          <div
+                                              key={num}
+                                              className="border border-gray-300 h-48 flex items-center justify-center bg-gray-50"
+                                          >
+                                              <span className="text-gray-500">
+                                                  Foto Dokumentasi {num}
+                                              </span>
+                                          </div>
+                                      ))}
                             </div>
                         </div>
                     </div>

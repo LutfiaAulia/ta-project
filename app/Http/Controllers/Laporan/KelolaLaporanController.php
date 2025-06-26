@@ -145,7 +145,6 @@ class KelolaLaporanController extends Controller
 
     public function update(Request $request, $id_laporan)
     {
-        // Foto lama masih ke hapus
         $laporan = Laporan::with('dokumentasi')->findOrFail($id_laporan);
 
         $validator = Validator::make($request->all(), [
@@ -211,10 +210,67 @@ class KelolaLaporanController extends Controller
         foreach ($laporan->dokumentasi as $doc) {
             Storage::disk('public')->delete($doc->path_file);
         }
-        
+
         $laporan->dokumentasi()->delete();
         $laporan->delete();
 
         return redirect()->route('laporan.list')->with('success', 'Laporan berhasil dihapus.');
+    }
+
+    public function laporan($id_laporan)
+    {
+        $laporan = Laporan::with([
+            'booking.pegawaiLapangan.user',
+            'booking.bookingPelayananUmkm.pelayanan',
+            'booking.layanan',
+            'dokumentasi',
+        ])->findOrFail($id_laporan);
+
+        $booking = $laporan->booking;
+
+        $tanggal_mulai = $booking->tanggal_mulai;
+        $tanggal_akhir = $booking->tanggal_akhir;
+        $durasi = now()->parse($tanggal_mulai)->diffInDays(now()->parse($tanggal_akhir)) + 1;
+
+        return Inertia::render('Pegawai/Laporan/LaporanTemplate', [
+            'laporan' => [
+                'judul' => $laporan->judul,
+                'dasar' => $laporan->dasar,
+                'maksud' => $laporan->maksud,
+                'tujuan' => $laporan->tujuan,
+                'biaya' => $laporan->biaya,
+                'ringkasan_pelaksanaan' => $laporan->ringkasan_pelaksana,
+                'kesimpulan' => explode("\n", $laporan->kesimpulan),
+                'saran' => explode("\n", $laporan->saran),
+                'nama_penulis' => $laporan->nama_penulis,
+                'tanggalLaporan' => $laporan->created_at->format('Y-m-d'),
+                'tanggal_mulai' => $tanggal_mulai,
+                'tanggal_akhir' => $tanggal_akhir,
+                'durasi' => $durasi,
+                'layanan' => $booking->layanan->pluck('layanan')->join(', '),
+
+                'personil' => $booking->pegawaiLapangan->map(function ($pegawai) {
+                    return ['nama' => $pegawai->user->nama ?? 'Tidak diketahui'];
+                }),
+
+                'pelakuUsaha' => $booking->bookingPelayananUmkm->map(function ($item) use ($booking) {
+                    return [
+                        'nama_lengkap' => $item->pelayanan->nama_lengkap,
+                        'no_hp' => $item->pelayanan->no_hp,
+                        'jenis_kelamin' => $item->pelayanan->jenis_kelamin,
+                        'kenagarian_kelurahan' => $booking->kenagarian_kelurahan,
+                        'email' => $item->pelayanan->email,
+                    ];
+                }),
+
+                'dokumentasi' => $laporan->dokumentasi->map(function ($doc) {
+                    return [
+                        'id_dokumentasi' => $doc->id_dokuemntasi,
+                        'nama_file' => $doc->nama_file,
+                        'path_file' => $doc->path_file,
+                    ];
+                }),
+            ],
+        ]);
     }
 }

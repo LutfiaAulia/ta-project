@@ -129,6 +129,8 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/produk/{id}', [KelolaPromosiController::class, 'editPegawai'])->name('pegawai.edit.produk');
         Route::put('/update/produk/{id}', [KelolaPromosiController::class, 'updatePegawai'])->name('pegawai.update.produk');
         Route::delete('/destroy/produk/{id}', [KelolaPromosiController::class, 'destroyPegawai'])->name('pegawai.destroy.produk');
+
+        Route::get('/tampilan/laporan/{id}', [KelolaLaporanController::class, 'laporan'])->name('tampilan.tempalte.laporan');
     });
 });
 

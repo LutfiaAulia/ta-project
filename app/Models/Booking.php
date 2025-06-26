@@ -62,7 +62,6 @@ class Booking extends Model
         return $this->belongsTo(Sopir::class, 'id_sopir', 'id_sopir');
     }
 
-
     public function layanan()
     {
         return $this->belongsToMany(Layanan::class, 'booking_layanan', 'id_booking', 'id_layanan');
@@ -71,5 +70,10 @@ class Booking extends Model
     public function bookingPelayananUmkm()
     {
         return $this->hasMany(BookingPelayananUmkm::class, 'id_booking');
+    }
+
+    public function laporan()
+    {
+        return $this->hasOne(Laporan::class, 'id_booking', 'id_booking');
     }
 }

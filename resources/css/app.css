@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    .font-times {
+        font-family: "Times New Roman", Times, serif;
+    }
+
+    @media print {
+        @page {
+            size: A4;
+            margin-left: 2cm;
+            margin-top: 2cm;
+            margin-right: 2cm;
+            margin-bottom: 2cm;
+        }
+
+        body {
+            font-size: 14pt;
+            font-family: "Times New Roman", Times, serif;
+        }
+    }
+}
+
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
