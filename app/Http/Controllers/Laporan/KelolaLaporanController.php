@@ -263,7 +263,10 @@ class KelolaLaporanController extends Controller
 
                 'personil' => $booking->pegawaiLapangan->map(function ($pegawai) {
                     return ['nama' => $pegawai->user->nama ?? 'Tidak diketahui'];
-                }),
+                })->concat(
+                    $booking->sopir ? collect([['nama' => $booking->sopir->nama]]) : collect([])
+                ),
+
 
                 'pelakuUsaha' => $booking->bookingPelayananUmkm->map(function ($item) use ($booking) {
                     return [
