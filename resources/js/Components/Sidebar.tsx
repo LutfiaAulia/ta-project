@@ -208,6 +208,18 @@ const Sidebar: React.FC = () => {
                     </Link>
 
                     <Link
+                        href={route("kategori.list")}
+                        className={`flex items-center gap-3 p-2 rounded ${
+                            route().current("kategori.list")
+                                ? "bg-green-500"
+                                : "hover:bg-green-500"
+                        } transition cursor-pointer`}
+                    >
+                        <FaUserTie />
+                        <span>Kelola Kategori</span>
+                    </Link>
+
+                    <Link
                         href={route("pegawai.kelola.promosi")}
                         className={`flex items-center gap-3 p-2 rounded ${
                             route().current("pegawai.kelola.promosi") &&

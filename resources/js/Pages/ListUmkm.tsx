@@ -52,7 +52,8 @@ const ListUmkm: React.FC = () => {
             umkm.nama_usaha.toLowerCase().includes(searchTerm.toLowerCase()) ||
             umkm.lokasi.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory =
-            selectedCategory === "Semua" || umkm.kategori === selectedCategory;
+            selectedCategory === "Semua" ||
+            umkm.kategori.includes(selectedCategory);
         return matchesSearch && matchesCategory;
     });
 
@@ -245,7 +246,7 @@ const ListUmkm: React.FC = () => {
                                         className="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold hover:bg-blue-600 transition-colors flex items-center justify-center"
                                     >
                                         <Facebook size={20} className="mr-2" />
-                                        Follow Instagram
+                                        Follow Facebook
                                     </a>
                                 </div>
                             </div>

@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginPegawaiController;
 use App\Http\Controllers\Auth\LoginUmkmController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
+use App\Http\Controllers\Kategori\KelolaKategoriController;
 use App\Http\Controllers\Laporan\KelolaLaporanController;
 use App\Http\Controllers\Layanan\KelolaLayananController;
 use App\Http\Controllers\MobilSopir\KelolaMobilController;
@@ -129,6 +130,13 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/produk/{id}', [KelolaPromosiController::class, 'editPegawai'])->name('pegawai.edit.produk');
         Route::put('/update/produk/{id}', [KelolaPromosiController::class, 'updatePegawai'])->name('pegawai.update.produk');
         Route::delete('/destroy/produk/{id}', [KelolaPromosiController::class, 'destroyPegawai'])->name('pegawai.destroy.produk');
+
+        Route::get('/list/kategori', [KelolaKategoriController::class, 'show'])->name('kategori.list');
+        Route::get('/create/kategori', [KelolaKategoriController::class, 'create'])->name('kategori.create');
+        Route::post('/store/kategori', [KelolaKategoriController::class, 'store'])->name('kategori.store');
+        Route::get('/edit/kategori/{id}', [KelolaKategoriController::class, 'edit'])->name('kategori.edit');
+        Route::put('/update/kategori/{id}', [KelolaKategoriController::class, 'update'])->name('kategori.update');
+        Route::delete('/destroy/kategori/{id}', [KelolaKategoriController::class, 'destroy'])->name('kategori.destroy');
 
         Route::get('/tampilan/laporan/{id}', [KelolaLaporanController::class, 'laporan'])->name('tampilan.tempalte.laporan');
     });
