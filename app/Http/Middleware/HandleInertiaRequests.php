@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -38,11 +39,28 @@ class HandleInertiaRequests extends Middleware
                     'email' => $request->user()->email,
                     'nama' => $request->user()->nama,
                 ] : null,
+                'role' => fn() => $this->getUserRole($request),
             ],
             'ziggy' => fn() => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
         ];
+    }
+
+    /**
+     * Get user role from pegawai table
+     */
+    private function getUserRole(Request $request): string
+    {
+        if (!$request->user()) {
+            return 'Guest';
+        }
+
+        $pegawai = DB::table('pegawai')
+            ->where('user_id', $request->user()->id)
+            ->first();
+
+        return $pegawai?->role ?? 'Guest';
     }
 }
