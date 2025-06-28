@@ -52,13 +52,19 @@ class RiwayatBooking extends Controller
     public function listAllBooking()
     {
         $user = Auth::user();
-        $role = $user->pegawai->role ?? null;
+        $pegawai = $user->pegawai;
+        $role = $pegawai->role ?? null;
 
-        $query = Booking::with(['instansi.user:id,nama', 'layanan:id_layanan,layanan as nama_layanan'])
-            ->latest();
-            
+        $query = Booking::with([
+            'instansi.user:id,nama',
+            'layanan:id_layanan,layanan as nama_layanan'
+        ])->latest();
+
         if ($role === "Pegawai Lapangan") {
-            $query->whereIn('status_booking', ['Diterima', 'Selesai']);
+            $query->whereIn('status_booking', ['Diterima', 'Selesai'])
+                ->whereHas('pegawailapangan', function ($q) use ($pegawai) {
+                    $q->where('pegawai.id', $pegawai->id);
+                });
         }
 
         $booking = $query->get();
@@ -71,6 +77,7 @@ class RiwayatBooking extends Controller
             ],
         ]);
     }
+
 
 
     public function showBook($id)
