@@ -67,7 +67,7 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
     const { auth } = usePage().props as any;
     const role = auth?.user?.pegawai?.role || "";
 
-    const bisaKelolaSemua = role === "Pegawai Lapangan";
+    const isPegawaiLapangan = role === "Pegawai Lapangan";
 
     useEffect(() => {
         const keyword = search.toLowerCase();
@@ -98,7 +98,7 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    {bisaKelolaSemua && (
+                    {isPegawaiLapangan && (
                         <Link
                             href="/pegawai/create/laporan"
                             className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
@@ -149,7 +149,7 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                                             {lapor.nama_penulis}
                                         </td>
                                         <td className="border px-2 py-2 text-center space-x-1">
-                                            {bisaKelolaSemua && (
+                                            {isPegawaiLapangan && (
                                                 <>
                                                     <Link
                                                         href={`/pegawai/edit/laporan/${lapor.id_laporan}`}

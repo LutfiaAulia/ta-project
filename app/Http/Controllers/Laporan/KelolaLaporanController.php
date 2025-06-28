@@ -34,16 +34,32 @@ class KelolaLaporanController extends Controller
 
         return Inertia::render('Pegawai/Laporan/ListLaporan', [
             'laporan' => $laporan,
+            'auth' => [
+                'role' => Auth::user()->pegawai->role ?? null,
+                'user' => Auth::user(),
+            ],
         ]);
     }
 
     public function create()
     {
+        $user = Auth::user();
+        $pegawai = $user->pegawai;
+        $role = $pegawai->role ?? null;
+
         $bookingLaporan = Laporan::pluck('id_booking')->unique();
-        $booking = Booking::with('instansi:id,nama_instansi')
+
+        $query = Booking::with('instansi:id,nama_instansi')
             ->where('status_booking', 'Diterima')
-            ->whereNotIn('id_booking', $bookingLaporan)
-            ->select('id_booking', 'id_instansi', 'tanggal_mulai', 'tanggal_akhir')
+            ->whereNotIn('id_booking', $bookingLaporan);
+
+        if ($role === 'Pegawai Lapangan') {
+            $query->whereHas('pegawailapangan', function ($q) use ($pegawai) {
+                $q->where('pegawai.id', $pegawai->id);
+            });
+        }
+
+        $booking = $query->select('id_booking', 'id_instansi', 'tanggal_mulai', 'tanggal_akhir')
             ->orderByDesc('tanggal_mulai')
             ->get()
             ->map(function ($booking) {
@@ -59,6 +75,7 @@ class KelolaLaporanController extends Controller
             'booking' => $booking,
         ]);
     }
+
 
     public function store(Request $request)
     {
@@ -94,6 +111,9 @@ class KelolaLaporanController extends Controller
             'nama_penulis' => $request->nama_penulis,
             'id_pegawai' => Auth::user()->pegawai->id ?? Auth::id(),
         ]);
+
+        Booking::where('id_booking', $request->id_booking)
+            ->update(['status_booking' => 'Selesai']);
 
         if ($request->hasFile('foto_dokumentasi')) {
             foreach ($request->file('foto_dokumentasi') as $file) {
@@ -207,12 +227,17 @@ class KelolaLaporanController extends Controller
     public function destroy($id_laporan)
     {
         $laporan = Laporan::with('dokumentasi')->findOrFail($id_laporan);
+        $id_booking = $laporan->id_booking;
+
         foreach ($laporan->dokumentasi as $doc) {
             Storage::disk('public')->delete($doc->path_file);
         }
 
         $laporan->dokumentasi()->delete();
         $laporan->delete();
+
+        Booking::where('id_booking', $id_booking)->update(['status_booking' => 'Diterima']);
+
 
         return redirect()->route('laporan.list')->with('success', 'Laporan berhasil dihapus.');
     }
