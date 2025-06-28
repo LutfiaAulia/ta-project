@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Layout from "@/Components/Layout";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 type SuratMasuk = {
     id: number;
@@ -22,6 +22,11 @@ const EditSuratMasuk: React.FC<{
     suratMasuk: SuratMasuk;
     booking: Booking;
 }> = ({ suratMasuk, booking }) => {
+    const { auth } = usePage().props as any;
+    const role = auth?.role || "";
+
+    const isKepalaDinas = role === "Kepala Dinas";
+
     const [form, setForm] = useState({
         no_surat: suratMasuk.no_surat || "",
         perihal: suratMasuk.perihal || "",
@@ -35,6 +40,8 @@ const EditSuratMasuk: React.FC<{
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
+        if (isKepalaDinas) return;
+
         const { name, value } = e.target;
         setForm((prev) => ({
             ...prev,
@@ -49,6 +56,8 @@ const EditSuratMasuk: React.FC<{
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (isKepalaDinas) return;
+
         router.put(`/pegawai/update/surat/${suratMasuk.id}`, form, {
             onError: (err) => setErrors(err),
         });
@@ -63,7 +72,7 @@ const EditSuratMasuk: React.FC<{
         <Layout>
             <div className="max-w-screen-md mx-auto p-12">
                 <h1 className="text-xl font-semibold mb-6 text-center">
-                    Edit Surat Masuk
+                    {isKepalaDinas ? "Detail Surat Masuk" : "Edit Surat Masuk"}
                 </h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4 text-sm">
@@ -94,7 +103,10 @@ const EditSuratMasuk: React.FC<{
                             name="no_surat"
                             value={form.no_surat}
                             onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
+                            className={`w-full border px-3 py-2 rounded ${
+                                isKepalaDinas ? "bg-gray-100" : ""
+                            }`}
+                            readOnly={isKepalaDinas}
                         />
                         {renderError("no_surat")}
                     </div>
@@ -106,7 +118,10 @@ const EditSuratMasuk: React.FC<{
                             name="tgl_surat"
                             value={form.tgl_surat}
                             onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
+                            className={`w-full border px-3 py-2 rounded ${
+                                isKepalaDinas ? "bg-gray-100" : ""
+                            }`}
+                            readOnly={isKepalaDinas}
                         />
                         {renderError("tgl_surat")}
                     </div>
@@ -117,7 +132,10 @@ const EditSuratMasuk: React.FC<{
                             name="perihal"
                             value={form.perihal}
                             onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
+                            className={`w-full border px-3 py-2 rounded ${
+                                isKepalaDinas ? "bg-gray-100" : ""
+                            }`}
+                            readOnly={isKepalaDinas}
                         />
                         {renderError("perihal")}
                     </div>
@@ -128,7 +146,10 @@ const EditSuratMasuk: React.FC<{
                             name="keterangan"
                             value={form.keterangan}
                             onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
+                            className={`w-full border px-3 py-2 rounded ${
+                                isKepalaDinas ? "bg-gray-100" : ""
+                            }`}
+                            readOnly={isKepalaDinas}
                         />
                         {renderError("keterangan")}
                     </div>
@@ -149,14 +170,16 @@ const EditSuratMasuk: React.FC<{
                         </div>
                     )}
 
-                    <div className="text-right">
-                        <button
-                            type="submit"
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
-                        >
-                            Update
-                        </button>
-                    </div>
+                    {!isKepalaDinas && (
+                        <div className="text-right">
+                            <button
+                                type="submit"
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+                            >
+                                Update
+                            </button>
+                        </div>
+                    )}
                 </form>
             </div>
         </Layout>

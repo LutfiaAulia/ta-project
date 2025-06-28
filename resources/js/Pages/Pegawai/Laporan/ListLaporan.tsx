@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@/Components/Layout";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
+import { PageProps } from "@/types";
 
 type LaporanEntry = {
     id_laporan: number;
@@ -13,18 +14,19 @@ type LaporanEntry = {
     nama_penulis: string;
 };
 
-type ListLaporanProps = {
+type ListLaporanProps = PageProps<{
     laporan: LaporanEntry[];
-};
+}>;
 
 const extractJam = (waktu: string | null | undefined) => {
     if (!waktu) return "-";
     const dateObj = new Date(waktu);
     if (isNaN(dateObj.getTime())) return "-";
     dateObj.setHours(dateObj.getHours() - 7); // Koreksi zona waktu
-    const jam = dateObj.getHours().toString().padStart(2, "0");
-    const menit = dateObj.getMinutes().toString().padStart(2, "0");
-    return `${jam}:${menit}`;
+    return `${dateObj.getHours().toString().padStart(2, "0")}:${dateObj
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}`;
 };
 
 const formatTanggalDanJam = (
@@ -36,15 +38,13 @@ const formatTanggalDanJam = (
     const mulai = new Date(tanggalMulai);
     const akhir = new Date(tanggalAkhir);
 
-    const opsiTanggal: Intl.DateTimeFormatOptions = {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    };
-
     const tgl =
         tanggalMulai === tanggalAkhir
-            ? mulai.toLocaleDateString("id-ID", opsiTanggal)
+            ? mulai.toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+              })
             : `${mulai.getDate()} - ${akhir.getDate()} ${akhir.toLocaleDateString(
                   "id-ID",
                   { month: "long", year: "numeric" }
@@ -62,8 +62,12 @@ const formatTanggalDanJam = (
 
 const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
     const [search, setSearch] = useState("");
-    const [filteredLaporan, setFilteredLaporan] =
-        useState<LaporanEntry[]>(laporan);
+    const [filteredLaporan, setFilteredLaporan] = useState(laporan);
+
+    const { auth } = usePage().props as any;
+    const role = auth?.user?.pegawai?.role || "";
+
+    const bisaKelolaSemua = role === "Pegawai Lapangan";
 
     useEffect(() => {
         const keyword = search.toLowerCase();
@@ -94,12 +98,14 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <Link
-                        href="/pegawai/create/laporan"
-                        className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
-                    >
-                        + Tambah
-                    </Link>
+                    {bisaKelolaSemua && (
+                        <Link
+                            href="/pegawai/create/laporan"
+                            className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
+                        >
+                            + Tambah
+                        </Link>
+                    )}
                 </div>
 
                 <div className="overflow-x-auto">
@@ -108,7 +114,9 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                             <tr>
                                 <th className="border px-2 py-2">No</th>
                                 <th className="border px-2 py-2">Jadwal</th>
-                                <th className="border px-2 py-2 w-[370px] truncate">Judul</th>
+                                <th className="border px-2 py-2 w-[370px] truncate">
+                                    Judul
+                                </th>
                                 <th className="border px-2 py-2">Lokasi</th>
                                 <th className="border px-2 py-2">
                                     Nama Penulis
@@ -141,29 +149,33 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                                             {lapor.nama_penulis}
                                         </td>
                                         <td className="border px-2 py-2 text-center space-x-1">
-                                            <Link
-                                                href={`/pegawai/edit/laporan/${lapor.id_laporan}`}
-                                                className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
-                                            >
-                                                Edit
-                                            </Link>
-                                            <Link
-                                                method="delete"
-                                                as="button"
-                                                href={`/pegawai/destroy/laporan/${lapor.id_laporan}`}
-                                                className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
-                                                onClick={(e) => {
-                                                    if (
-                                                        !confirm(
-                                                            "Yakin ingin menghapus laporan ini?"
-                                                        )
-                                                    ) {
-                                                        e.preventDefault();
-                                                    }
-                                                }}
-                                            >
-                                                Hapus
-                                            </Link>
+                                            {bisaKelolaSemua && (
+                                                <>
+                                                    <Link
+                                                        href={`/pegawai/edit/laporan/${lapor.id_laporan}`}
+                                                        className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
+                                                    >
+                                                        Edit
+                                                    </Link>
+                                                    <Link
+                                                        method="delete"
+                                                        as="button"
+                                                        href={`/pegawai/destroy/laporan/${lapor.id_laporan}`}
+                                                        className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+                                                        onClick={(e) => {
+                                                            if (
+                                                                !confirm(
+                                                                    "Yakin ingin menghapus laporan ini?"
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                    >
+                                                        Hapus
+                                                    </Link>
+                                                </>
+                                            )}
                                             <Link
                                                 href={`/pegawai/tampilan/laporan/${lapor.id_laporan}`}
                                                 className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs"

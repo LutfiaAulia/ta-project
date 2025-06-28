@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Layout from "@/Components/Layout";
 import { PageProps } from "@/types";
-import { Link, router } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 
 type SuratMasuk = {
     id_surat: number;
@@ -20,6 +20,12 @@ const ListSuratMasuk: React.FC<PageProps<{ suratMasuk: SuratMasuk[] }>> = ({
     suratMasuk,
 }) => {
     const [search, setSearch] = useState("");
+
+    const { auth } = usePage().props as any;
+    const role = auth?.role || "";
+
+    const isKepalaDinas = role === "Kepala Dinas";
+    const isAdminUmum = role === "Administrasi Umum";
 
     const handleDelete = (id_surat: number) => {
         if (confirm("Yakin ingin menghapus surat ini?")) {
@@ -60,12 +66,14 @@ const ListSuratMasuk: React.FC<PageProps<{ suratMasuk: SuratMasuk[] }>> = ({
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <Link
-                        href="/pegawai/create/surat"
-                        className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
-                    >
-                        + Tambah
-                    </Link>
+                    {isAdminUmum && (
+                        <Link
+                            href="/pegawai/create/surat"
+                            className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
+                        >
+                            + Tambah
+                        </Link>
+                    )}
                 </div>
 
                 <div className="overflow-x-auto">
@@ -95,7 +103,9 @@ const ListSuratMasuk: React.FC<PageProps<{ suratMasuk: SuratMasuk[] }>> = ({
                                         {index + 1}
                                     </td>
                                     <td className="border px-2 py-2">
-                                        {formatTanggal(item.booking?.created_at || "-")}
+                                        {formatTanggal(
+                                            item.booking?.created_at || "-"
+                                        )}
                                     </td>
                                     <td className="border px-2 py-2">
                                         {item.no_surat}
@@ -108,26 +118,50 @@ const ListSuratMasuk: React.FC<PageProps<{ suratMasuk: SuratMasuk[] }>> = ({
                                         {item.perihal}
                                     </td>
                                     <td className="border px-2 py-2 text-center space-x-1">
-                                        <Link
-                                            href={`/pegawai/edit/surat/${item.id_surat}`}
-                                            className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
-                                        >
-                                            Edit
-                                        </Link>
-                                        <button
-                                            onClick={() =>
-                                                handleDelete(item.id_surat)
-                                            }
-                                            className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
-                                        >
-                                            Hapus
-                                        </button>
-                                        <Link
-                                            href={`/pegawai/create/disposisi/${item.id_surat}`}
-                                            className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded text-xs"
-                                        >
-                                            Disposisi
-                                        </Link>
+                                        {role === "Kepala Dinas" && (
+                                            <>
+                                                <Link
+                                                    href={`/pegawai/edit/surat/${item.id_surat}`}
+                                                    className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs"
+                                                >
+                                                    Lihat
+                                                </Link>
+
+                                                <Link
+                                                    href={`/pegawai/create/disposisi/${item.id_surat}`}
+                                                    className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded text-xs"
+                                                >
+                                                    Disposisi
+                                                </Link>
+                                            </>
+                                        )}
+
+                                        {role === "Administrasi Umum" && (
+                                            <>
+                                                <Link
+                                                    href={`/pegawai/edit/surat/${item.id_surat}`}
+                                                    className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
+                                                >
+                                                    Edit
+                                                </Link>
+                                                <button
+                                                    onClick={() =>
+                                                        handleDelete(
+                                                            item.id_surat
+                                                        )
+                                                    }
+                                                    className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+                                                >
+                                                    Hapus
+                                                </button>
+                                                <Link
+                                                    href={`/pegawai/create/disposisi/${item.id_surat}`}
+                                                    className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded text-xs"
+                                                >
+                                                    Disposisi
+                                                </Link>
+                                            </>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
