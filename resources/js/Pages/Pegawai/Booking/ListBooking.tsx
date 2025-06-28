@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@/Components/Layout";
 import { PageProps } from "@/types";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 
 const extractJam = (waktu: string | null | undefined) => {
     if (!waktu) return "-";
@@ -47,6 +47,7 @@ const formatTanggalDanJam = (
 };
 
 const ListBooking: React.FC<PageProps<{ booking: any[] }>> = ({ booking }) => {
+    const { auth } = usePage().props as any;
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);

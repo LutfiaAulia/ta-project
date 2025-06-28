@@ -78,7 +78,7 @@ const Sidebar: React.FC = () => {
                         </Link>
                     )}
 
-                    {canAccess(["Pegawai Lapangan"]) && (
+                    {canAccess(["Admin","Pegawai Lapangan"]) && (
                         <Link
                             href={route("bookinglaksana.list")}
                             className={`flex items-center gap-3 p-2 rounded ${
@@ -93,6 +93,7 @@ const Sidebar: React.FC = () => {
                     )}
 
                     {canAccess([
+                        "Admin",
                         "Kepala Bidang",
                         "Kepala Dinas",
                         "Pegawai Lapangan",
@@ -110,7 +111,7 @@ const Sidebar: React.FC = () => {
                         </Link>
                     )}
 
-                    {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
+                    {canAccess(["Admin","Administrasi Umum", "Kepala Dinas"]) && (
                         <Link
                             href={route("surat.list")}
                             className={`flex items-center gap-3 p-2 rounded ${
@@ -124,7 +125,7 @@ const Sidebar: React.FC = () => {
                         </Link>
                     )}
 
-                    {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
+                    {canAccess(["Admin","Administrasi Umum", "Kepala Dinas"]) && (
                         <Link
                             href={route("disposisi.list")}
                             className={`flex items-center gap-3 p-2 rounded ${

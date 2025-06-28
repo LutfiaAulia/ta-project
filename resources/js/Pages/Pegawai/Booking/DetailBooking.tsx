@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Layout from "@/Components/Layout";
 import { PageProps } from "@/types";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 interface DetailBookingProps extends PageProps {
     booking: {
@@ -130,6 +130,15 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
         }
     };
 
+    const { auth } = usePage().props as any;
+
+    const role =
+        typeof auth === "object"
+            ? auth.role || auth.user?.pegawai?.role || ""
+            : "";
+
+    const isKepalaBidang = role === "Kepala Bidang";
+
     return (
         <Layout>
             <div className="py-12 max-w-4xl mx-auto">
@@ -162,9 +171,15 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                             </ul>
                         </DetailItem>
 
-                        <DetailItem label="Kabupaten/Kota">{booking.kabupaten_kota}</DetailItem>
-                        <DetailItem label="Kecamatan">{booking.kecamatan}</DetailItem>
-                        <DetailItem label="Kenagarian/Kelurahan">{booking.kenagarian_kelurahan}</DetailItem>
+                        <DetailItem label="Kabupaten/Kota">
+                            {booking.kabupaten_kota}
+                        </DetailItem>
+                        <DetailItem label="Kecamatan">
+                            {booking.kecamatan}
+                        </DetailItem>
+                        <DetailItem label="Kenagarian/Kelurahan">
+                            {booking.kenagarian_kelurahan}
+                        </DetailItem>
                         <DetailItem label="Lokasi">{booking.lokasi}</DetailItem>
 
                         <DetailItem label="Nomor HP">
@@ -228,22 +243,23 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                         </DetailItem>
                     </div>
 
-                    {booking.status_booking === "Diajukan" && (
-                        <div className="flex justify-center gap-6 mt-6">
-                            <button
-                                onClick={handleVerifikasi}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-semibold transition"
-                            >
-                                Verifikasi
-                            </button>
-                            <button
-                                onClick={handleTolak}
-                                className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md text-sm font-semibold transition"
-                            >
-                                Tolak
-                            </button>
-                        </div>
-                    )}
+                    {booking.status_booking === "Diajukan" &&
+                        isKepalaBidang && (
+                            <div className="flex justify-center gap-6 mt-6">
+                                <button
+                                    onClick={handleVerifikasi}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-semibold transition"
+                                >
+                                    Verifikasi
+                                </button>
+                                <button
+                                    onClick={handleTolak}
+                                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md text-sm font-semibold transition"
+                                >
+                                    Tolak
+                                </button>
+                            </div>
+                        )}
                 </div>
             </div>
 

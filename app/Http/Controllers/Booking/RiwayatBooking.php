@@ -37,7 +37,6 @@ class RiwayatBooking extends Controller
         ]);
     }
 
-    //All (Auth)
     public function showSurat($filename)
     {
         $filePath = storage_path("app/public/surat/{$filename}");
@@ -52,14 +51,27 @@ class RiwayatBooking extends Controller
     //Pegawai
     public function listAllBooking()
     {
-        $booking = Booking::with(['instansi.user:id,nama', 'layanan:id_layanan,layanan as nama_layanan'])
-            ->latest()
-            ->get();
+        $user = Auth::user();
+        $role = $user->pegawai->role ?? null;
+
+        $query = Booking::with(['instansi.user:id,nama', 'layanan:id_layanan,layanan as nama_layanan'])
+            ->latest();
+            
+        if ($role === "Pegawai Lapangan") {
+            $query->whereIn('status_booking', ['Diterima', 'Selesai']);
+        }
+
+        $booking = $query->get();
 
         return Inertia::render('Pegawai/Booking/ListBooking', [
             'booking' => $booking,
+            'auth' => [
+                'role' => $role,
+                'user' => $user,
+            ],
         ]);
     }
+
 
     public function showBook($id)
     {
