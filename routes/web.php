@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginUmkmController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
 use App\Http\Controllers\Kategori\KelolaKategoriController;
+use App\Http\Controllers\KelolaHUController;
 use App\Http\Controllers\Laporan\KelolaLaporanController;
 use App\Http\Controllers\Layanan\KelolaLayananController;
 use App\Http\Controllers\MobilSopir\KelolaMobilController;
@@ -17,19 +18,12 @@ use App\Http\Controllers\Promosi\KelolaShowPromosiController;
 use App\Http\Controllers\SuratMasuk\KelolaDisposisiController;
 use App\Http\Controllers\SuratMasuk\KelolaSuratController;
 use App\Http\Controllers\User\KelolaUserController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // ================= HALAMAN UTAMA ================= //
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+
+Route::get('/', [KelolaHUController::class, 'beranda'])->name('home');
 Route::get('/list/umkm/promosi', [KelolaShowPromosiController::class, 'show'])->name('list.umkm.promosi');
 
 // ==================== ROUTE UNTUK DIAKSES BANYAK ROLE ==================== //
