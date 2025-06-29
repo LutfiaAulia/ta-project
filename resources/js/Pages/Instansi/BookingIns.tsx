@@ -41,8 +41,24 @@ export default function BookingIns({
 
     const excludeDatesParsed = bookedDates.map((d) => parseISO(d));
 
+    const isTimeBefore = (start: string, end: string) => {
+        if (!start || !end) return false;
+
+        const today = new Date().toISOString().split("T")[0];
+        const startDate = new Date(`${today}T${start}`);
+        const endDate = new Date(`${today}T${end}`);
+
+        return endDate < startDate;
+    };
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+
+        if (isTimeBefore(data.waktu_mulai, data.waktu_akhir)) {
+            alert("Waktu akhir tidak boleh lebih awal dari waktu mulai.");
+            return;
+        }
+
         post(route("booking.store"), {
             onSuccess: () => {
                 setSuccessMessage("Berhasil Melakukan Booking!");
@@ -99,7 +115,6 @@ export default function BookingIns({
                                                         isoDate
                                                     );
 
-                                                    // Jika tanggal_akhir kosong atau kurang dari tanggal_mulai, set sama dengan tanggal_mulai
                                                     if (
                                                         !data.tanggal_akhir ||
                                                         data.tanggal_akhir <
@@ -344,7 +359,10 @@ export default function BookingIns({
                                         name="kabupaten/kota"
                                         value={data.kabupaten_kota}
                                         onChange={(e) =>
-                                            setData("kabupaten_kota", e.target.value)
+                                            setData(
+                                                "kabupaten_kota",
+                                                e.target.value
+                                            )
                                         }
                                         placeholder="Contoh: Kabupaten Agam"
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
@@ -390,7 +408,10 @@ export default function BookingIns({
                                         name="kenagaraian_kelurahan"
                                         value={data.kenagarian_kelurahan}
                                         onChange={(e) =>
-                                            setData("kenagarian_kelurahan", e.target.value)
+                                            setData(
+                                                "kenagarian_kelurahan",
+                                                e.target.value
+                                            )
                                         }
                                         placeholder="Contoh: Lambah"
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
