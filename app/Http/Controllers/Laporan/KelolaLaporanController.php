@@ -149,7 +149,7 @@ class KelolaLaporanController extends Controller
                 'nama_penulis' => $laporan->nama_penulis,
                 'foto_dokumentasi' => $laporan->dokumentasi->map(function ($doc) {
                     return [
-                        'id' => $doc->id,
+                        'id' => $doc->id_dokumentasi,
                         'url' => asset('storage/' . $doc->path_file),
                     ];
                 }),
@@ -180,7 +180,9 @@ class KelolaLaporanController extends Controller
             'nama_penulis' => 'required|string|max:100',
             'foto_dokumentasi.*' => 'nullable|image|max:2048',
             'existing_foto' => 'nullable|array',
-            'existing_foto.*' => 'integer|exists:dokumentasi,id',
+            'existing_foto.*' => 'integer|exists:dokumentasi,id_dokumentasi',
+            'hapus_foto' => 'nullable|array',
+            'hapus_foto.*' => 'integer|exists:dokumentasi,id_dokumentasi',
         ]);
 
         if ($validator->fails()) {
@@ -200,14 +202,14 @@ class KelolaLaporanController extends Controller
             'nama_penulis' => $request->nama_penulis,
         ]);
 
-        $existingIds = $request->existing_foto ?? [];
+        $hapusFotoIds = $request->hapus_foto ?? [];
 
-        $laporan->dokumentasi->each(function ($doc) use ($existingIds) {
-            if (!in_array($doc->id, $existingIds)) {
+        if (!empty($hapusFotoIds)) {
+            $laporan->dokumentasi->whereIn('id_dokumentasi', $hapusFotoIds)->each(function ($doc) {
                 Storage::disk('public')->delete($doc->path_file);
                 $doc->delete();
-            }
-        });
+            });
+        }
 
         if ($request->hasFile('foto_dokumentasi')) {
             foreach ($request->file('foto_dokumentasi') as $file) {
@@ -223,7 +225,7 @@ class KelolaLaporanController extends Controller
 
         return redirect()->route('laporan.list')->with('success', 'Laporan berhasil diperbarui.');
     }
-
+    
     public function destroy($id_laporan)
     {
         $laporan = Laporan::with('dokumentasi')->findOrFail($id_laporan);
@@ -305,7 +307,7 @@ class KelolaLaporanController extends Controller
 
                 'dokumentasi' => $laporan->dokumentasi->map(function ($doc) {
                     return [
-                        'id_dokumentasi' => $doc->id_dokuemntasi,
+                        'id_dokumentasi' => $doc->id_dokumentasi,
                         'nama_file' => $doc->nama_file,
                         'path_file' => $doc->path_file,
                     ];

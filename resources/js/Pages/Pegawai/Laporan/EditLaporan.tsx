@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "@/Components/Layout";
 import { router } from "@inertiajs/react";
 
@@ -46,6 +46,7 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
     );
 
     const [newFotos, setNewFotos] = useState<FotoDokumentasi[]>([]);
+    const [hapusFotoIds, setHapusFotoIds] = useState<number[]>([]);
 
     const [form, setForm] = useState({
         id_booking: laporan.id_booking,
@@ -62,7 +63,6 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(false);
-    const [deletedFotoIds, setDeletedFotoIds] = useState<number[]>([]);
 
     const handleChange = (
         e: React.ChangeEvent<
@@ -86,10 +86,11 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
         setNewFotos((prev) => [...prev, ...withPreviews]);
     };
 
+    // Fungsi hapus foto lama: simpan ID foto yang ingin dihapus
     const removeExistingFoto = (id?: number) => {
         if (!id) return;
         setExistingFotos((prev) => prev.filter((foto) => foto.id !== id));
-        setDeletedFotoIds((prev) => [...prev, id]);
+        setHapusFotoIds((prev) => [...prev, id]);
     };
 
     const removeNewFoto = (index: number) => {
@@ -109,8 +110,7 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
         setLoading(true);
 
         const formData = new FormData();
-
-        formData.append("_method", "put");
+        formData.append("_method", "PUT");
 
         formData.append("id_booking", String(form.id_booking));
         formData.append("judul", form.judul);
@@ -123,28 +123,39 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
         formData.append("saran", form.saran);
         formData.append("nama_penulis", form.nama_penulis);
 
+        // Kirim daftar foto lama yang masih ada (tidak dihapus)
         existingFotos.forEach((foto) => {
             if (foto.id !== undefined && foto.id !== null) {
                 formData.append("existing_foto[]", String(foto.id));
             }
         });
 
+        // Kirim daftar foto lama yang ingin dihapus
+        hapusFotoIds.forEach((id) => {
+            formData.append("hapus_foto[]", String(id));
+        });
+
+        // Kirim foto baru yang akan ditambahkan
         newFotos.forEach((foto) => {
             if (foto.file) {
                 formData.append("foto_dokumentasi[]", foto.file);
             }
         });
 
-        deletedFotoIds.forEach((id) => {
-            formData.append("deleted_foto_ids[]", String(id));
-        });
-
         router.post(`/pegawai/update/laporan/${laporan.id}`, formData, {
             forceFormData: true,
             onError: (err) => {
                 setErrors(err);
+                setLoading(false);
             },
-            onFinish: () => setLoading(false),
+            onSuccess: () => {
+                setLoading(false);
+                newFotos.forEach((foto) => {
+                    if (foto.preview.startsWith("blob:")) {
+                        URL.revokeObjectURL(foto.preview);
+                    }
+                });
+            },
             preserveScroll: true,
         });
     };
@@ -153,6 +164,16 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
         errors[field] ? (
             <p className="text-red-500 text-xs mt-1">{errors[field]}</p>
         ) : null;
+
+    useEffect(() => {
+        return () => {
+            newFotos.forEach((foto) => {
+                if (foto.preview.startsWith("blob:")) {
+                    URL.revokeObjectURL(foto.preview);
+                }
+            });
+        };
+    }, [newFotos]);
 
     return (
         <Layout>
@@ -197,76 +218,146 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
                         { label: "Nama Penulis", name: "nama_penulis" },
                     ].map((field) => (
                         <div key={field.name}>
-                            <label className="block mb-1">{field.label}</label>
+                            <label className="block mb-1 font-medium">
+                                {field.label}
+                            </label>
                             <textarea
                                 name={field.name}
                                 value={(form as any)[field.name]}
                                 onChange={handleChange}
-                                className="w-full border px-3 py-2 rounded"
+                                className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 rows={3}
+                                required
                             />
                             {renderError(field.name)}
                         </div>
                     ))}
 
                     <div>
-                        <label className="block mb-1">Foto Dokumentasi</label>
+                        <label className="block mb-1 font-medium">
+                            Foto Dokumentasi
+                        </label>
+
+                        {existingFotos.length > 0 && (
+                            <div className="mb-3">
+                                <p className="text-sm text-gray-600 mb-2">
+                                    Foto yang sudah ada ({existingFotos.length}{" "}
+                                    foto):
+                                </p>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {existingFotos.map((item) => (
+                                        <div
+                                            key={item.id}
+                                            className="relative group"
+                                        >
+                                            <img
+                                                src={item.preview}
+                                                alt="Foto existing"
+                                                className="w-full h-32 object-cover rounded border"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    removeExistingFoto(item.id)
+                                                }
+                                                className="absolute top-1 right-1 z-20 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-80 hover:opacity-100 transition-opacity"
+                                                title="Hapus foto ini"
+                                            >
+                                                ✕
+                                            </button>
+
+                                            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 rounded-b z-10 pointer-events-none">
+                                                Foto Lama
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         <input
                             type="file"
                             multiple
                             accept=".jpg,.jpeg,.png"
                             onChange={handleFileChange}
-                            className="w-full"
+                            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
+                        <p className="text-xs text-gray-500 mt-1">
+                            Pilih foto baru untuk ditambahkan (opsional).
+                            Format: JPG, JPEG, PNG. Maks 2MB per file.
+                        </p>
                         {renderError("foto_dokumentasi")}
 
-                        {(existingFotos.length > 0 || newFotos.length > 0) && (
-                            <div className="mt-3 grid grid-cols-3 gap-2">
-                                {existingFotos.map((item) => (
-                                    <div key={item.id} className="relative">
-                                        <img
-                                            src={item.preview}
-                                            alt="Foto lama"
-                                            className="w-full h-32 object-cover rounded border"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                removeExistingFoto(item.id)
-                                            }
-                                            className="absolute top-1 right-1 bg-red-600 text-white rounded-full px-1 text-xs"
+                        {newFotos.length > 0 && (
+                            <div className="mt-3">
+                                <p className="text-sm text-gray-600 mb-2">
+                                    Foto baru yang akan ditambahkan (
+                                    {newFotos.length} foto):
+                                </p>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {newFotos.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className="relative group"
                                         >
-                                            ✕
-                                        </button>
-                                    </div>
-                                ))}
-
-                                {newFotos.map((item, index) => (
-                                    <div key={index} className="relative">
-                                        <img
-                                            src={item.preview}
-                                            alt={`Foto baru ${index + 1}`}
-                                            className="w-full h-32 object-cover rounded border"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => removeNewFoto(index)}
-                                            className="absolute top-1 right-1 bg-red-600 text-white rounded-full px-1 text-xs"
-                                        >
-                                            ✕
-                                        </button>
-                                    </div>
-                                ))}
+                                            <img
+                                                src={item.preview}
+                                                alt={`Foto baru ${index + 1}`}
+                                                className="w-full h-32 object-cover rounded border"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    removeNewFoto(index)
+                                                }
+                                                className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-80 hover:opacity-100 transition-opacity"
+                                                title="Hapus foto ini"
+                                            >
+                                                ✕
+                                            </button>
+                                            <div className="absolute bottom-0 left-0 right-0 bg-green-600 bg-opacity-70 text-white text-xs p-1 rounded-b">
+                                                Foto Baru
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="text-right">
+                    <div className="flex justify-between items-center pt-4">
+                        <button
+                            type="button"
+                            onClick={() => router.get("/pegawai/list/laporan")}
+                            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm transition-colors"
+                        >
+                            Batal
+                        </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+                            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-2 rounded text-sm transition-colors flex items-center gap-2"
                         >
+                            {loading && (
+                                <svg
+                                    className="animate-spin h-4 w-4"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                        fill="none"
+                                        strokeOpacity="0.3"
+                                    />
+                                    <path
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    />
+                                </svg>
+                            )}
                             {loading ? "Menyimpan..." : "Simpan"}
                         </button>
                     </div>
