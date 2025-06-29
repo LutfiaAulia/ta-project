@@ -86,7 +86,6 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
         setNewFotos((prev) => [...prev, ...withPreviews]);
     };
 
-    // Fungsi hapus foto lama: simpan ID foto yang ingin dihapus
     const removeExistingFoto = (id?: number) => {
         if (!id) return;
         setExistingFotos((prev) => prev.filter((foto) => foto.id !== id));
@@ -123,19 +122,16 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
         formData.append("saran", form.saran);
         formData.append("nama_penulis", form.nama_penulis);
 
-        // Kirim daftar foto lama yang masih ada (tidak dihapus)
         existingFotos.forEach((foto) => {
             if (foto.id !== undefined && foto.id !== null) {
                 formData.append("existing_foto[]", String(foto.id));
             }
         });
 
-        // Kirim daftar foto lama yang ingin dihapus
         hapusFotoIds.forEach((id) => {
             formData.append("hapus_foto[]", String(id));
         });
 
-        // Kirim foto baru yang akan ditambahkan
         newFotos.forEach((foto) => {
             if (foto.file) {
                 formData.append("foto_dokumentasi[]", foto.file);
