@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginPegawaiController;
 use App\Http\Controllers\Auth\LoginUmkmController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
+use App\Http\Controllers\Dashboard\PegawaiDashboardController;
 use App\Http\Controllers\Dashboard\UmkmDashboardController;
 use App\Http\Controllers\Kategori\KelolaKategoriController;
 use App\Http\Controllers\KelolaHUController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\SuratMasuk\KelolaDisposisiController;
 use App\Http\Controllers\SuratMasuk\KelolaSuratController;
 use App\Http\Controllers\User\KelolaProfilController;
 use App\Http\Controllers\User\KelolaUserController;
+use App\Models\Pegawai;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -56,7 +58,11 @@ Route::prefix('pegawai')->group(function () {
     Route::post('/logout', [LoginPegawaiController::class, 'logout'])->name('pegawai.logout');
 
     Route::middleware(['auth', 'check.user.type:pegawai'])->group(function () {
-        Route::get('/dashboard', fn() => Inertia::render('Pegawai/Dashboard'))->name('pegawai.dashboard');
+        Route::get('/dashboard', [PegawaiDashboardController::class, 'dashboardLapangan'])->name('pegawai.dashboard');
+        Route::get('/dashboardKadin', [PegawaiDashboardController::class, 'dashboardKadin'])->name('kadin.dashboard');
+        Route::get('/dashboardKabid', [PegawaiDashboardController::class, 'dashboardKabid'])->name('kabid.dashboard');
+        Route::get('/dashboardAdm', [PegawaiDashboardController::class, 'dashboardAdm'])->name('adm.dashboard');
+        Route::get('/dashboardLapangan', [PegawaiDashboardController::class, 'dashboardLapangan'])->name('lapangan.dashboard');
 
         Route::get('/pegawai/profile', [KelolaProfilController::class, 'showPegawai'])->name('pegawai.profile');
         Route::post('/pegawai/update-profile', [KelolaProfilController::class, 'updateProfilePegawai'])->name('pegawai.profile.update');

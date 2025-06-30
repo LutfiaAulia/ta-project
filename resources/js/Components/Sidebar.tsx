@@ -111,7 +111,7 @@ const Sidebar: React.FC = () => {
                         </Link>
                     )}
 
-                    {canAccess(["Admin","Administrasi Umum", "Kepala Dinas"]) && (
+                    {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
                         <Link
                             href={route("surat.list")}
                             className={`flex items-center gap-3 p-2 rounded ${
@@ -125,7 +125,7 @@ const Sidebar: React.FC = () => {
                         </Link>
                     )}
 
-                    {canAccess(["Admin","Administrasi Umum", "Kepala Dinas"]) && (
+                    {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
                         <Link
                             href={route("disposisi.list")}
                             className={`flex items-center gap-3 p-2 rounded ${

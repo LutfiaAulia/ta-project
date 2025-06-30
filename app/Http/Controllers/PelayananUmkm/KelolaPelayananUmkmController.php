@@ -8,14 +8,21 @@ use App\Models\BookingPelayananUmkm;
 use App\Models\Layanan;
 use App\Models\PelayananUmkm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class KelolaPelayananUmkmController extends Controller
 {
     public function show()
     {
+        $user = Auth::user();
+        $pegawaiId = $user->pegawai->id;
+
         $booking = Booking::withCount('bookingPelayananUmkm')
-            ->where('status_booking', 'Diterima')
+            ->whereIn('status_booking', ['Diterima', 'Selesai'])
+            ->whereHas('pegawaiLapangan', function ($query) use ($pegawaiId) {
+                $query->where('id', $pegawaiId);
+            })
             ->orderByDesc('tanggal_mulai')
             ->get()
             ->map(function ($booking) {
@@ -35,6 +42,7 @@ class KelolaPelayananUmkmController extends Controller
             'booking' => $booking,
         ]);
     }
+
 
     public function showUmkm($id_booking)
     {
