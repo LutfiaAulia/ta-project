@@ -308,22 +308,24 @@ const ListUmkm: React.FC = () => {
             <header className="bg-gradient-to-r from-green-500 to-blue-600 text-white">
                 <div className="max-w-6xl mx-auto px-6 py-8">
                     <div className="flex items-center justify-between mb-8">
-                        <div className="flex items-center">
-                            <img
-                                src="/logo.png"
-                                alt="Logo"
-                                className="w-12 h-12 object-contain mr-4"
-                            />
-                            <div>
-                                <h1 className="text-2xl font-bold">
-                                    UMKM Sumatera Barat
-                                </h1>
-                                <p className="opacity-90">
-                                    Dinas Koperasi dan UMKM Provinsi Sumatera
-                                    Barat
-                                </p>
+                        <Link href={route("home")}>
+                            <div className="flex items-center cursor-pointer">
+                                <img
+                                    src="/logo.png"
+                                    alt="Logo"
+                                    className="w-12 h-12 object-contain mr-4"
+                                />
+                                <div>
+                                    <h1 className="text-2xl font-bold">
+                                        UMKM Sumatera Barat
+                                    </h1>
+                                    <p className="opacity-90">
+                                        Dinas Koperasi dan UMKM Provinsi
+                                        Sumatera Barat
+                                    </p>
+                                </div>
                             </div>
-                        </div>
+                        </Link>
                         <Link
                             href="/umkm/login"
                             className="bg-white/20 px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-colors"
