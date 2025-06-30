@@ -17,6 +17,7 @@ use App\Http\Controllers\Promosi\KelolaPromosiController;
 use App\Http\Controllers\Promosi\KelolaShowPromosiController;
 use App\Http\Controllers\SuratMasuk\KelolaDisposisiController;
 use App\Http\Controllers\SuratMasuk\KelolaSuratController;
+use App\Http\Controllers\User\KelolaProfilController;
 use App\Http\Controllers\User\KelolaUserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -156,6 +157,10 @@ Route::prefix('umkm')->group(function () {
         Route::get('/edit/produk/{id}', [KelolaPromosiController::class, 'edit'])->name('umkm.edit');
         Route::put('/update/produk/{id}', [KelolaPromosiController::class, 'update'])->name('umkm.update');
         Route::delete('/destroy/produk/{id}', [KelolaPromosiController::class, 'destroy'])->name('umkm.destroy');
+
+        Route::get('/umkm/profile', [KelolaProfilController::class, 'show'])->name('umkm.profile');
+        Route::post('/umkm/update-profile', [KelolaProfilController::class, 'updateProfile'])->name('umkm.profile.update');
+        Route::post('/umkm/password', [KelolaProfilController::class, 'updatePassword'])->name('umkm.password.update');
     });
 });
 

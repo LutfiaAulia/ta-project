@@ -18,10 +18,10 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        $user = $request->user()->load('instansi'); // Pastikan relasi 'instansi' dimuat
+        $user = $request->user()->load('instansi');
 
         return Inertia::render('Profile/Edit', [
-            'user' => $user,  // Mengirimkan data user beserta instansi
+            'user' => $user, 
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);
@@ -35,28 +35,23 @@ class ProfileController extends Controller
         $user = $request->user();
         $validated = $request->validated();
 
-        // Jika email berubah, set email_verified_at menjadi null
         if ($validated['email'] !== $user->email) {
             $user->email_verified_at = null;
         }
 
-        // Perbarui data user di tabel 'users'
         $user->fill([
             'nama' => $validated['nama'],
             'email' => $validated['email'],
         ]);
         $user->save();
 
-        // Perbarui atau buat data instansi di tabel 'instansi'
         if ($user->instansi) {
-            // Jika data instansi sudah ada, update data instansi
             $user->instansi()->update([
                 'nama_instansi' => $validated['nama_instansi'],
                 'alamat' => $validated['alamat'],
                 'no_hp' => $validated['no_hp'],
             ]);
         } else {
-            // Jika data instansi belum ada, buat data instansi baru
             $user->instansi()->create([
                 'nama_instansi' => $validated['nama_instansi'],
                 'alamat' => $validated['alamat'],
