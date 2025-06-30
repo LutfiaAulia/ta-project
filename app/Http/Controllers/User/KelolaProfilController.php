@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use App\Models\Umkm;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class KelolaProfilController extends Controller

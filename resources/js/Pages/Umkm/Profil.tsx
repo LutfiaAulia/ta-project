@@ -118,6 +118,7 @@ const Profil = (props: UMKMProfileProps) => {
         <Layout>
             <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-8 px-4">
                 <div className="pt-12 max-w-4xl mx-auto space-y-8">
+                    
                     {/* FORM PROFIL */}
                     <div className="bg-white shadow-xl rounded-2xl border border-gray-100 overflow-hidden">
                         <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4 flex items-center justify-between">
