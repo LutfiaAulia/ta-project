@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import { usePage } from "@inertiajs/react";
+import { usePage, Link } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 
 const Topbar: React.FC = () => {
@@ -37,7 +37,12 @@ const Topbar: React.FC = () => {
                     <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50">
                         <ul className="py-1 text-sm text-gray-700">
                             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                                Profil
+                                <Link
+                                    href="/pegawai/pegawai/profile"
+                                    className="block w-full h-full"
+                                >
+                                    Profil
+                                </Link>
                             </li>
                             <li
                                 onClick={handleLogout}

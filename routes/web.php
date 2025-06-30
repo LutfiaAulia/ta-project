@@ -57,6 +57,10 @@ Route::prefix('pegawai')->group(function () {
     Route::middleware(['auth', 'check.user.type:pegawai'])->group(function () {
         Route::get('/dashboard', fn() => Inertia::render('Pegawai/Dashboard'))->name('pegawai.dashboard');
 
+        Route::get('/pegawai/profile', [KelolaProfilController::class, 'showPegawai'])->name('pegawai.profile');
+        Route::post('/pegawai/update-profile', [KelolaProfilController::class, 'updateProfilePegawai'])->name('pegawai.profile.update');
+        Route::post('/pegawai/password', [KelolaProfilController::class, 'updatePasswordPegawai'])->name('pegawai.password.update');
+
         Route::get('/booking/listBooking', [RiwayatBooking::class, 'listAllBooking'])->name('booking.listBooking');
         Route::get('/booking/{id}', [RiwayatBooking::class, 'showBook'])->name('booking.showbook');
         Route::post('/booking/{id}/verifikasi', [BookingController::class, 'verifikasi'])->name('booking.verif');
