@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginPegawaiController;
 use App\Http\Controllers\Auth\LoginUmkmController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
+use App\Http\Controllers\Dashboard\UmkmDashboardController;
 use App\Http\Controllers\Kategori\KelolaKategoriController;
 use App\Http\Controllers\KelolaHUController;
 use App\Http\Controllers\Laporan\KelolaLaporanController;
@@ -148,7 +149,7 @@ Route::prefix('umkm')->group(function () {
     Route::post('/logout', [LoginUmkmController::class, 'logout'])->name('umkm.logout');
 
     Route::middleware(['auth', 'check.user.type:umkm'])->group(function () {
-        Route::get('/dashboard', fn() => Inertia::render('Umkm/DashboardUmkm'))->name('umkm.dashboard');
+        Route::get('/dashboard', [UmkmDashboardController::class, 'dashboard'])->name('umkm.dashboard');
 
         //Data Umkm
         Route::get('/data/umkm', [KelolaDataUmkmController::class, 'show'])->name('umkm.data');
