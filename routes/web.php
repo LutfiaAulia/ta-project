@@ -58,7 +58,7 @@ Route::prefix('pegawai')->group(function () {
     Route::post('/logout', [LoginPegawaiController::class, 'logout'])->name('pegawai.logout');
 
     Route::middleware(['auth', 'check.user.type:pegawai'])->group(function () {
-        Route::get('/dashboard', [PegawaiDashboardController::class, 'dashboardLapangan'])->name('pegawai.dashboard');
+        Route::get('/dashboardAdmin', [PegawaiDashboardController::class, 'dashboardAdmin'])->name('admin.dashboard');
         Route::get('/dashboardKadin', [PegawaiDashboardController::class, 'dashboardKadin'])->name('kadin.dashboard');
         Route::get('/dashboardKabid', [PegawaiDashboardController::class, 'dashboardKabid'])->name('kabid.dashboard');
         Route::get('/dashboardAdm', [PegawaiDashboardController::class, 'dashboardAdm'])->name('adm.dashboard');

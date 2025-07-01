@@ -11,7 +11,7 @@ import {
     FaUserTie,
     FaShoppingBag,
     FaChevronDown,
-    FaTags
+    FaTags,
 } from "react-icons/fa";
 import { Link, usePage } from "@inertiajs/react";
 
@@ -33,6 +33,23 @@ const Sidebar: React.FC = () => {
 
     const canAccess = (roles: string[]) => roles.includes(role);
 
+    const getDashboardRoute = () => {
+        switch (role) {
+            case "Admin":
+                return route("admin.dashboard");
+            case "Kepala Dinas":
+                return route("kadin.dashboard");
+            case "Kepala Bidang":
+                return route("kabid.dashboard");
+            case "Pegawai Lapangan":
+                return route("lapangan.dashboard");
+            case "Administrasi Umum":
+                return route("adm.dashboard");
+            default:
+                return route("pegawai.login.form");
+        }
+    };
+
     return (
         <div className="w-60 h-screen bg-green-600 text-white flex flex-col fixed">
             {/* Logo */}
@@ -48,10 +65,13 @@ const Sidebar: React.FC = () => {
             <div className="flex-1 overflow-y-auto scrollbar-hide">
                 <ul className="flex flex-col mt-6 space-y-1 px-4 pb-4">
                     <Link
-                        href={route("pegawai.dashboard")}
+                        href={getDashboardRoute()}
                         className={`flex items-center gap-3 p-2 rounded ${
-                            route().current("pegawai.dashboard") &&
-                            !window.location.href.includes("user/show")
+                            route().current(
+                                `${role
+                                    .toLowerCase()
+                                    .replace(" ", "")}.dashboard`
+                            ) && !window.location.href.includes("user/show")
                                 ? "bg-green-500"
                                 : "hover:bg-green-500"
                         } transition cursor-pointer`}
@@ -78,7 +98,7 @@ const Sidebar: React.FC = () => {
                         </Link>
                     )}
 
-                    {canAccess(["Admin","Pegawai Lapangan"]) && (
+                    {canAccess(["Admin", "Pegawai Lapangan"]) && (
                         <Link
                             href={route("bookinglaksana.list")}
                             className={`flex items-center gap-3 p-2 rounded ${

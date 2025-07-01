@@ -29,7 +29,23 @@ class LoginPegawaiController extends Controller
         ])) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/pegawai/dashboard');
+            $pegawai = Auth::user()->pegawai;
+            $role = $pegawai?->role;
+
+            switch ($role) {
+                case 'Admin':
+                    return redirect()->intended('/pegawai/dashboardAdmin');
+                case 'Kepala Dinas':
+                    return redirect()->intended('/pegawai/dashboardKadin');
+                case 'Kepala Bidang':
+                    return redirect()->intended('/pegawai/dashboardKabid');
+                case 'Pegawai Lapangan':
+                    return redirect()->intended('/pegawai/dashboardLapangan');
+                case 'Administrasi Umum':
+                    return redirect()->intended('/pegawai/dashboardAdm');
+                default:
+                    return redirect()->intended('/pegawai/login');
+            }
         }
 
         return back()->withErrors([
