@@ -15,9 +15,16 @@ type UmkmEntry = {
 type ListUmkmProps = {
     umkm: UmkmEntry[];
     id_booking: number;
+    tanggal_mulai: string;
+    tanggal_akhir: string;
 };
 
-const ListUmkm: React.FC<ListUmkmProps> = ({ umkm, id_booking }) => {
+const ListUmkm: React.FC<ListUmkmProps> = ({
+    umkm,
+    id_booking,
+    tanggal_mulai,
+    tanggal_akhir,
+}) => {
     const [search, setSearch] = useState("");
     const [filteredUmkm, setFilteredUmkm] = useState<UmkmEntry[]>(umkm);
 
@@ -35,6 +42,11 @@ const ListUmkm: React.FC<ListUmkmProps> = ({ umkm, id_booking }) => {
         setFilteredUmkm(filtered);
     }, [search, umkm]);
 
+    const today = new Date();
+    const mulai = new Date(tanggal_mulai);
+    const akhir = new Date(tanggal_akhir);
+    const isInRange = today >= mulai && today <= akhir;
+
     return (
         <Layout>
             <div className="p-4 max-w-screen-lg mx-auto">
@@ -50,12 +62,14 @@ const ListUmkm: React.FC<ListUmkmProps> = ({ umkm, id_booking }) => {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <Link
-                        href={`/pegawai/create/umkmlayan/${id_booking}`}
-                        className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
-                    >
-                        + Tambah
-                    </Link>
+                    {isInRange && (
+                        <Link
+                            href={`/pegawai/create/umkmlayan/${id_booking}`}
+                            className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
+                        >
+                            + Tambah
+                        </Link>
+                    )}
                 </div>
 
                 <div className="overflow-x-auto">

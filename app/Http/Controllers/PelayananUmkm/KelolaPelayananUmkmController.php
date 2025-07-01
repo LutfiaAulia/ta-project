@@ -55,6 +55,8 @@ class KelolaPelayananUmkmController extends Controller
 
     public function showUmkm($id_booking)
     {
+        $booking = Booking::findOrFail($id_booking);
+
         $umkm = BookingPelayananUmkm::with(['pelayanan', 'layanan'])
             ->where('id_booking', $id_booking)
             ->get()
@@ -73,6 +75,8 @@ class KelolaPelayananUmkmController extends Controller
         return Inertia::render('Pegawai/PelayananUmkm/ListUmkm', [
             'umkm' => $umkm,
             'id_booking' => $id_booking,
+            'tanggal_mulai' => $booking->tanggal_mulai->format('Y-m-d'),
+            'tanggal_akhir' => $booking->tanggal_akhir->format('Y-m-d'),
         ]);
     }
 
