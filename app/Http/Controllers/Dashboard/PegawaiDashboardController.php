@@ -7,6 +7,10 @@ use App\Models\Booking;
 use App\Models\BookingPelayananUmkm;
 use App\Models\Disposisi;
 use App\Models\Laporan;
+use App\Models\Mobil;
+use App\Models\Pegawai;
+use App\Models\Promosi;
+use App\Models\Sopir;
 use App\Models\SuratMasuk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -167,4 +171,6 @@ class PegawaiDashboardController extends Controller
             'bookings' => $bookings,
         ]);
     }
+
+    public function dashboardAdmin() {}
 }
