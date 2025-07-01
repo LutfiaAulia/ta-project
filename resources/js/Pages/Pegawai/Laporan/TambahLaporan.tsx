@@ -97,6 +97,18 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
             <p className="text-red-500 text-xs mt-1">{errors[field]}</p>
         ) : null;
 
+    const today = new Date().toISOString().split("T")[0];
+
+    const parseToIsoDate = (dmy: string) => {
+        const [day, month, year] = dmy.split("-");
+        return `${year}-${month}-${day}`;
+    };
+
+    const filteredBooking = booking.filter((b) => {
+        const formattedTanggalMulai = parseToIsoDate(b.tanggal_mulai);
+        return formattedTanggalMulai <= today;
+    });
+
     return (
         <Layout>
             <div className="max-w-screen-md mx-auto p-12">
@@ -118,13 +130,14 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
                             className="w-full border px-3 py-2 rounded"
                         >
                             <option value="">-- Pilih Booking --</option>
-                            {booking.map((b) => (
+                            {filteredBooking.map((b) => (
                                 <option key={b.id_booking} value={b.id_booking}>
                                     {b.nama_instansi} ({b.tanggal_mulai} -{" "}
                                     {b.tanggal_akhir})
                                 </option>
                             ))}
                         </select>
+
                         {renderError("id_booking")}
                     </div>
                     {[
