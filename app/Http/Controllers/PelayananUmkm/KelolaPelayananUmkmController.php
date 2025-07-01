@@ -16,30 +16,39 @@ class KelolaPelayananUmkmController extends Controller
     public function show()
     {
         $user = Auth::user();
-        $pegawaiId = $user->pegawai->id;
+        $role = $user->pegawai->role ?? null;
+        $pegawaiId = $user->pegawai->id ?? null;
 
-        $booking = Booking::withCount('bookingPelayananUmkm')
-            ->whereIn('status_booking', ['Diterima', 'Selesai'])
-            ->whereHas('pegawaiLapangan', function ($query) use ($pegawaiId) {
-                $query->where('id', $pegawaiId);
-            })
-            ->orderByDesc('tanggal_mulai')
-            ->get()
-            ->map(function ($booking) {
-                return [
-                    'id_booking' => $booking->id_booking,
-                    'tanggal_mulai' => $booking->tanggal_mulai,
-                    'tanggal_akhir' => $booking->tanggal_akhir,
-                    'waktu_mulai' => $booking->waktu_mulai,
-                    'waktu_akhir' => $booking->waktu_akhir,
-                    'acara' => $booking->acara,
-                    'jumlah_umkm' => $booking->peserta,
-                    'jumlah_umkm_terdaftar' => $booking->booking_pelayanan_umkm_count,
-                ];
-            });
+        if ($role === 'Admin') {
+            $booking = Booking::withCount('bookingPelayananUmkm')
+                ->whereIn('status_booking', ['Diterima', 'Selesai'])
+                ->orderByDesc('tanggal_mulai')
+                ->get();
+        } else {
+            $booking = Booking::withCount('bookingPelayananUmkm')
+                ->whereIn('status_booking', ['Diterima', 'Selesai'])
+                ->whereHas('pegawaiLapangan', function ($query) use ($pegawaiId) {
+                    $query->where('id', $pegawaiId);
+                })
+                ->orderByDesc('tanggal_mulai')
+                ->get();
+        }
+
+        $result = $booking->map(function ($booking) {
+            return [
+                'id_booking' => $booking->id_booking,
+                'tanggal_mulai' => $booking->tanggal_mulai,
+                'tanggal_akhir' => $booking->tanggal_akhir,
+                'waktu_mulai' => $booking->waktu_mulai,
+                'waktu_akhir' => $booking->waktu_akhir,
+                'acara' => $booking->acara,
+                'jumlah_umkm' => $booking->peserta,
+                'jumlah_umkm_terdaftar' => $booking->booking_pelayanan_umkm_count,
+            ];
+        });
 
         return Inertia::render('Pegawai/PelayananUmkm/ListBookingTerlaksana', [
-            'booking' => $booking,
+            'booking' => $result,
         ]);
     }
 
