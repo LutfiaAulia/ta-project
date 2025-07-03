@@ -40,7 +40,6 @@ class ChatbotController extends Controller
             }
         }
 
-
         // --- 2. Cari berdasarkan lokasi ---
         $kabupaten = IdentitasUmkm::distinct()->pluck('kabupaten_kota');
         foreach ($kabupaten as $kab) {
