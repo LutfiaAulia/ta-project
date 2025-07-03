@@ -1,15 +1,26 @@
-import PrimaryButton from '@/Components/PrimaryButton';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import PrimaryButton from "@/Components/PrimaryButton";
+import GuestLayout from "@/Layouts/GuestLayout";
+import { Head, Link, useForm } from "@inertiajs/react";
+import { FormEventHandler } from "react";
 
-export default function VerifyEmail({ status }: { status?: string }) {
+export default function VerifyEmail({
+    status,
+    auth,
+}: {
+    status?: string;
+    auth: {
+        user: {
+            nama: string;
+            email: string;
+            tipe: string;
+        };
+    };
+}) {
     const { post, processing } = useForm({});
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        post(route('verification.send'));
+        post(route("verification.send"));
     };
 
     return (
@@ -23,7 +34,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
                 another.
             </div>
 
-            {status === 'verification-link-sent' && (
+            {status === "verification-link-sent" && (
                 <div className="mb-4 text-sm font-medium text-green-600">
                     A new verification link has been sent to the email address
                     you provided during registration.
@@ -32,12 +43,14 @@ export default function VerifyEmail({ status }: { status?: string }) {
 
             <form onSubmit={submit}>
                 <div className="mt-4 flex items-center justify-between">
-                    <PrimaryButton disabled={processing}>
-                        Resend Verification Email
-                    </PrimaryButton>
+                    {auth.user.tipe === "instansi" && (
+                        <PrimaryButton disabled={processing}>
+                            Resend Verification Email
+                        </PrimaryButton>
+                    )}
 
                     <Link
-                        href={route('logout')}
+                        href={route("logout")}
                         method="post"
                         as="button"
                         className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
