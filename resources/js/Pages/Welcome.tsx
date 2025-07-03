@@ -20,7 +20,7 @@ interface Layanan {
 interface Jadwal {
     layanan: { layanan: string };
     tanggal_mulai: string;
-    tanggal_akhir:string;
+    tanggal_akhir: string;
     waktu_mulai: string;
     waktu_akhir: string;
     lokasi: string;
@@ -40,27 +40,39 @@ export default function Welcome() {
         const optionsMonthYear = { month: "long", year: "numeric" } as const;
 
         if (
+            start.getDate() === end.getDate() &&
+            start.getMonth() === end.getMonth() &&
+            start.getFullYear() === end.getFullYear()
+        ) {
+            return start.toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+            });
+        }
+
+        if (
             start.getMonth() === end.getMonth() &&
             start.getFullYear() === end.getFullYear()
         ) {
             return `${start.toLocaleDateString(
                 "id-ID",
                 optionsDay
-            )}-${end.toLocaleDateString(
+            )}–${end.toLocaleDateString(
                 "id-ID",
                 optionsDay
             )} ${start.toLocaleDateString("id-ID", optionsMonthYear)}`;
-        } else {
-            return `${start.toLocaleDateString("id-ID", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-            })} - ${end.toLocaleDateString("id-ID", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-            })}`;
         }
+
+        return `${start.toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        })} – ${end.toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        })}`;
     }
 
     const { layanan, jadwalTerdekat } = usePage().props as unknown as {
@@ -394,16 +406,16 @@ export default function Welcome() {
                         <div>
                             <h5 className="font-semibold mb-4">Kontak</h5>
                             <div className="space-y-2 text-gray-400">
-                                <div className="flex items-center">
-                                    <MapPin className="w-4 h-4 mr-2" />
+                                <div className="flex items-start">
+                                    <MapPin className="w-5 h-5 mr-2" />
                                     <span className="text-sm">
-                                        Padang, Sumatera Barat
+                                        Jl.Khatib Sulaiman No.11, Padang, Sumatera Barat
                                     </span>
                                 </div>
                                 <div className="flex items-center">
                                     <Phone className="w-4 h-4 mr-2" />
                                     <span className="text-sm">
-                                        (0751) 123-4567
+                                        (0751) 7055292-7055298
                                     </span>
                                 </div>
                                 <div className="flex items-center">

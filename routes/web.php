@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginPegawaiController;
 use App\Http\Controllers\Auth\LoginUmkmController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
+use App\Http\Controllers\Chatbot\ChatbotController;
 use App\Http\Controllers\Dashboard\PegawaiDashboardController;
 use App\Http\Controllers\Dashboard\UmkmDashboardController;
 use App\Http\Controllers\Kategori\KelolaKategoriController;
@@ -21,7 +22,6 @@ use App\Http\Controllers\SuratMasuk\KelolaDisposisiController;
 use App\Http\Controllers\SuratMasuk\KelolaSuratController;
 use App\Http\Controllers\User\KelolaProfilController;
 use App\Http\Controllers\User\KelolaUserController;
-use App\Models\Pegawai;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -29,6 +29,7 @@ use Inertia\Inertia;
 
 Route::get('/', [KelolaHUController::class, 'beranda'])->name('home');
 Route::get('/list/umkm/promosi', [KelolaShowPromosiController::class, 'show'])->name('list.umkm.promosi');
+Route::post('/chatbot', [ChatbotController::class, 'handle'])->name('chatbot.handle');
 
 // ==================== ROUTE UNTUK DIAKSES BANYAK ROLE ==================== //
 Route::middleware(['auth'])->group(function () {
