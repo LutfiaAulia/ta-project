@@ -198,9 +198,10 @@ class PegawaiDashboardController extends Controller
 
         $totalUMKM = BookingPelayananUmkm::count();
         $totalProduk = Promosi::count();
-        $totalMobil = Mobil::count();
-        $totalSopir = Sopir::count();
-        $totalLayanan = Layanan::count();
+        $totalMobil = Mobil::where('status', 'aktif')->count();
+        $totalSopir = Sopir::where('status', 'aktif')->count();
+        $totalLayanan = Layanan::where('status', 'aktif')->count();
+
 
         $umkmPerKabupaten = DB::table('booking_pelayananumkm')
             ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')

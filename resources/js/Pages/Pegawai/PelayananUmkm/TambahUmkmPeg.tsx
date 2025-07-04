@@ -98,7 +98,7 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
             "jenis_kelamin",
             "nik",
             "nama_usaha",
-            "nib",
+            //"nib",
             "modal_usaha",
             "total_aset",
             "omset",

@@ -53,6 +53,30 @@ const LaporanTemplate: React.FC = () => {
         });
     };
 
+    const formatJadwal = (start: string, end: string) => {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+
+        const isSameDay =
+            startDate.getDate() === endDate.getDate() &&
+            startDate.getMonth() === endDate.getMonth() &&
+            startDate.getFullYear() === endDate.getFullYear();
+
+        if (isSameDay) {
+            return `${formatDate(start)}`;
+        }
+
+        const isSameMonth =
+            startDate.getMonth() === endDate.getMonth() &&
+            startDate.getFullYear() === endDate.getFullYear();
+
+        if (isSameMonth) {
+            return `${startDate.getDate()} – ${formatDate(end)}`;
+        }
+
+        return `${formatDate(start)} – ${formatDate(end)}`;
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 font-times text-[12pt]">
             <div className="max-w-4xl mx-auto bg-white min-h-screen print:shadow-none print:max-w-none print:mx-0">
@@ -181,9 +205,11 @@ const LaporanTemplate: React.FC = () => {
                             <div className="flex-1 flex">
                                 <span className="mr-2">:</span>
                                 <p className="flex-1 text-justify">
-                                    {formatDate(laporan.tanggal_mulai)} -{" "}
-                                    {formatDate(laporan.tanggal_akhir)} (
-                                    {laporan.durasi} hari)
+                                    {formatJadwal(
+                                        laporan.tanggal_mulai,
+                                        laporan.tanggal_akhir
+                                    )}{" "}
+                                    ({laporan.durasi} hari)
                                 </p>
                             </div>
                         </div>

@@ -42,9 +42,14 @@ const ListUmkm: React.FC<ListUmkmProps> = ({
         setFilteredUmkm(filtered);
     }, [search, umkm]);
 
-    const today = new Date();
-    const mulai = new Date(tanggal_mulai);
-    const akhir = new Date(tanggal_akhir);
+    const stripTime = (date: Date) => {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    };
+
+    const today = stripTime(new Date());
+    const mulai = stripTime(new Date(tanggal_mulai));
+    const akhir = stripTime(new Date(tanggal_akhir));
+
     const isInRange = today >= mulai && today <= akhir;
 
     return (

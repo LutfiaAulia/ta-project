@@ -104,7 +104,7 @@ class KelolaPelayananUmkmController extends Controller
             'sektor_usaha' => 'nullable|string|max:100',
             'legalitas_usaha' => 'nullable|string|max:100',
             'pembiayaan' => 'nullable|string|max:100',
-            'nib' => 'required|string|max:50',
+            'nib' => 'nullable|string|max:50',
             'alamat_usaha' => 'nullable|string|max:255',
             'modal_usaha' => 'required|string|max:50',
             'total_aset' => 'required|string|max:50',
@@ -194,7 +194,7 @@ class KelolaPelayananUmkmController extends Controller
             'jenis_kelamin' => 'required|string|max:255',
             'nik' => 'required|string|max:50',
             'nama_usaha' => 'required|string|max:255',
-            'nib' => 'required|string|max:100',
+            'nib' => 'nullable|string|max:100',
 
             'modal_usaha' => 'required',
             'total_aset' => 'required',
