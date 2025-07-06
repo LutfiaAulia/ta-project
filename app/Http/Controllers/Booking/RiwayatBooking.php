@@ -78,8 +78,6 @@ class RiwayatBooking extends Controller
         ]);
     }
 
-
-
     public function showBook($id)
     {
         $booking = Booking::with([

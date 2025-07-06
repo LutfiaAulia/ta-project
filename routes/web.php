@@ -153,6 +153,7 @@ Route::prefix('pegawai')->group(function () {
         Route::put('/update/disposisi/{id}', [KelolaDisposisiController::class, 'update'])->name('disposisi.update');
         Route::delete('/destroy/disposisi/{id}', [KelolaDisposisiController::class, 'destroy'])->name('disposisi.destroy');
         Route::get('/detail/disposisi/{id}', [KelolaDisposisiController::class, 'detail'])->name('disposisi.detail');
+        Route::get('/booking/disposisi/{id}', [KelolaDisposisiController::class, 'lihatDariBooking'])->name('booking.disposisi');
 
         Route::get('/list/bookingdilaksanakan', [KelolaPelayananUmkmController::class, 'show'])->name('bookinglaksana.list');
         Route::get('/list/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'showUmkm'])->name('umkmlayan.list');

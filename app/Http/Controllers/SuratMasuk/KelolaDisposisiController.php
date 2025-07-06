@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuratMasuk;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\Disposisi;
 use App\Models\SuratMasuk;
 use Illuminate\Http\Request;
@@ -146,6 +147,40 @@ class KelolaDisposisiController extends Controller
                     'asal_surat' => $disposisi->surat_masuk?->booking?->instansi?->nama_instansi ?? '-',
                     'perihal' => $disposisi->surat_masuk->perihal ?? '-',
                 ],
+            ],
+        ]);
+    }
+
+    //Pegawai
+    public function lihatDariBooking($id_booking)
+    {
+        $disposisi = Disposisi::with(['pegawai.user', 'surat_masuk'])
+            ->whereHas('surat_masuk', function ($q) use ($id_booking) {
+                $q->where('id_booking', $id_booking);
+            })
+            ->get();
+
+        $booking = Booking::find($id_booking);
+
+        return Inertia::render('Pegawai/Booking/DaftarDisposisi', [
+            'disposisi' => $disposisi->map(fn($item) => [
+                'id_disposisi' => $item->id_disposisi,
+                'isi' => $item->isi,
+                'tujuan' => $item->tujuan,
+                'catatan' => $item->catatan,
+                'tanggal' => $item->tanggal,
+                'user' => [
+                    'nama' => $item->pegawai->user->nama ?? '-',
+                ],
+                'surat' => [
+                    'no_surat' => $item->surat_masuk->no_surat ?? '-',
+                    'asal_surat' => $item->surat_masuk->asal_surat ?? '-',
+                    'perihal' => $item->surat_masuk->perihal ?? '-',
+                ],
+            ]),
+            'booking' => [
+                'id' => $id_booking,
+                'acara' => $booking->acara,
             ],
         ]);
     }

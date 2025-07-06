@@ -165,6 +165,12 @@ const ListBooking: React.FC<PageProps<{ booking: any[] }>> = ({ booking }) => {
                                             >
                                                 Detail
                                             </Link>
+                                            <Link
+                                                href={`/pegawai/booking/disposisi/${b.id_booking}`}
+                                                className="bg-indigo-500 hover:bg-indigo-600 text-white px-2 py-1 rounded text-xs"
+                                            >
+                                                Disposisi
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))
