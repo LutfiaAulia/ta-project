@@ -21,7 +21,7 @@ use Inertia\Inertia;
 
 class PegawaiDashboardController extends Controller
 {
-    public function dashboardKabid()
+    public function dashboardKabid(Request $request)
     {
         $stats = [
             'diajukan' => Booking::where('status_booking', 'Diajukan')->count(),
@@ -43,9 +43,124 @@ class PegawaiDashboardController extends Controller
                 ];
             });
 
+        $year = $request->get('year', date('Y'));
+
+        $totalBookingDiajukan = Booking::where('status_booking', 'diajukan')
+            ->whereYear('tanggal_mulai', $year)
+            ->count();
+
+        $totalBookingDiterima = Booking::where('status_booking', 'diterima')
+            ->whereYear('tanggal_mulai', $year)
+            ->count();
+
+        $totalBookingSelesai = Booking::where('status_booking', 'selesai')
+            ->whereYear('tanggal_mulai', $year)
+            ->count();
+
+        $totalBookingDitolak = Booking::where('status_booking', 'ditolak')
+            ->whereYear('tanggal_mulai', $year)
+            ->count();
+
+        $umkmPerKabupaten = DB::table('booking_pelayananumkm')
+            ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')
+            ->whereYear('booking.tanggal_mulai', $year)
+            ->select('booking.kabupaten_kota', DB::raw('COUNT(*) as jumlah'))
+            ->groupBy('booking.kabupaten_kota')
+            ->get();
+
+
+        $layananPopuler = DB::table('booking_pelayananumkm')
+            ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')
+            ->join('layanan', 'booking_pelayananumkm.id_layanan', '=', 'layanan.id_layanan')
+            ->whereYear('booking.tanggal_mulai', $year)
+            ->select('layanan.layanan', DB::raw('COUNT(*) as jumlah'))
+            ->groupBy('layanan.layanan')
+            ->orderByDesc('jumlah')
+            ->limit(5)
+            ->get();
+
+
+        $bookingTrend = Booking::select(
+            DB::raw('MONTH(tanggal_mulai) as bulan'),
+            DB::raw('COUNT(*) as booking')
+        )
+            ->whereYear('tanggal_mulai', $year)
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->get()
+            ->map(function ($item) use ($year) {
+                $bulan = date('M', mktime(0, 0, 0, $item->bulan, 1));
+                $bookingIds = Booking::whereYear('tanggal_mulai', $year)
+                    ->whereMonth('tanggal_mulai', $item->bulan)
+                    ->pluck('id_booking');
+
+                $umkmCount = DB::table('booking_pelayananumkm')
+                    ->whereIn('id_booking', $bookingIds)
+                    ->count();
+
+                return [
+                    'bulan' => $bulan,
+                    'booking' => $item->booking,
+                    'umkm' => $umkmCount,
+                ];
+            });
+
+        $bookingPerTahun = Booking::select(
+            DB::raw('YEAR(tanggal_mulai) as tahun'),
+            DB::raw('COUNT(*) as jumlah'),
+        )
+            ->groupBy('tahun')->orderBy('tahun')->get();
+
+        $umkmPerBooking = Booking::select('tanggal_mulai', 'tanggal_akhir')
+            ->whereNotNull('tanggal_mulai')
+            ->whereNotNull('tanggal_akhir')
+            ->where('status_booking', 'selesai')
+            ->whereYear('tanggal_mulai', $year)
+            ->orderByDesc('tanggal_mulai')
+            ->limit(5)
+            ->get()
+            ->map(function ($item) use ($year) {
+                $bookingIds = Booking::whereDate('tanggal_mulai', $item->tanggal_mulai)
+                    ->whereDate('tanggal_akhir', $item->tanggal_akhir)
+                    ->where('status_booking', 'selesai')
+                    ->whereYear('tanggal_mulai', $year)
+                    ->pluck('id_booking');
+
+                $umkmCount = DB::table('booking_pelayananumkm')
+                    ->whereIn('id_booking', $bookingIds)
+                    ->count();
+
+                $tanggalMulai = Carbon::parse($item->tanggal_mulai);
+                $tanggalAkhir = Carbon::parse($item->tanggal_akhir);
+
+                if ($tanggalMulai->format('M') === $tanggalAkhir->format('M')) {
+                    $tanggalLabel = $tanggalMulai->format('j') . '-' . $tanggalAkhir->format('j M');
+                } else {
+                    $tanggalLabel = $tanggalMulai->format('j M') . ' - ' . $tanggalAkhir->format('j M');
+                }
+
+                return [
+                    'tanggal' => $tanggalLabel,
+                    'jumlah' => $umkmCount,
+                    'booking' => count($bookingIds),
+                ];
+            });
+
         return Inertia::render('Pegawai/KabidDashboard', [
+            'year' => (int) $year,
             'stats' => $stats,
             'recentBookings' => $recentBookings,
+            'bookingStatus' => [
+                ['name' => 'Selesai',   'value' => $totalBookingSelesai,  'color' => '#16a34a'],
+                ['name' => 'Diajukan',  'value' => $totalBookingDiajukan, 'color' => '#f59e0b'],
+                ['name' => 'Diterima',  'value' => $totalBookingDiterima, 'color' => '#3b82f6'],
+                ['name' => 'Ditolak',   'value' => $totalBookingDitolak,  'color' => '#dc2626'],
+            ],
+            'umkmPerKabupaten' => $umkmPerKabupaten,
+            'layananPopuler' => $layananPopuler,
+            'bookingTrend' => $bookingTrend,
+            'bookingPerTahun' => $bookingPerTahun,
+            'umkmPerBooking' => $umkmPerBooking,
         ]);
     }
 
@@ -88,7 +203,7 @@ class PegawaiDashboardController extends Controller
         ]);
     }
 
-    public function dashboardKadin()
+    public function dashboardKadin(Request $request)
     {
         $totalSuratMasuk = SuratMasuk::count();
 
@@ -122,7 +237,111 @@ class PegawaiDashboardController extends Controller
                 'status_disposisi' => in_array($surat->id_surat, $idSuratDidisposisi) ? 'Sudah' : 'Belum',
             ]);
 
+        $year = $request->get('year', date('Y'));
+
+        $totalBookingDiajukan = Booking::where('status_booking', 'diajukan')
+            ->whereYear('tanggal_mulai', $year)
+            ->count();
+
+        $totalBookingDiterima = Booking::where('status_booking', 'diterima')
+            ->whereYear('tanggal_mulai', $year)
+            ->count();
+
+        $totalBookingSelesai = Booking::where('status_booking', 'selesai')
+            ->whereYear('tanggal_mulai', $year)
+            ->count();
+
+        $totalBookingDitolak = Booking::where('status_booking', 'ditolak')
+            ->whereYear('tanggal_mulai', $year)
+            ->count();
+
+        $umkmPerKabupaten = DB::table('booking_pelayananumkm')
+            ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')
+            ->whereYear('booking.tanggal_mulai', $year)
+            ->select('booking.kabupaten_kota', DB::raw('COUNT(*) as jumlah'))
+            ->groupBy('booking.kabupaten_kota')
+            ->get();
+
+
+        $layananPopuler = DB::table('booking_pelayananumkm')
+            ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')
+            ->join('layanan', 'booking_pelayananumkm.id_layanan', '=', 'layanan.id_layanan')
+            ->whereYear('booking.tanggal_mulai', $year)
+            ->select('layanan.layanan', DB::raw('COUNT(*) as jumlah'))
+            ->groupBy('layanan.layanan')
+            ->orderByDesc('jumlah')
+            ->limit(5)
+            ->get();
+
+
+        $bookingTrend = Booking::select(
+            DB::raw('MONTH(tanggal_mulai) as bulan'),
+            DB::raw('COUNT(*) as booking')
+        )
+            ->whereYear('tanggal_mulai', $year)
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->get()
+            ->map(function ($item) use ($year) {
+                $bulan = date('M', mktime(0, 0, 0, $item->bulan, 1));
+                $bookingIds = Booking::whereYear('tanggal_mulai', $year)
+                    ->whereMonth('tanggal_mulai', $item->bulan)
+                    ->pluck('id_booking');
+
+                $umkmCount = DB::table('booking_pelayananumkm')
+                    ->whereIn('id_booking', $bookingIds)
+                    ->count();
+
+                return [
+                    'bulan' => $bulan,
+                    'booking' => $item->booking,
+                    'umkm' => $umkmCount,
+                ];
+            });
+
+        $bookingPerTahun = Booking::select(
+            DB::raw('YEAR(tanggal_mulai) as tahun'),
+            DB::raw('COUNT(*) as jumlah'),
+        )
+            ->groupBy('tahun')->orderBy('tahun')->get();
+
+        $umkmPerBooking = Booking::select('tanggal_mulai', 'tanggal_akhir')
+            ->whereNotNull('tanggal_mulai')
+            ->whereNotNull('tanggal_akhir')
+            ->where('status_booking', 'selesai')
+            ->whereYear('tanggal_mulai', $year)
+            ->orderByDesc('tanggal_mulai')
+            ->limit(5)
+            ->get()
+            ->map(function ($item) use ($year) {
+                $bookingIds = Booking::whereDate('tanggal_mulai', $item->tanggal_mulai)
+                    ->whereDate('tanggal_akhir', $item->tanggal_akhir)
+                    ->where('status_booking', 'selesai')
+                    ->whereYear('tanggal_mulai', $year)
+                    ->pluck('id_booking');
+
+                $umkmCount = DB::table('booking_pelayananumkm')
+                    ->whereIn('id_booking', $bookingIds)
+                    ->count();
+
+                $tanggalMulai = Carbon::parse($item->tanggal_mulai);
+                $tanggalAkhir = Carbon::parse($item->tanggal_akhir);
+
+                if ($tanggalMulai->format('M') === $tanggalAkhir->format('M')) {
+                    $tanggalLabel = $tanggalMulai->format('j') . '-' . $tanggalAkhir->format('j M');
+                } else {
+                    $tanggalLabel = $tanggalMulai->format('j M') . ' - ' . $tanggalAkhir->format('j M');
+                }
+
+                return [
+                    'tanggal' => $tanggalLabel,
+                    'jumlah' => $umkmCount,
+                    'booking' => count($bookingIds),
+                ];
+            });
+
         return Inertia::render('Pegawai/KadinDashboard', [
+            'year' => (int) $year,
             'stats' => [
                 'total_surat_masuk' => $totalSuratMasuk,
                 'surat_sudah_disposisi' => $suratSudahDisposisi,
@@ -131,6 +350,17 @@ class PegawaiDashboardController extends Controller
             ],
             'recentLaporan' => $recentLaporan,
             'recentSurat' => $recentSurat,
+            'bookingStatus' => [
+                ['name' => 'Selesai',   'value' => $totalBookingSelesai,  'color' => '#16a34a'],
+                ['name' => 'Diajukan',  'value' => $totalBookingDiajukan, 'color' => '#f59e0b'],
+                ['name' => 'Diterima',  'value' => $totalBookingDiterima, 'color' => '#3b82f6'],
+                ['name' => 'Ditolak',   'value' => $totalBookingDitolak,  'color' => '#dc2626'],
+            ],
+            'umkmPerKabupaten' => $umkmPerKabupaten,
+            'layananPopuler' => $layananPopuler,
+            'bookingTrend' => $bookingTrend,
+            'bookingPerTahun' => $bookingPerTahun,
+            'umkmPerBooking' => $umkmPerBooking,
         ]);
     }
 
@@ -287,7 +517,6 @@ class PegawaiDashboardController extends Controller
                     'booking' => count($bookingIds),
                 ];
             });
-
 
         return Inertia::render('Pegawai/AdminDashboard', [
             'year' => (int) $year,

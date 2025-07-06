@@ -66,19 +66,16 @@ interface PageProps {
         umkm: number;
     }>;
 }
-
-const DashboardAdmin = () => {
-    const {
-        year,
-        statistik,
-        bookingStatus,
-        umkmPerKabupaten,
-        umkmPerBooking,
-        bookingPerTahun,
-        layananPopuler,
-        bookingTrend,
-    } = usePage<PageProps>().props;
-
+export default function DashboardAdmin({
+    year,
+    statistik,
+    bookingStatus,
+    umkmPerKabupaten,
+    umkmPerBooking,
+    bookingPerTahun,
+    layananPopuler,
+    bookingTrend,
+}: PageProps) {
     const handleYearChange = (selectedYear: string) => {
         router.get("/pegawai/dashboardAdmin", { year: selectedYear });
     };
@@ -341,8 +338,7 @@ const DashboardAdmin = () => {
             </div>
         </Layout>
     );
-};
-
+}
 const StatCard = ({
     title,
     value,
@@ -416,5 +412,3 @@ const ChartSection = ({
         {children}
     </div>
 );
-
-export default DashboardAdmin;
