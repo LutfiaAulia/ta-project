@@ -313,9 +313,6 @@ const LaporanTemplate: React.FC = () => {
                                 <div className="ml-4">
                                     {laporan.kesimpulan.map((item, index) => (
                                         <div key={index} className="mb-3 flex">
-                                            <span className="w-8">
-                                                {index + 1}.
-                                            </span>
                                             <p className="text-justify flex-1">
                                                 {item}
                                             </p>
@@ -330,9 +327,6 @@ const LaporanTemplate: React.FC = () => {
                                 <div className="ml-4">
                                     {laporan.saran.map((item, index) => (
                                         <div key={index} className="mb-3 flex">
-                                            <span className="w-8">
-                                                {index + 1}.
-                                            </span>
                                             <p className="text-justify flex-1">
                                                 {item}
                                             </p>
