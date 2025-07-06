@@ -141,6 +141,7 @@ class KelolaDisposisiController extends Controller
                 'catatan' => $disposisi->catatan,
                 'user' => [
                     'nama' => $disposisi->pegawai->user->nama ?? 'Tidak diketahui',
+                    'jabatan' => $disposisi->pegawai->jabatan ?? '-',
                 ],
                 'surat' => [
                     'no_surat' => $disposisi->surat_masuk->no_surat ?? '-',

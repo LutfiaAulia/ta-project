@@ -8,6 +8,7 @@ type Disposisi = {
     catatan: string;
     user: {
         nama: string;
+        jabatan: string;
     };
     surat: {
         no_surat: string;
@@ -112,6 +113,9 @@ const DetailDisposisi: React.FC<{ disposisi: Disposisi }> = ({ disposisi }) => {
                             </p>
                             <p className="mt-1 font-semibold">
                                 {disposisi.user.nama}
+                            </p>
+                            <p className="text-gray-500 text-sm font-normal italic">
+                                {disposisi.user.jabatan}
                             </p>
                         </div>
                     </div>
