@@ -27,7 +27,6 @@ type Laporan = {
     ringkasan_pelaksana: string;
     kesimpulan: string;
     saran: string;
-    nama_penulis: string;
     foto_dokumentasi: FotoDokumentasi[];
 };
 
@@ -58,7 +57,6 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
         ringkasan_pelaksana: laporan.ringkasan_pelaksana,
         kesimpulan: laporan.kesimpulan,
         saran: laporan.saran,
-        nama_penulis: laporan.nama_penulis,
     });
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -120,7 +118,6 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
         formData.append("ringkasan_pelaksana", form.ringkasan_pelaksana);
         formData.append("kesimpulan", form.kesimpulan);
         formData.append("saran", form.saran);
-        formData.append("nama_penulis", form.nama_penulis);
 
         existingFotos.forEach((foto) => {
             if (foto.id !== undefined && foto.id !== null) {
@@ -211,7 +208,6 @@ const EditLaporan: React.FC<Props> = ({ laporan, booking }) => {
                         },
                         { label: "Kesimpulan", name: "kesimpulan" },
                         { label: "Saran", name: "saran" },
-                        { label: "Nama Penulis", name: "nama_penulis" },
                     ].map((field) => (
                         <div key={field.name}>
                             <label className="block mb-1 font-medium">

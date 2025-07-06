@@ -24,7 +24,6 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
         ringkasan_pelaksana: "",
         kesimpulan: "",
         saran: "",
-        nama_penulis: "",
         foto_dokumentasi: [] as { file: File; preview: string }[],
     });
 
@@ -77,7 +76,6 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
         formData.append("ringkasan_pelaksana", form.ringkasan_pelaksana);
         formData.append("kesimpulan", form.kesimpulan);
         formData.append("saran", form.saran);
-        formData.append("nama_penulis", form.nama_penulis);
 
         form.foto_dokumentasi.forEach(({ file }) => {
             formData.append("foto_dokumentasi[]", file);
@@ -157,11 +155,6 @@ const TambahLaporan: React.FC<Props> = ({ booking }) => {
                             type: "textarea",
                         },
                         { label: "Saran", name: "saran", type: "textarea" },
-                        {
-                            label: "Nama Penulis",
-                            name: "nama_penulis",
-                            type: "input",
-                        },
                     ].map((field) => (
                         <div key={field.name}>
                             <label className="block mb-1">{field.label}</label>

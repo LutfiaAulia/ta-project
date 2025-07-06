@@ -76,7 +76,6 @@ class KelolaLaporanController extends Controller
         ]);
     }
 
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -89,7 +88,6 @@ class KelolaLaporanController extends Controller
             'ringkasan_pelaksana' => 'required|string',
             'kesimpulan' => 'required|string',
             'saran' => 'required|string',
-            'nama_penulis' => 'required|string|max:100',
             'foto_dokumentasi' => 'required|array',
             'foto_dokumentasi.*' => 'image|max:2048',
         ]);
@@ -108,7 +106,7 @@ class KelolaLaporanController extends Controller
             'ringkasan_pelaksana' => $request->ringkasan_pelaksana,
             'kesimpulan' => $request->kesimpulan,
             'saran' => $request->saran,
-            'nama_penulis' => $request->nama_penulis,
+            'nama_penulis' => Auth::user()->nama ?? 'Tidak diketahui',
             'id_pegawai' => Auth::user()->pegawai->id ?? Auth::id(),
         ]);
 
@@ -146,7 +144,6 @@ class KelolaLaporanController extends Controller
                 'ringkasan_pelaksana' => $laporan->ringkasan_pelaksana,
                 'kesimpulan' => $laporan->kesimpulan,
                 'saran' => $laporan->saran,
-                'nama_penulis' => $laporan->nama_penulis,
                 'foto_dokumentasi' => $laporan->dokumentasi->map(function ($doc) {
                     return [
                         'id' => $doc->id_dokumentasi,
@@ -177,7 +174,6 @@ class KelolaLaporanController extends Controller
             'ringkasan_pelaksana' => 'required|string',
             'kesimpulan' => 'required|string',
             'saran' => 'required|string',
-            'nama_penulis' => 'required|string|max:100',
             'foto_dokumentasi.*' => 'nullable|image|max:2048',
             'existing_foto' => 'nullable|array',
             'existing_foto.*' => 'integer|exists:dokumentasi,id_dokumentasi',
@@ -199,7 +195,6 @@ class KelolaLaporanController extends Controller
             'ringkasan_pelaksana' => $request->ringkasan_pelaksana,
             'kesimpulan' => $request->kesimpulan,
             'saran' => $request->saran,
-            'nama_penulis' => $request->nama_penulis,
         ]);
 
         $hapusFotoIds = $request->hapus_foto ?? [];
@@ -225,7 +220,7 @@ class KelolaLaporanController extends Controller
 
         return redirect()->route('laporan.list')->with('success', 'Laporan berhasil diperbarui.');
     }
-    
+
     public function destroy($id_laporan)
     {
         $laporan = Laporan::with('dokumentasi')->findOrFail($id_laporan);
