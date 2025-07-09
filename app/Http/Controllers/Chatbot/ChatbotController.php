@@ -14,113 +14,77 @@ class ChatbotController extends Controller
 {
     public function handle(Request $request)
     {
-        $message = strtolower($request->input('message'));
-        $response = '';
+        $message = strtolower(trim($request->message));
 
-        // --- 1. Cari UMKM berdasarkan kategori produk ---
-        $kategoriProduk = Kategori::pluck('nama_kategori')->filter(function ($nama) use ($message) {
-            return Str::contains($message, strtolower($nama));
-        })->first();
+        if (empty($message)) {
+            return response()->json(['response' => 'Silakan ketik pertanyaan Anda.']);
+        }
 
-        if ($kategoriProduk) {
-            $kategori = Kategori::where('nama_kategori', $kategoriProduk)->first();
+        // Keyword umum & respons sederhana
+        $commonResponses = [
+            'halo' => 'Halo! Saya siap membantu Anda mencari informasi UMKM di Sumatera Barat. Silakan tanya tentang produk, kategori, atau lokasi tertentu.',
+            'hai' => 'Hai! Ada yang bisa saya bantu tentang UMKM Sumatera Barat?',
+            'help' => "Saya bisa membantu Anda mencari UMKM berdasarkan:\n• Kategori (makanan, kerajinan, dll)\n• Lokasi (kota/kabupaten)\n• Nama produk\n\nContoh: \"makanan padang\" atau \"kerajinan payakumbuh\"",
+            'bantuan' => "Saya bisa membantu Anda mencari UMKM berdasarkan:\n• Kategori (makanan, kerajinan, dll)\n• Lokasi (kota/kabupaten)\n• Nama produk\n\nContoh: \"makanan padang\" atau \"kerajinan payakumbuh\"",
+        ];
 
-            if ($kategori) {
-                $umkms = $kategori->umkm()->with('umkm')->take(5)->get();
-
-                if ($umkms->isNotEmpty()) {
-                    $response .= "Berikut UMKM dengan kategori *$kategoriProduk*:\n";
-                    foreach ($umkms as $identitas) {
-                        $url = url("/list/umkm/promosi") . "?id_umkm={$identitas->id_identitas}";
-                        $response .= "- {$identitas->nama_usaha} ({$identitas->kabupaten_kota})\n  🔗 $url\n";
-                    }
-
-                    return response()->json(['reply' => $response]);
-                }
+        foreach ($commonResponses as $keyword => $response) {
+            if (strpos($message, $keyword) !== false) {
+                return response()->json(['response' => $response]);
             }
         }
 
-        // --- 2. Cari berdasarkan lokasi ---
-        $kabupaten = IdentitasUmkm::distinct()->pluck('kabupaten_kota');
-        foreach ($kabupaten as $kab) {
-            if (Str::contains($message, strtolower($kab))) {
-                $umkms = IdentitasUmkm::where('kabupaten_kota', 'like', "%$kab%")
-                    ->take(5)
-                    ->get();
+        // Jika bukan keyword umum, lanjut pencarian fleksibel
+        $keywords = explode(' ', $message);
 
-                if ($umkms->isNotEmpty()) {
-                    $response .= "UMKM yang berada di *$kab*:\n";
-                    foreach ($umkms as $u) {
-                        $url = url("/umkm/{$u->id_identitas}");
-                        $response .= "- {$u->nama_usaha}\n  🔗 $url\n";
-                    }
-                    return response()->json(['reply' => $response]);
+        $query = IdentitasUmkm::with(['kategori_umkm', 'sosial_media', 'promosi', 'umkm'])
+            ->where(function ($q) use ($keywords) {
+                foreach ($keywords as $word) {
+                    $q->orWhere('kabupaten_kota', 'like', "%$word%")
+                        ->orWhereHas('kategori_umkm', fn($qq) => $qq->where('nama_kategori', 'like', "%$word%"))
+                        ->orWhereHas('promosi', fn($qq) => $qq->where('nama_produk', 'like', "%$word%"))
+                        ->orWhere('nama_usaha', 'like', "%$word%")
+                        ->orWhere('deskripsi', 'like', "%$word%");
                 }
-            }
+            });
+
+        $results = $query->limit(5)->get();
+
+        if ($results->isEmpty()) {
+            return response()->json([
+                'response' => "Maaf, saya tidak menemukan UMKM yang cocok dengan '{$request->message}'.\n\nCoba cari dengan kata kunci:\n• Kategori: makanan, kerajinan, fashion\n• Lokasi: padang, bukittinggi, payakumbuh\n• Atau ketik 'bantuan' untuk panduan lengkap",
+            ]);
         }
 
-        // --- 3. Cari berdasarkan kata kunci produk (nama_produk) ---
-        $keyword = collect(['kopi', 'keripik', 'kue', 'batik', 'sabun']);
-        foreach ($keyword as $word) {
-            if (Str::contains($message, $word)) {
-                $produk = Promosi::with('umkm.identitas_umkm')
-                    ->where('nama_produk', 'like', "%$word%")
-                    ->take(5)
-                    ->get();
+        $response = "Saya menemukan " . $results->count() . " UMKM yang cocok:\n\n";
+        foreach ($results as $index => $umkm) {
+            $response .= ($index + 1) . ". *{$umkm->nama_usaha}*\n";
+            $response .= "   📍 Lokasi: {$umkm->kabupaten_kota}\n";
 
-                if ($produk->isNotEmpty()) {
-                    $response .= "Produk *$word* yang tersedia:\n";
-                    foreach ($produk as $p) {
-                        $identitas = $p->umkm?->identitas;
-                        if ($identitas) {
-                            $url = url("/umkm/{$identitas->id_identitas}");
-                            $response .= "- {$p->nama_produk} oleh {$identitas->nama_usaha}\n  🔗 $url\n";
-                        }
-                    }
-                    return response()->json(['reply' => $response]);
-                }
+            if ($umkm->kategori_umkm && $umkm->kategori_umkm->count()) {
+                $kategori = $umkm->kategori_umkm->pluck('nama_kategori')->join(', ');
+                $response .= "   🏷️ Kategori: {$kategori}\n";
             }
+
+            if ($umkm->deskripsi) {
+                $response .= "   📝 " . Str::limit($umkm->deskripsi, 100) . "\n";
+            }
+
+            $sosmed = $umkm->sosial_media->first();
+            if ($sosmed && $sosmed->instagram) {
+                $response .= "   📱 Instagram: {$sosmed->instagram}\n";
+            }
+
+            if ($umkm->promosi && $umkm->promosi->count()) {
+                $produkList = $umkm->promosi->take(3)->pluck('nama_produk')->join(', ');
+                $response .= "   🛍️ Produk: {$produkList}\n";
+            }
+
+            $response .= "\n";
         }
 
-        // --- 4. Cari berdasarkan harga ---
-        if (Str::contains($message, 'di bawah') || Str::contains($message, 'dibawah')) {
-            preg_match('/\d+/', $message, $matches);
-            $hargaMax = isset($matches[0]) ? (int)$matches[0] * 1000 : 50000;
+        $response .= "Butuh info lebih detail? Ketik nama UMKM yang ingin Anda ketahui lebih lanjut.";
 
-            $produk = Promosi::with('umkm.identitas_umkm')
-                ->where('harga_produk', '<=', $hargaMax)
-                ->take(5)
-                ->get();
-
-            if ($produk->isNotEmpty()) {
-                $response .= "Produk dengan harga di bawah Rp" . number_format($hargaMax) . ":\n";
-                foreach ($produk as $p) {
-                    $identitas = $p->umkm?->identitas_umkm;
-                    if ($identitas) {
-                        $url = url("/umkm/{$identitas->id_identitas}");
-                        $response .= "- {$p->nama_produk} (Rp" . number_format($p->harga_produk) . ") oleh {$identitas->nama_usaha}\n  🔗 $url\n";
-                    }
-                }
-                return response()->json(['reply' => $response]);
-            }
-        }
-
-        dd(env('OPENAI_API_KEY'));
-        return response()->json([
-            'reply' => $this->callOpenAI($message)
-        ]);
-    }
-
-    private function callOpenAI($userMessage)
-    {
-        $response = Http::withToken(env('OPENAI_API_KEY'))->post('https://api.openai.com/v1/chat/completions', [
-            'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                ['role' => 'system', 'content' => 'Kamu adalah asisten informasi untuk pengunjung website UMKM.'],
-                ['role' => 'user', 'content' => $userMessage],
-            ],
-        ]);
-
-        return $response['choices'][0]['message']['content'] ?? 'Maaf, saya tidak bisa menjawab itu.';
+        return response()->json(['response' => $response]);
     }
 }

@@ -24,7 +24,7 @@ const Chatbot: React.FC<ChatbotProps> = () => {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 1,
-            text: "Halo! Selamat datang di layanan bantuan UMKM Sumatera Barat. Saya siap membantu Anda! 😊",
+            text: 'Halo! Selamat datang di layanan bantuan UMKM Sumatera Barat. Saya siap membantu Anda mencari informasi UMKM! 😊\n\nAnda bisa mencari berdasarkan:\n• Kategori (makanan, kerajinan, fashion)\n• Lokasi (padang, bukittinggi, dll)\n• Nama produk\n\nContoh: "makanan padang" atau "kerajinan payakumbuh"',
             sender: "bot",
             timestamp: new Date().toLocaleTimeString("id-ID", {
                 hour: "2-digit",
@@ -38,33 +38,13 @@ const Chatbot: React.FC<ChatbotProps> = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const quickReplies = [
-        "Cara daftar UMKM",
-        "Info bantuan modal",
-        "Persyaratan pendaftaran",
-        "Hubungi admin",
+        "makanan padang",
+        "kerajinan tangan",
+        "fashion bukittinggi",
+        "bantuan",
     ];
 
-    const botResponses: { [key: string]: string } = {
-        "cara daftar umkm":
-            "Untuk mendaftar UMKM, Anda perlu:\n1. Siapkan dokumen KTP\n2. Surat izin usaha\n3. Foto produk\n4. Kunjungi kantor Dinas Koperasi dan UMKM atau daftar online melalui website ini.",
-        "info bantuan modal":
-            "Tersedia berbagai program bantuan modal:\n• Kredit Usaha Rakyat (KUR)\n• Bantuan Produktif Usaha Mikro\n• Program P2W (Pembiayaan Ultra Mikro)\n\nUntuk info lebih lanjut, silakan hubungi 0751-123456",
-        "persyaratan pendaftaran":
-            "Persyaratan pendaftaran UMKM:\n✅ KTP yang masih berlaku\n✅ NPWP (jika ada)\n✅ Surat keterangan usaha dari RT/RW\n✅ Foto produk minimal 3 buah\n✅ Deskripsi usaha",
-        "hubungi admin":
-            "Anda bisa menghubungi admin melalui:\n📞 Telepon: 0751-123456\n📧 Email: admin@umkmsumbar.go.id\n📍 Alamat: Jl. Diponegoro No.1, Padang\n⏰ Jam Kerja: 08:00 - 16:00 WIB",
-    };
-
-    const getBotResponse = (message: string) => {
-        for (const [key, response] of Object.entries(botResponses)) {
-            if (message.includes(key)) {
-                return response;
-            }
-        }
-        return "Terima kasih atas pertanyaan Anda. Untuk informasi lebih detail, silakan hubungi admin kami di 0751-123456 atau email admin@umkmsumbar.go.id. Kami siap membantu! 😊";
-    };
-
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (inputMessage.trim() === "") return;
 
         const newMessage: Message = {
@@ -79,14 +59,41 @@ const Chatbot: React.FC<ChatbotProps> = () => {
         };
 
         setMessages((prev) => [...prev, newMessage]);
+        const currentMessage = inputMessage;
         setInputMessage("");
         setIsTyping(true);
 
-        setTimeout(() => {
-            const response = getBotResponse(inputMessage.toLowerCase());
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute("content");
+
+            console.log("Sending message:", currentMessage); // Debug log
+
+            const res = await fetch("/chatbot", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    "X-CSRF-TOKEN": csrfToken || "",
+                },
+                body: JSON.stringify({ message: currentMessage }),
+            });
+
+            console.log("Response status:", res.status); // Debug log
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
+            const data = await res.json();
+            console.log("Response data:", data); // Debug log
+
             const botMessage: Message = {
                 id: newMessage.id + 1,
-                text: response,
+                text:
+                    data.response ||
+                    "Maaf, terjadi kesalahan dalam memproses pesan.",
                 sender: "bot",
                 timestamp: new Date().toLocaleTimeString("id-ID", {
                     hour: "2-digit",
@@ -94,9 +101,26 @@ const Chatbot: React.FC<ChatbotProps> = () => {
                 }),
                 status: "read",
             };
+
             setMessages((prev) => [...prev, botMessage]);
+        } catch (error) {
+            console.error("Error:", error); // Debug log
+
+            const errorMessage: Message = {
+                id: newMessage.id + 1,
+                text: "Maaf, terjadi kesalahan saat menghubungi server. Silakan coba lagi nanti atau hubungi admin di 0751-123456.",
+                sender: "bot",
+                timestamp: new Date().toLocaleTimeString("id-ID", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }),
+                status: "read",
+            };
+
+            setMessages((prev) => [...prev, errorMessage]);
+        } finally {
             setIsTyping(false);
-        }, 1500);
+        }
     };
 
     const scrollToBottom = () => {
@@ -110,8 +134,10 @@ const Chatbot: React.FC<ChatbotProps> = () => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        inputRef.current?.focus();
-    }, [inputMessage]);
+        if (isChatOpen) {
+            inputRef.current?.focus();
+        }
+    }, [isChatOpen, isTyping]);
 
     const MessageBubble: React.FC<{ message: Message }> = ({ message }) => (
         <div
@@ -167,6 +193,10 @@ const Chatbot: React.FC<ChatbotProps> = () => {
 
     const handleQuickReply = (reply: string) => {
         setInputMessage(reply);
+        // Auto focus input setelah quick reply
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 100);
     };
 
     if (!isChatOpen) {
@@ -234,7 +264,7 @@ const Chatbot: React.FC<ChatbotProps> = () => {
                 {messages.length === 1 && (
                     <div className="px-4 pb-2">
                         <p className="text-xs text-gray-500 mb-2">
-                            Pilih topik bantuan:
+                            Coba pencarian cepat:
                         </p>
                         <div className="flex flex-wrap gap-2">
                             {quickReplies.map((reply, index) => (
@@ -258,9 +288,12 @@ const Chatbot: React.FC<ChatbotProps> = () => {
                             type="text"
                             value={inputMessage}
                             onChange={(e) => setInputMessage(e.target.value)}
-                            onKeyDown={(e) =>
-                                e.key === "Enter" && handleSendMessage()
-                            }
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleSendMessage();
+                                }
+                            }}
                             placeholder="Ketik pesan Anda..."
                             className="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             disabled={isTyping}

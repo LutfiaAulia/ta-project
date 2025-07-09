@@ -40,4 +40,9 @@ class IdentitasUmkm extends Model
     {
         return $this->belongsToMany(Kategori::class, 'umkm_kategori', 'id_identitas', 'id_kategori');
     }
+
+    public function promosi()
+    {
+        return $this->hasMany(Promosi::class, 'id_umkm', 'id_umkm');
+    }
 }
