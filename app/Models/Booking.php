@@ -77,11 +77,6 @@ class Booking extends Model
         return $this->hasMany(PelayananUmkm::class, 'id_booking');
     }
 
-    public function bookingPelayananUmkm()
-    {
-        return $this->hasMany(BookingPelayananUmkm::class, 'id_booking');
-    }
-
     public function laporan()
     {
         return $this->hasOne(Laporan::class, 'id_booking', 'id_booking');

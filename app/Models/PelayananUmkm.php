@@ -46,10 +46,4 @@ class PelayananUmkm extends Model
     {
         return $this->belongsTo(Layanan::class, 'id_layanan');
     }
-
-
-    public function bookingPelayananUmkm()
-    {
-        return $this->hasMany(BookingPelayananUmkm::class, 'id_pelayanan');
-    }
 }
