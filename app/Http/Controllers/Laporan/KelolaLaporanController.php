@@ -243,8 +243,8 @@ class KelolaLaporanController extends Controller
     {
         $laporan = Laporan::with([
             'booking.pegawaiLapangan.user',
-            'booking.bookingPelayananUmkm.pelayanan',
-            'booking.bookingPelayananUmkm.layanan',
+            'booking.pelayananUmkm',
+            'booking.pelayananUmkm.layanan',
             'dokumentasi',
         ])->findOrFail($id_laporan);
 
@@ -254,7 +254,7 @@ class KelolaLaporanController extends Controller
         $tanggal_akhir = $booking->tanggal_akhir;
         $durasi = now()->parse($tanggal_mulai)->diffInDays(now()->parse($tanggal_akhir)) + 1;
 
-        $layananList = $booking->bookingPelayananUmkm
+        $layananList = $booking->pelayananUmkm
             ->pluck('layanan.layanan')
             ->unique()
             ->values();
@@ -290,13 +290,12 @@ class KelolaLaporanController extends Controller
                 ),
 
 
-                'pelakuUsaha' => $booking->bookingPelayananUmkm->map(function ($item) use ($booking) {
+                'pelakuUsaha' => $booking->pelayananUmkm->map(function ($item) use ($booking) {
                     return [
-                        'nama_lengkap' => $item->pelayanan->nama_lengkap,
-                        'no_hp' => $item->pelayanan->no_hp,
-                        'jenis_kelamin' => $item->pelayanan->jenis_kelamin,
+                        'nama_lengkap' => $item->nama_lengkap,
+                        'no_hp' => $item->no_hp,
+                        'jenis_kelamin' => $item->jenis_kelamin,
                         'kenagarian_kelurahan' => $booking->kenagarian_kelurahan,
-                        'email' => $item->pelayanan->email,
                     ];
                 }),
 

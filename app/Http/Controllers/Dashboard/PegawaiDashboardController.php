@@ -10,6 +10,7 @@ use App\Models\Laporan;
 use App\Models\Layanan;
 use App\Models\Mobil;
 use App\Models\Pegawai;
+use App\Models\PelayananUmkm;
 use App\Models\Promosi;
 use App\Models\Sopir;
 use App\Models\SuratMasuk;
@@ -61,17 +62,17 @@ class PegawaiDashboardController extends Controller
             ->whereYear('tanggal_mulai', $year)
             ->count();
 
-        $umkmPerKabupaten = DB::table('booking_pelayananumkm')
-            ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')
+        $umkmPerKabupaten = DB::table('pelayanan_umkm')
+            ->join('booking', 'pelayanan_umkm.id_booking', '=', 'booking.id_booking')
             ->whereYear('booking.tanggal_mulai', $year)
             ->select('booking.kabupaten_kota', DB::raw('COUNT(*) as jumlah'))
             ->groupBy('booking.kabupaten_kota')
             ->get();
 
 
-        $layananPopuler = DB::table('booking_pelayananumkm')
-            ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')
-            ->join('layanan', 'booking_pelayananumkm.id_layanan', '=', 'layanan.id_layanan')
+        $layananPopuler = DB::table('pelayanan_umkm')
+            ->join('booking', 'pelayanan_umkm.id_booking', '=', 'booking.id_booking')
+            ->join('layanan', 'pelayanan_umkm.id_layanan', '=', 'layanan.id_layanan')
             ->whereYear('booking.tanggal_mulai', $year)
             ->select('layanan.layanan', DB::raw('COUNT(*) as jumlah'))
             ->groupBy('layanan.layanan')
@@ -94,7 +95,7 @@ class PegawaiDashboardController extends Controller
                     ->whereMonth('tanggal_mulai', $item->bulan)
                     ->pluck('id_booking');
 
-                $umkmCount = DB::table('booking_pelayananumkm')
+                $umkmCount = DB::table('pelayanan_umkm')
                     ->whereIn('id_booking', $bookingIds)
                     ->count();
 
@@ -126,7 +127,7 @@ class PegawaiDashboardController extends Controller
                     ->whereYear('tanggal_mulai', $year)
                     ->pluck('id_booking');
 
-                $umkmCount = DB::table('booking_pelayananumkm')
+                $umkmCount = DB::table('pelayanan_umkm')
                     ->whereIn('id_booking', $bookingIds)
                     ->count();
 
@@ -255,17 +256,17 @@ class PegawaiDashboardController extends Controller
             ->whereYear('tanggal_mulai', $year)
             ->count();
 
-        $umkmPerKabupaten = DB::table('booking_pelayananumkm')
-            ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')
+        $umkmPerKabupaten = DB::table('pelayanan_umkm')
+            ->join('booking', 'pelayanan_umkm.id_booking', '=', 'booking.id_booking')
             ->whereYear('booking.tanggal_mulai', $year)
             ->select('booking.kabupaten_kota', DB::raw('COUNT(*) as jumlah'))
             ->groupBy('booking.kabupaten_kota')
             ->get();
 
 
-        $layananPopuler = DB::table('booking_pelayananumkm')
-            ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')
-            ->join('layanan', 'booking_pelayananumkm.id_layanan', '=', 'layanan.id_layanan')
+        $layananPopuler = DB::table('pelayanan_umkm')
+            ->join('booking', 'pelayanan_umkm.id_booking', '=', 'booking.id_booking')
+            ->join('layanan', 'pelayanan_umkm.id_layanan', '=', 'layanan.id_layanan')
             ->whereYear('booking.tanggal_mulai', $year)
             ->select('layanan.layanan', DB::raw('COUNT(*) as jumlah'))
             ->groupBy('layanan.layanan')
@@ -288,7 +289,7 @@ class PegawaiDashboardController extends Controller
                     ->whereMonth('tanggal_mulai', $item->bulan)
                     ->pluck('id_booking');
 
-                $umkmCount = DB::table('booking_pelayananumkm')
+                $umkmCount = DB::table('pelayanan_umkm')
                     ->whereIn('id_booking', $bookingIds)
                     ->count();
 
@@ -320,7 +321,7 @@ class PegawaiDashboardController extends Controller
                     ->whereYear('tanggal_mulai', $year)
                     ->pluck('id_booking');
 
-                $umkmCount = DB::table('booking_pelayananumkm')
+                $umkmCount = DB::table('pelayanan_umkm')
                     ->whereIn('id_booking', $bookingIds)
                     ->count();
 
@@ -374,7 +375,7 @@ class PegawaiDashboardController extends Controller
 
         $totalBooking = count($bookingIds);
 
-        $totalUmkmDilayani = BookingPelayananUmkm::whereIn('id_booking', $bookingIds)->count();
+        $totalUmkmDilayani = PelayananUmkm::whereIn('id_booking', $bookingIds)->count();
 
         $totalLaporan = Laporan::whereIn('id_booking', $bookingIds)->count();
 
@@ -388,7 +389,7 @@ class PegawaiDashboardController extends Controller
                     'acara' => $b->acara,
                     'lokasi' => $b->lokasi ?? '-',
                     'status_booking' => $b->status_booking,
-                    'sudah_input_umkm' => $b->bookingPelayananUmkm()->exists(),
+                    'sudah_input_umkm' => $b->PelayananUmkm()->exists(),
                     'sudah_buat_laporan' => $b->laporan()->exists(),
                 ];
             });
@@ -426,24 +427,24 @@ class PegawaiDashboardController extends Controller
             ->count();
 
 
-        $totalUMKM = BookingPelayananUmkm::count();
+        $totalUMKM = PelayananUmkm::count();
         $totalProduk = Promosi::count();
         $totalMobil = Mobil::where('status', 'aktif')->count();
         $totalSopir = Sopir::where('status', 'aktif')->count();
         $totalLayanan = Layanan::where('status', 'aktif')->count();
 
 
-        $umkmPerKabupaten = DB::table('booking_pelayananumkm')
-            ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')
+        $umkmPerKabupaten = DB::table('pelayanan_umkm')
+            ->join('booking', 'pelayanan_umkm.id_booking', '=', 'booking.id_booking')
             ->whereYear('booking.tanggal_mulai', $year)
             ->select('booking.kabupaten_kota', DB::raw('COUNT(*) as jumlah'))
             ->groupBy('booking.kabupaten_kota')
             ->get();
 
 
-        $layananPopuler = DB::table('booking_pelayananumkm')
-            ->join('booking', 'booking_pelayananumkm.id_booking', '=', 'booking.id_booking')
-            ->join('layanan', 'booking_pelayananumkm.id_layanan', '=', 'layanan.id_layanan')
+        $layananPopuler = DB::table('pelayanan_umkm')
+            ->join('booking', 'pelayanan_umkm.id_booking', '=', 'booking.id_booking')
+            ->join('layanan', 'pelayanan_umkm.id_layanan', '=', 'layanan.id_layanan')
             ->whereYear('booking.tanggal_mulai', $year)
             ->select('layanan.layanan', DB::raw('COUNT(*) as jumlah'))
             ->groupBy('layanan.layanan')
@@ -466,7 +467,7 @@ class PegawaiDashboardController extends Controller
                     ->whereMonth('tanggal_mulai', $item->bulan)
                     ->pluck('id_booking');
 
-                $umkmCount = DB::table('booking_pelayananumkm')
+                $umkmCount = DB::table('pelayanan_umkm')
                     ->whereIn('id_booking', $bookingIds)
                     ->count();
 
@@ -498,7 +499,7 @@ class PegawaiDashboardController extends Controller
                     ->whereYear('tanggal_mulai', $year)
                     ->pluck('id_booking');
 
-                $umkmCount = DB::table('booking_pelayananumkm')
+                $umkmCount = DB::table('pelayanan_umkm')
                     ->whereIn('id_booking', $bookingIds)
                     ->count();
 

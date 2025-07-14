@@ -19,12 +19,12 @@ class KelolaPelayananUmkmController extends Controller
         $pegawaiId = $user->pegawai->id ?? null;
 
         if ($role === 'Admin') {
-            $booking = Booking::withCount('bookingPelayananUmkm')
+            $booking = Booking::withCount('pelayananUmkm')
                 ->whereIn('status_booking', ['Diterima', 'Selesai'])
                 ->orderByDesc('tanggal_mulai')
                 ->get();
         } else {
-            $booking = Booking::withCount('bookingPelayananUmkm')
+            $booking = Booking::withCount('pelayananUmkm')
                 ->whereIn('status_booking', ['Diterima', 'Selesai'])
                 ->whereHas('pegawaiLapangan', function ($query) use ($pegawaiId) {
                     $query->where('id', $pegawaiId);
@@ -42,7 +42,7 @@ class KelolaPelayananUmkmController extends Controller
                 'waktu_akhir' => $booking->waktu_akhir,
                 'acara' => $booking->acara,
                 'jumlah_umkm' => $booking->peserta,
-                'jumlah_umkm_terdaftar' => $booking->booking_pelayanan_umkm_count,
+                'jumlah_umkm_terdaftar' => $booking->pelayanan_umkm_count,
             ];
         });
 

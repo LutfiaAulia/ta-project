@@ -17,7 +17,6 @@ interface LaporanData {
         no_hp: string;
         jenis_kelamin: string;
         kenagarian_kelurahan: string;
-        email?: string;
     }>;
     kesimpulan: string[];
     saran: string[];
@@ -257,7 +256,7 @@ const LaporanTemplate: React.FC = () => {
                                             Nama
                                         </th>
                                         <th className="border border-black px-2 py-1 text-center">
-                                            No. HP / Email
+                                            No. HP
                                         </th>
                                         <th className="border border-black px-2 py-1 text-center">
                                             Jenis Kelamin
@@ -278,8 +277,7 @@ const LaporanTemplate: React.FC = () => {
                                                     {pelaku.nama_lengkap}
                                                 </td>
                                                 <td className="border border-black px-2 py-1 text-center">
-                                                    {pelaku.email ||
-                                                        pelaku.no_hp}
+                                                    {pelaku.no_hp}
                                                 </td>
                                                 <td className="border border-black px-2 py-1 text-center">
                                                     {pelaku.jenis_kelamin}
