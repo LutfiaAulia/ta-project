@@ -125,7 +125,7 @@ export default function Welcome() {
 
                             <div>
                                 <h1 className="text-lg font-bold text-gray-900 leading-tight">
-                                    Dinas Koperasi dan UMKM
+                                    Dinas Koperasi, Usaha Kecil, dan Menengah
                                 </h1>
                                 <p className="text-sm text-gray-600">
                                     Provinsi Sumatera Barat
@@ -214,7 +214,7 @@ export default function Welcome() {
                                 <span className="text-green-200">
                                     Mendukung UMKM
                                 </span>{" "}
-                                Rakyat
+                                Berkembang
                             </h2>
                             <p className="text-green-100 mb-8 text-lg max-w-lg">
                                 Pelayanan langsung ke masyarakat melalui mobil
