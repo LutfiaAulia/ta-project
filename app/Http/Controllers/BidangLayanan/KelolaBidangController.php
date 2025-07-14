@@ -27,8 +27,10 @@ class KelolaBidangController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_bidang' => 'required|string|max:255|unique:nama_bidang,nama_bidang',
+            'nama_bidang' => 'required|string|max:255|unique:bidang_layanan,nama_bidang',
         ]);
+
+        $validated['status'] = 'aktif';
 
         BidangLayanan::create($validated);
 
@@ -47,7 +49,7 @@ class KelolaBidangController extends Controller
     public function update(Request $request, $id_bidang)
     {
         $validated = $request->validate([
-            'nama_bidang' => ['required', 'string', 'max:255', Rule::unique('nama_bidang', 'nama_bidang')->ignore($id_bidang, 'id_bidang'),]
+            'nama_bidang' => ['required', 'string', 'max:255', Rule::unique('bidang_layanan', 'nama_bidang')->ignore($id_bidang, 'id_bidang'),]
         ]);
 
         $bidang = BidangLayanan::findOrFail($id_bidang);
