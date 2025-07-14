@@ -13,9 +13,16 @@ class Layanan extends Model
     protected $primaryKey = 'id_layanan';
 
     protected $fillable = [
-        'layanan'
+        'id_bidang',
+        'layanan',
+        'deskripsi_layanan'
     ];
 
+    public function bidang()
+    {
+        return $this->belongsTo(BidangLayanan::class, 'id_bidang', 'id_bidang');
+    }
+    
     public function booking()
     {
         return $this->belongsToMany(Booking::class, 'booking_layanan', 'id_layanan', 'id_booking');
