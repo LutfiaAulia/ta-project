@@ -12,6 +12,7 @@ import {
     FaShoppingBag,
     FaChevronDown,
     FaTags,
+    FaLayerGroup,
 } from "react-icons/fa";
 import { Link, usePage } from "@inertiajs/react";
 
@@ -227,6 +228,18 @@ const Sidebar: React.FC = () => {
                                     </Link>
                                 </div>
                             )}
+
+                            <Link
+                                href={route("bidang.list")}
+                                className={`flex items-center gap-3 p-2 rounded ${
+                                    route().current("bidang.list")
+                                        ? "bg-green-500"
+                                        : "hover:bg-green-500"
+                                } transition cursor-pointer`}
+                            >
+                                <FaLayerGroup />
+                                <span>Kelola Bidang Layanan</span>
+                            </Link>
 
                             <Link
                                 href={route("layanan.list")}
