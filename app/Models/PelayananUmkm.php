@@ -14,21 +14,39 @@ class PelayananUmkm extends Model
     protected $primaryKey = 'id_pelayanan';
 
     protected $fillable = [
+        'id_booking',
+        'id_layanan',
         'nama_lengkap',
         'jenis_kelamin',
+        'umur',
         'nik',
-        'alamat_lengkap',
-        'email',
+        'pendidikan',
         'no_hp',
         'nama_usaha',
-        'bentuk_usaha',
-        'sektor_usaha',
         'legalitas_usaha',
-        'pembiayaan',
-        'nib',
+        'legalitas_produk',
         'alamat_usaha',
-        'modal_usaha',
+        'kabupaten_kota',
+        'kecamatan',
+        'kenagarian_kelurahan',
+        'tenaga_kerja',
+        'aset',
+        'omset',
+        'pendapatan_bersih',
+        'pelatihan',
+        'tindak_lanjut',
     ];
+
+    public function booking()
+    {
+        return $this->belongsTo(Booking::class, 'id_booking');
+    }
+
+    public function layanan()
+    {
+        return $this->belongsTo(Layanan::class, 'id_layanan');
+    }
+
 
     public function bookingPelayananUmkm()
     {

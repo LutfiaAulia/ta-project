@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Layout from "@/Components/Layout";
 import { router } from "@inertiajs/react";
 
@@ -10,27 +10,26 @@ type Layanan = {
 type Umkm = {
     nama_lengkap: string;
     jenis_kelamin: string;
+    umur: string;
     nik: string;
-    alamat_lengkap: string;
-    email: string;
-    no_hp: string;
+    pendidikan: string;
+    no_hp?: string | null;
     nama_usaha: string;
-    bentuk_usaha: string;
-    sektor_usaha: string;
     legalitas_usaha: string;
-    pembiayaan: string;
-    nib: string;
+    legalitas_produk: string;
     alamat_usaha: string;
-    modal_usaha: string;
-    total_aset: string;
+    kabupaten_kota: string;
+    kecamatan: string;
+    kenagarian_kelurahan: string;
+    tenaga_kerja: string;
+    aset: string;
     omset: string;
-    pengeluaran: string;
-    pendapat_bersih: string;
-    pelatihan: string;
-    permasalahan: string;
+    pendapatan_bersih: string;
+    pelatihan?: string | null;
+    tindak_lanjut?: string | null;
     id_layanan: string;
     id_booking: number;
-    id_bopel?: number;
+    id_pelayanan?: number;
 };
 
 type EditUmkmProps = {
@@ -40,7 +39,6 @@ type EditUmkmProps = {
 
 const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
     const [form, setForm] = useState<Umkm>({ ...umkm });
-
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const handleChange = (
@@ -63,14 +61,20 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
         const requiredFields = [
             "nama_lengkap",
             "jenis_kelamin",
+            "umur",
             "nik",
+            "pendidikan",
             "nama_usaha",
-            "nib",
-            "modal_usaha",
-            "total_aset",
+            "legalitas_usaha",
+            "legalitas_produk",
+            "alamat_usaha",
+            "kabupaten_kota",
+            "kecamatan",
+            "kenagarian_kelurahan",
+            "tenaga_kerja",
+            "aset",
             "omset",
-            "pengeluaran",
-            "pendapat_bersih",
+            "pendapatan_bersih",
             "id_layanan",
         ];
         const newErrors: { [key: string]: string } = {};
@@ -88,7 +92,12 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
         e.preventDefault();
         if (!validate()) return;
 
-        router.put(`/pegawai/update/umkmlayan/${form.id_bopel}`, form, {
+        if (!form.id_pelayanan) {
+            alert("ID pelayanan tidak ditemukan untuk update.");
+            return;
+        }
+
+        router.put(`/pegawai/update/umkmlayan/${form.id_pelayanan}`, form, {
             onError: (errors) => setErrors(errors),
             onSuccess: () => {
                 console.log("Data berhasil diperbarui");
@@ -101,7 +110,7 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
         name: keyof Umkm,
         type: string = "text"
     ) => (
-        <div>
+        <div key={name}>
             <label className="block mb-1 capitalize">{label}</label>
             <input
                 type={type}
@@ -109,6 +118,28 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
                 value={form[name] || ""}
                 onChange={handleChange}
                 className="w-full border px-3 py-2 rounded"
+                inputMode={
+                    [
+                        "tenaga_kerja",
+                        "aset",
+                        "omset",
+                        "pendapatan_bersih",
+                        "umur",
+                    ].includes(name as string)
+                        ? "numeric"
+                        : undefined
+                }
+                pattern={
+                    [
+                        "tenaga_kerja",
+                        "aset",
+                        "omset",
+                        "pendapatan_bersih",
+                        "umur",
+                    ].includes(name as string)
+                        ? "[0-9]*"
+                        : undefined
+                }
             />
             {errors[name] && (
                 <p className="text-red-500 text-xs mt-1">{errors[name]}</p>
@@ -128,7 +159,6 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
                     className="grid grid-cols-2 gap-6 text-sm"
                 >
                     {renderInput("Nama Lengkap", "nama_lengkap")}
-                    
                     <div>
                         <label className="block mb-1 capitalize">
                             Jenis Kelamin
@@ -149,24 +179,26 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
                             </p>
                         )}
                     </div>
-
+                    {renderInput("Umur", "umur")}
                     {renderInput("NIK", "nik")}
-                    {renderInput("Email", "email")}
+                    {renderInput("Pendidikan", "pendidikan")}
                     {renderInput("No HP", "no_hp")}
-                    {renderInput("Alamat Lengkap", "alamat_lengkap")}
                     {renderInput("Nama Usaha", "nama_usaha")}
-                    {renderInput("Bentuk Usaha", "bentuk_usaha")}
-                    {renderInput("Sektor Usaha", "sektor_usaha")}
                     {renderInput("Legalitas Usaha", "legalitas_usaha")}
-                    {renderInput("Pembiayaan", "pembiayaan")}
-                    {renderInput("NIB", "nib")}
+                    {renderInput("Legalitas Produk", "legalitas_produk")}
                     {renderInput("Alamat Usaha", "alamat_usaha")}
-                    {renderInput("Modal Usaha", "modal_usaha")}
-                    {renderInput("Total Aset", "total_aset")}
+                    {renderInput("Kabupaten/Kota", "kabupaten_kota")}
+                    {renderInput("Kecamatan", "kecamatan")}
+                    {renderInput(
+                        "Kenagarian/Kelurahan",
+                        "kenagarian_kelurahan"
+                    )}
+                    {renderInput("Tenaga Kerja", "tenaga_kerja")}
+                    {renderInput("Aset", "aset")}
                     {renderInput("Omset", "omset")}
-                    {renderInput("Pengeluaran", "pengeluaran")}
-                    {renderInput("Pendapat Bersih", "pendapat_bersih")}
-                    {renderInput("Pelatihan yang Dibutuhkan", "pelatihan")}
+                    {renderInput("Pendapatan Bersih", "pendapatan_bersih")}
+                    {renderInput("Pelatihan yang Diikuti", "pelatihan")}
+                    {renderInput("Tindak Lanjut", "tindak_lanjut")}
 
                     {/* Dropdown Layanan */}
                     <div>
@@ -187,22 +219,6 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
                         {errors.id_layanan && (
                             <p className="text-red-500 text-xs mt-1">
                                 {errors.id_layanan}
-                            </p>
-                        )}
-                    </div>
-
-                    <div className="col-span-2">
-                        <label className="block mb-1">Permasalahan</label>
-                        <textarea
-                            name="permasalahan"
-                            value={form.permasalahan}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                            rows={3}
-                        />
-                        {errors.permasalahan && (
-                            <p className="text-red-500 text-xs mt-1">
-                                {errors.permasalahan}
                             </p>
                         )}
                     </div>

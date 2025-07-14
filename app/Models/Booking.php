@@ -72,6 +72,11 @@ class Booking extends Model
         return $this->hasOne(SuratMasuk::class, 'id_booking');
     }
 
+    public function pelayananUmkm()
+    {
+        return $this->hasMany(PelayananUmkm::class, 'id_booking');
+    }
+
     public function bookingPelayananUmkm()
     {
         return $this->hasMany(BookingPelayananUmkm::class, 'id_booking');

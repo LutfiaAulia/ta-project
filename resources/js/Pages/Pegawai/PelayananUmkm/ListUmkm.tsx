@@ -4,7 +4,7 @@ import { PageProps } from "@/types";
 import { Link } from "@inertiajs/react";
 
 type UmkmEntry = {
-    id_bopel: number;
+    id_pelayanan: number;
     nama_lengkap: string;
     nik: string;
     nama_usaha: string;
@@ -67,6 +67,12 @@ const ListUmkm: React.FC<ListUmkmProps> = ({
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
+                    <Link
+                        href={`/pegawai/create/umkmlayan/${id_booking}`}
+                        className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
+                    >
+                        + Tambah
+                    </Link>
                     {isInRange && (
                         <Link
                             href={`/pegawai/create/umkmlayan/${id_booking}`}
@@ -85,7 +91,6 @@ const ListUmkm: React.FC<ListUmkmProps> = ({
                                 <th className="border px-2 py-2">Nama</th>
                                 <th className="border px-2 py-2">NIK</th>
                                 <th className="border px-2 py-2">Usaha</th>
-                                <th className="border px-2 py-2">NIB</th>
                                 <th className="border px-2 py-2">Layanan</th>
                                 <th className="border px-2 py-2">Aksi</th>
                             </tr>
@@ -93,7 +98,7 @@ const ListUmkm: React.FC<ListUmkmProps> = ({
                         <tbody>
                             {filteredUmkm.length > 0 ? (
                                 filteredUmkm.map((u, index) => (
-                                    <tr key={u.id_bopel}>
+                                    <tr key={u.id_pelayanan}>
                                         <td className="border px-2 py-2 text-center">
                                             {index + 1}
                                         </td>
@@ -107,14 +112,11 @@ const ListUmkm: React.FC<ListUmkmProps> = ({
                                             {u.nama_usaha}
                                         </td>
                                         <td className="border px-2 py-2">
-                                            {u.nib}
-                                        </td>
-                                        <td className="border px-2 py-2">
                                             {u.layanan}
                                         </td>
                                         <td className="border px-2 py-2 text-center space-x-1">
                                             <Link
-                                                href={`/pegawai/edit/umkmlayan/${u.id_bopel}`}
+                                                href={`/pegawai/edit/umkmlayan/${u.id_pelayanan}`}
                                                 className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
                                             >
                                                 Edit
@@ -122,7 +124,7 @@ const ListUmkm: React.FC<ListUmkmProps> = ({
                                             <Link
                                                 method="delete"
                                                 as="button"
-                                                href={`/pegawai/destroy/umkmlayan/${u.id_bopel}`}
+                                                href={`/pegawai/destroy/umkmlayan/${u.id_pelayanan}`}
                                                 className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
                                                 onClick={(e) => {
                                                     if (

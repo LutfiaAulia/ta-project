@@ -22,9 +22,14 @@ class Layanan extends Model
     {
         return $this->belongsTo(BidangLayanan::class, 'id_bidang', 'id_bidang');
     }
-    
+
     public function booking()
     {
         return $this->belongsToMany(Booking::class, 'booking_layanan', 'id_layanan', 'id_booking');
+    }
+
+    public function pelayananUmkm()
+    {
+        return $this->hasMany(PelayananUmkm::class, 'id_layanan');
     }
 }

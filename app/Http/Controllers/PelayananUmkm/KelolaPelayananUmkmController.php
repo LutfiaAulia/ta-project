@@ -4,7 +4,6 @@ namespace App\Http\Controllers\PelayananUmkm;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
-use App\Models\BookingPelayananUmkm;
 use App\Models\Layanan;
 use App\Models\PelayananUmkm;
 use Illuminate\Http\Request;
@@ -57,17 +56,16 @@ class KelolaPelayananUmkmController extends Controller
     {
         $booking = Booking::findOrFail($id_booking);
 
-        $umkm = BookingPelayananUmkm::with(['pelayanan', 'layanan'])
+        $umkm = PelayananUmkm::with('layanan')
             ->where('id_booking', $id_booking)
             ->get()
-            ->map(function ($item) use ($id_booking) {
+            ->map(function ($item) {
                 return [
-                    'id_bopel' => $item->id_bopel,
-                    'id_booking' => $id_booking,
-                    'nama_lengkap' => $item->pelayanan->nama_lengkap,
-                    'nik' => $item->pelayanan->nik,
-                    'nama_usaha' => $item->pelayanan->nama_usaha,
-                    'nib' => $item->pelayanan->nib,
+                    'id_pelayanan' => $item->id_pelayanan,
+                    'id_booking' => $item->id_booking,
+                    'nama_lengkap' => $item->nama_lengkap,
+                    'nik' => $item->nik,
+                    'nama_usaha' => $item->nama_usaha,
                     'layanan' => $item->layanan?->layanan ?? '-',
                 ];
             });
@@ -95,156 +93,104 @@ class KelolaPelayananUmkmController extends Controller
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'jenis_kelamin' => 'required|string|max:255',
+            'umur' => 'required|string|max:5',
             'nik' => 'required|string|max:20',
-            'alamat_lengkap' => 'nullable|string',
-            'email' => 'nullable|email',
+            'pendidikan' => 'required|string|max:255',
             'no_hp' => 'nullable|string|max:20',
             'nama_usaha' => 'required|string|max:255',
-            'bentuk_usaha' => 'nullable|string|max:100',
-            'sektor_usaha' => 'nullable|string|max:100',
-            'legalitas_usaha' => 'nullable|string|max:100',
-            'pembiayaan' => 'nullable|string|max:100',
-            'nib' => 'nullable|string|max:50',
-            'alamat_usaha' => 'nullable|string|max:255',
-            'modal_usaha' => 'required|string|max:50',
-            'total_aset' => 'required|string|max:50',
-            'omset' => 'required|string|max:50',
-            'pengeluaran' => 'required|string|max:50',
-            'pendapat_bersih' => 'required|string|max:50',
+            'legalitas_usaha' => 'required|string|max:100',
+            'legalitas_produk' => 'required|string|max:100',
+            'alamat_usaha' => 'required|string|max:255',
+            'kabupaten_kota' => 'required|string|max:100',
+            'kecamatan' => 'required|string|max:100',
+            'kenagarian_kelurahan' => 'required|string|max:100',
+            'tenaga_kerja' => 'required|integer',
+            'aset' => 'required|integer',
+            'omset' => 'required|integer',
+            'pendapatan_bersih' => 'required|integer',
             'pelatihan' => 'nullable|string|max:255',
-            'permasalahan' => 'nullable|string',
+            'tindak_lanjut' => 'nullable|string',
 
             'id_booking' => 'required|exists:booking,id_booking',
             'id_layanan' => 'required|exists:layanan,id_layanan',
         ]);
 
-        $pelayanan = PelayananUmkm::create([
-            'nama_lengkap' => $request->nama_lengkap,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'nik' => $request->nik,
-            'alamat_lengkap' => $request->alamat_lengkap,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'nama_usaha' => $request->nama_usaha,
-            'bentuk_usaha' => $request->bentuk_usaha,
-            'sektor_usaha' => $request->sektor_usaha,
-            'legalitas_usaha' => $request->legalitas_usaha,
-            'pembiayaan' => $request->pembiayaan,
-            'nib' => $request->nib,
-            'alamat_usaha' => $request->alamat_usaha,
-            'modal_usaha' => $request->modal_usaha,
-        ]);
 
-        BookingPelayananUmkm::create([
-            'id_booking' => $request->id_booking,
-            'id_pelayanan' => $pelayanan->id_pelayanan,
-            'id_layanan' => $request->id_layanan,
-            'total_aset' => $request->total_aset,
-            'omset' => $request->omset,
-            'pengeluaran' => $request->pengeluaran,
-            'pendapat_bersih' => $request->pendapat_bersih,
-            'pelatihan' => $request->pelatihan,
-            'permasalahan' => $request->permasalahan,
-        ]);
+        PelayananUmkm::create($request->all());
 
         return redirect()->route('umkmlayan.list', ['id' => $request->id_booking])->with('success', 'Data UMKM berhasil disimpan.');
     }
 
-    public function edit($id)
+    public function edit($id_pelayanan)
     {
-        $booking = BookingPelayananUmkm::with('pelayanan')->findOrFail($id);
+        $umkm = PelayananUmkm::findOrFail($id_pelayanan);
         $layanan = Layanan::select('id_layanan', 'layanan')->where('status', 'aktif')->get();
 
         return Inertia::render('Pegawai/PelayananUmkm/EditUmkm', [
-            'umkm' => [
-                'id_bopel' => $booking->id_bopel,
-                'id_pelayanan' => $booking->id_pelayanan,
-
-                'nama_lengkap' => $booking->pelayanan->nama_lengkap,
-                'jenis_kelamin' => $booking->pelayanan->jenis_kelamin,
-                'nik' => $booking->pelayanan->nik,
-                'alamat_lengkap' => $booking->pelayanan->alamat_lengkap,
-                'email' => $booking->pelayanan->email,
-                'no_hp' => $booking->pelayanan->no_hp,
-                'nama_usaha' => $booking->pelayanan->nama_usaha,
-                'bentuk_usaha' => $booking->pelayanan->bentuk_usaha,
-                'sektor_usaha' => $booking->pelayanan->sektor_usaha,
-                'legalitas_usaha' => $booking->pelayanan->legalitas_usaha,
-                'pembiayaan' => $booking->pelayanan->pembiayaan,
-                'nib' => $booking->pelayanan->nib,
-                'alamat_usaha' => $booking->pelayanan->alamat_usaha,
-                'modal_usaha' => $booking->pelayanan->modal_usaha,
-
-                'id_layanan' => $booking->id_layanan,
-                'total_aset' => $booking->total_aset,
-                'omset' => $booking->omset,
-                'pengeluaran' => $booking->pengeluaran,
-                'pendapat_bersih' => $booking->pendapat_bersih,
-                'pelatihan' => $booking->pelatihan,
-                'permasalahan' => $booking->permasalahan,
-            ],
+            'umkm' => $umkm,
             'layanan' => $layanan,
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id_pelayanan)
     {
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'jenis_kelamin' => 'required|string|max:255',
-            'nik' => 'required|string|max:50',
+            'umur' => 'required|string|max:5',
+            'nik' => 'required|string|max:20',
+            'pendidikan' => 'required|string|max:255',
+            'no_hp' => 'nullable|string|max:20',
             'nama_usaha' => 'required|string|max:255',
-            'nib' => 'nullable|string|max:100',
-
-            'modal_usaha' => 'required',
-            'total_aset' => 'required',
-            'omset' => 'required',
-            'pengeluaran' => 'required',
-            'pendapat_bersih' => 'required',
-            'id_layanan' => 'required|integer',
+            'legalitas_usaha' => 'required|string|max:100',
+            'legalitas_produk' => 'required|string|max:100',
+            'alamat_usaha' => 'required|string|max:255',
+            'kabupaten_kota' => 'required|string|max:100',
+            'kecamatan' => 'required|string|max:100',
+            'kenagarian_kelurahan' => 'required|string|max:100',
+            'tenaga_kerja' => 'required|integer',
+            'aset' => 'required|integer',
+            'omset' => 'required|integer',
+            'pendapatan_bersih' => 'required|integer',
+            'pelatihan' => 'nullable|string|max:255',
+            'tindak_lanjut' => 'nullable|string',
+            'id_layanan' => 'required|exists:layanan,id_layanan',
         ]);
 
-        $booking = BookingPelayananUmkm::findOrFail($id);
-        $umkm = PelayananUmkm::findOrFail($booking->id_pelayanan);
+        $umkm = PelayananUmkm::findOrFail($id_pelayanan);
 
         $umkm->update([
             'nama_lengkap' => $request->nama_lengkap,
             'jenis_kelamin' => $request->jenis_kelamin,
+            'umur' => $request->umur,
             'nik' => $request->nik,
-            'alamat_lengkap' => $request->alamat_lengkap,
-            'email' => $request->email,
+            'pendidikan' => $request->pendidikan,
             'no_hp' => $request->no_hp,
             'nama_usaha' => $request->nama_usaha,
-            'bentuk_usaha' => $request->bentuk_usaha,
-            'sektor_usaha' => $request->sektor_usaha,
             'legalitas_usaha' => $request->legalitas_usaha,
-            'pembiayaan' => $request->pembiayaan,
-            'nib' => $request->nib,
+            'legalitas_produk' => $request->legalitas_produk,
             'alamat_usaha' => $request->alamat_usaha,
-            'modal_usaha' => $request->modal_usaha,
-        ]);
-
-        $booking->update([
-            'id_layanan' => $request->id_layanan,
-            'total_aset' => $request->total_aset,
+            'kabupaten_kota' => $request->kabupaten_kota,
+            'kecamatan' => $request->kecamatan,
+            'kenagarian_kelurahan' => $request->kenagarian_kelurahan,
+            'tenaga_kerja' => $request->tenaga_kerja,
+            'aset' => $request->aset,
             'omset' => $request->omset,
-            'pengeluaran' => $request->pengeluaran,
-            'pendapat_bersih' => $request->pendapat_bersih,
+            'pendapatan_bersih' => $request->pendapatan_bersih,
             'pelatihan' => $request->pelatihan,
-            'permasalahan' => $request->permasalahan,
+            'tindak_lanjut' => $request->tindak_lanjut,
+            'id_layanan' => $request->id_layanan,
         ]);
 
-        $id_booking = $booking->id_booking;
-
-        return redirect()->route('umkmlayan.list', ['id' => $id_booking])
-            ->with('success', 'Data UMKM berhasil diperbarui');
+        return redirect()->route('umkmlayan.list', ['id' => $umkm->id_booking])
+            ->with('success', 'Data UMKM berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy($id_pelayanan)
     {
-        $bookingPelayananUmkm = BookingPelayananUmkm::findOrFail($id);
-        $id_booking = $bookingPelayananUmkm->id_booking;
-        $bookingPelayananUmkm->delete();
+        $umkm = PelayananUmkm::findOrFail($id_pelayanan);
+        $id_booking = $umkm->id_booking;
+        $umkm->delete();
 
         return redirect()->route('umkmlayan.list', ['id' => $id_booking])
             ->with('success', 'Data UMKM berhasil dihapus.');

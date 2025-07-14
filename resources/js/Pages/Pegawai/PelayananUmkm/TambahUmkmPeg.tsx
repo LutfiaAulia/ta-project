@@ -14,31 +14,26 @@ type TambahUmkmProps = {
 
 const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
     const [form, setForm] = useState({
-        // PelayananUmkm
         nama_lengkap: "",
         jenis_kelamin: "",
+        umur: "",
         nik: "",
-        alamat_lengkap: "",
-        email: "",
+        pendidikan: "",
         no_hp: "",
         nama_usaha: "",
-        bentuk_usaha: "",
-        sektor_usaha: "",
         legalitas_usaha: "",
-        pembiayaan: "",
-        nib: "",
+        legalitas_produk: "",
         alamat_usaha: "",
-        modal_usaha: "",
-
-        // BookingPelayananUmkm
-        total_aset: "",
+        kabupaten_kota: "",
+        kecamatan: "",
+        kenagarian_kelurahan: "",
+        tenaga_kerja: "",
+        aset: "",
         omset: "",
-        pengeluaran: "",
-        pendapat_bersih: "",
+        pendapatan_bersih: "",
         pelatihan: "",
-        permasalahan: "",
+        tindak_lanjut: "",
         id_layanan: "",
-
         id_booking,
     });
 
@@ -52,14 +47,10 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
     }, [id_booking]);
 
     const numberFields = new Set([
-        "nik",
-        "no_hp",
-        "nib",
-        "modal_usaha",
-        "total_aset",
+        "tenaga_kerja",
+        "aset",
         "omset",
-        "pengeluaran",
-        "pendapat_bersih",
+        "pendapatan_bersih",
     ]);
 
     const handleChange = (
@@ -96,14 +87,20 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
         const requiredFields = [
             "nama_lengkap",
             "jenis_kelamin",
+            "umur",
             "nik",
+            "pendidikan",
             "nama_usaha",
-            //"nib",
-            "modal_usaha",
-            "total_aset",
+            "legalitas_usaha",
+            "legalitas_produk",
+            "alamat_usaha",
+            "kabupaten_kota",
+            "kecamatan",
+            "kenagarian_kelurahan",
+            "tenaga_kerja",
+            "aset",
             "omset",
-            "pengeluaran",
-            "pendapat_bersih",
+            "pendapatan_bersih",
             "id_layanan",
         ];
         const newErrors: { [key: string]: string } = {};
@@ -163,7 +160,6 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
                     className="grid grid-cols-2 gap-6 text-sm"
                 >
                     {renderInput("Nama Lengkap", "nama_lengkap")}
-                    
                     <div>
                         <label className="block mb-1 capitalize">
                             Jenis Kelamin
@@ -184,25 +180,30 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
                             </p>
                         )}
                     </div>
-
+                    {renderInput("Umur", "umur", "text")}
                     {renderInput("NIK", "nik", "text")}
-                    {renderInput("Email", "email")}
+                    {renderInput("Pendidikan", "pendidikan")}
                     {renderInput("No HP", "no_hp", "text")}
-                    {renderInput("Alamat Lengkap", "alamat_lengkap")}
                     {renderInput("Nama Usaha", "nama_usaha")}
-                    {renderInput("Bentuk Usaha", "bentuk_usaha")}
-                    {renderInput("Sektor Usaha", "sektor_usaha")}
                     {renderInput("Legalitas Usaha", "legalitas_usaha")}
-                    {renderInput("Pembiayaan", "pembiayaan")}
-                    {renderInput("NIB", "nib", "text")}
+                    {renderInput("Legalitas Produk", "legalitas_produk")}
                     {renderInput("Alamat Usaha", "alamat_usaha")}
-                    {renderInput("Modal Usaha", "modal_usaha", "text")}
-
-                    {renderInput("Total Aset", "total_aset", "text")}
+                    {renderInput("Kabupaten/Kota", "kabupaten_kota")}
+                    {renderInput("Kecamatan", "kecamatan")}
+                    {renderInput(
+                        "Kenagarian/Kelurahan",
+                        "kenagarian_kelurahan"
+                    )}
+                    {renderInput("Tenaga Kerja", "tenaga_kerja", "text")}
+                    {renderInput("Aset", "aset", "text")}
                     {renderInput("Omset", "omset", "text")}
-                    {renderInput("Pengeluaran", "pengeluaran", "text")}
-                    {renderInput("Pendapat Bersih", "pendapat_bersih", "text")}
-                    {renderInput("Pelatihan yang Dibutuhkan", "pelatihan")}
+                    {renderInput(
+                        "Pendapatan Bersih",
+                        "pendapatan_bersih",
+                        "text"
+                    )}
+                    {renderInput("Pelatihan yang Diikuti", "pelatihan")}
+                    {renderInput("Tindak Lanjut", "tindak_lanjut")}
 
                     {/* Dropdown Layanan */}
                     <div>
@@ -223,22 +224,6 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
                         {errors.id_layanan && (
                             <p className="text-red-500 text-xs mt-1">
                                 {errors.id_layanan}
-                            </p>
-                        )}
-                    </div>
-
-                    <div className="col-span-2">
-                        <label className="block mb-1">Permasalahan</label>
-                        <textarea
-                            name="permasalahan"
-                            value={form.permasalahan}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                            rows={3}
-                        />
-                        {errors.permasalahan && (
-                            <p className="text-red-500 text-xs mt-1">
-                                {errors.permasalahan}
                             </p>
                         )}
                     </div>
