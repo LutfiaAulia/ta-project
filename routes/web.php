@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginUmkmController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\BidangLayanan\KelolaBidangController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
 use App\Http\Controllers\Chatbot\ChatbotController;
@@ -124,6 +125,13 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/layanan/{id}', [KelolaLayananController::class, 'edit'])->name('layanan.edit');
         Route::put('/update/layanan/{id}', [KelolaLayananController::class, 'update'])->name('layanan.update');
         Route::put('/updateStatus/layanan/{id}', [KelolaLayananController::class, 'updateStatus'])->name('layanan.status');
+
+        Route::get('/list/bidang', [KelolaBidangController::class, 'show'])->name('bidang.list');
+        Route::get('/create/bidang', [KelolaBidangController::class, 'create'])->name('bidang.create');
+        Route::post('/store/bidang', [KelolaBidangController::class, 'store'])->name('bidang.store');
+        Route::get('/edit/bidang/{id}', [KelolaBidangController::class, 'edit'])->name('bidang.edit');
+        Route::put('/update/bidang/{id}', [KelolaBidangController::class, 'update'])->name('bidang.update');
+        Route::put('/updateStatus/bidang/{id}', [KelolaBidangController::class, 'updateStatus'])->name('bidang.status');
 
         Route::get('/list/mobil', [KelolaMobilController::class, 'show'])->name('mobil.list');
         Route::get('/create/mobil', [KelolaMobilController::class, 'create'])->name('mobil.create');
