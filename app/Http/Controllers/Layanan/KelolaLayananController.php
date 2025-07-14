@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Layanan;
 
 use App\Http\Controllers\Controller;
+use App\Models\BidangLayanan;
 use App\Models\Layanan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -21,14 +22,22 @@ class KelolaLayananController extends Controller
 
     public function create()
     {
-        return Inertia::render('Pegawai/Layanan/TambahLayanan');
+        $bidang = BidangLayanan::where('status', 'aktif')->get();
+
+        return Inertia::render('Pegawai/Layanan/TambahLayanan', [
+            'bidang' => $bidang,
+        ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'id_bidang' => 'required|exists:bidang_layanan,id_bidang',
             'layanan' => 'required|string|max:255|unique:layanan,layanan',
+            'deskripsi_layanan' => 'required|string',
         ]);
+
+        $validated['status'] = 'aktif';
 
         Layanan::create($validated);
 
@@ -38,21 +47,25 @@ class KelolaLayananController extends Controller
     public function edit($id_layanan)
     {
         $layanan = Layanan::findOrFail($id_layanan);
+        $bidang = BidangLayanan::all();
 
         return Inertia::render('Pegawai/Layanan/EditLayanan', [
             'layanan' => $layanan,
+            'bidang' => $bidang,
         ]);
     }
 
     public function update(Request $request, $id_layanan)
     {
         $validated = $request->validate([
+            'id_bidang' => 'required|exists:bidang_layanan,id_bidang',
             'layanan' => [
                 'required',
                 'string',
                 'max:255',
                 Rule::unique('layanan', 'layanan')->ignore($id_layanan, 'id_layanan'),
             ],
+            'deskripsi_layanan' => 'required|string',
         ]);
 
         $layanan = Layanan::findOrFail($id_layanan);
@@ -61,7 +74,8 @@ class KelolaLayananController extends Controller
         return redirect()->route('layanan.list')->with('success', 'Layanan berhasil diperbarui.');
     }
 
-    public function updateStatus(Request $request, $id_layanan){
+    public function updateStatus(Request $request, $id_layanan)
+    {
         $request->validate([
             'status' => ['required', Rule::in(['aktif', 'nonaktif'])],
         ]);

@@ -3,21 +3,37 @@ import Layout from "@/Components/Layout";
 import { router, usePage } from "@inertiajs/react";
 import { PageProps } from "@/types";
 
+type Bidang = {
+    id_bidang: number;
+    nama_bidang: string;
+};
+
 type Layanan = {
     id_layanan: number;
     layanan: string;
+    id_bidang: number | string;
+    deskripsi_layanan: string;
 };
 
-const EditLayanan: React.FC<PageProps<{ layanan: Layanan }>> = ({
-    layanan,
-}) => {
+type Props = PageProps<{
+    layanan: Layanan;
+    bidang: Bidang[];
+}>;
+
+const EditLayanan: React.FC<Props> = ({ layanan, bidang }) => {
     const [form, setForm] = useState({
         layanan: layanan.layanan || "",
+        id_bidang: layanan.id_bidang || "",
+        deskripsi_layanan: layanan.deskripsi_layanan || "",
     });
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<
+            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >
+    ) => {
         const { name, value } = e.target;
         setForm((prev) => ({
             ...prev,
@@ -33,6 +49,11 @@ const EditLayanan: React.FC<PageProps<{ layanan: Layanan }>> = ({
         const newErrors: { [key: string]: string } = {};
         if (!form.layanan.trim())
             newErrors.layanan = "Nama layanan wajib diisi";
+        if (!form.id_bidang)
+            newErrors.id_bidang = "Bidang layanan wajib dipilih";
+        if (!form.deskripsi_layanan.trim())
+            newErrors.deskripsi_layanan = "Deskripsi layanan wajib diisi";
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -49,9 +70,9 @@ const EditLayanan: React.FC<PageProps<{ layanan: Layanan }>> = ({
     };
 
     const renderError = (field: string) =>
-        errors[field] && (
+        errors[field] ? (
             <p className="text-red-500 text-xs mt-1">{errors[field]}</p>
-        );
+        ) : null;
 
     return (
         <Layout>
@@ -61,6 +82,28 @@ const EditLayanan: React.FC<PageProps<{ layanan: Layanan }>> = ({
                 </h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+                    {/* Dropdown bidang layanan */}
+                    <div>
+                        <label className="block mb-1">
+                            Pilih Bidang Layanan
+                        </label>
+                        <select
+                            name="id_bidang"
+                            value={form.id_bidang}
+                            onChange={handleChange}
+                            className="w-full border px-3 py-2 rounded"
+                        >
+                            <option value="">-- Pilih Bidang --</option>
+                            {bidang.map((b) => (
+                                <option key={b.id_bidang} value={b.id_bidang}>
+                                    {b.nama_bidang}
+                                </option>
+                            ))}
+                        </select>
+                        {renderError("id_bidang")}
+                    </div>
+
+                    {/* Input nama layanan */}
                     <div>
                         <label className="block mb-1">Nama Layanan</label>
                         <input
@@ -69,8 +112,23 @@ const EditLayanan: React.FC<PageProps<{ layanan: Layanan }>> = ({
                             value={form.layanan}
                             onChange={handleChange}
                             className="w-full border px-3 py-2 rounded"
+                            placeholder="Masukkan nama layanan"
                         />
                         {renderError("layanan")}
+                    </div>
+
+                    {/* Textarea deskripsi layanan */}
+                    <div>
+                        <label className="block mb-1">Deskripsi Layanan</label>
+                        <textarea
+                            name="deskripsi_layanan"
+                            value={form.deskripsi_layanan}
+                            onChange={handleChange}
+                            className="w-full border px-3 py-2 rounded"
+                            rows={5}
+                            placeholder="Masukkan deskripsi layanan"
+                        />
+                        {renderError("deskripsi_layanan")}
                     </div>
 
                     <div className="text-right">
