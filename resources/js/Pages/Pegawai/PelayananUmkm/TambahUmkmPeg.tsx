@@ -185,7 +185,26 @@ const TambahUmkmPeg: React.FC<TambahUmkmProps> = ({ id_booking, layanan }) => {
                     {renderInput("Pendidikan", "pendidikan")}
                     {renderInput("No HP", "no_hp", "text")}
                     {renderInput("Nama Usaha", "nama_usaha")}
-                    {renderInput("Legalitas Usaha", "legalitas_usaha")}
+                    <div>
+                        <label className="block mb-1 capitalize">
+                            Legalitas Usaha
+                        </label>
+                        <select
+                            name="legalitas_usaha"
+                            value={form.legalitas_usaha}
+                            onChange={handleChange}
+                            className="w-full border px-3 py-2 rounded"
+                        >
+                            <option value="">-- Pilih Legalitas Usaha --</option>
+                            <option value="Ada NIB">Ada NIB</option>
+                            <option value="Tidak ada NIB">Tidak ada NIB</option>
+                        </select>
+                        {errors.legalitas_usaha && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.legalitas_usaha}
+                            </p>
+                        )}
+                    </div>
                     {renderInput("Legalitas Produk", "legalitas_produk")}
                     {renderInput("Alamat Usaha", "alamat_usaha")}
                     {renderInput("Kabupaten/Kota", "kabupaten_kota")}

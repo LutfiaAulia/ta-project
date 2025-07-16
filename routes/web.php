@@ -15,6 +15,7 @@ use App\Http\Controllers\Kategori\KelolaKategoriController;
 use App\Http\Controllers\KelolaHUController;
 use App\Http\Controllers\Laporan\KelolaLaporanController;
 use App\Http\Controllers\Layanan\KelolaLayananController;
+use App\Http\Controllers\LegalitasProduk\KelolaLegalitasProdukController;
 use App\Http\Controllers\MobilSopir\KelolaMobilController;
 use App\Http\Controllers\MobilSopir\KelolaSopirController;
 use App\Http\Controllers\PelayananUmkm\KelolaPelayananUmkmController;
@@ -132,6 +133,13 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/bidang/{id}', [KelolaBidangController::class, 'edit'])->name('bidang.edit');
         Route::put('/update/bidang/{id}', [KelolaBidangController::class, 'update'])->name('bidang.update');
         Route::put('/updateStatus/bidang/{id}', [KelolaBidangController::class, 'updateStatus'])->name('bidang.status');
+
+        Route::get('/list/legpro', [KelolaLegalitasProdukController::class, 'show'])->name('legpro.list');
+        Route::get('/create/legpro', [KelolaLegalitasProdukController::class, 'create'])->name('legpro.create');
+        Route::post('/store/legpro', [KelolaLegalitasProdukController::class, 'store'])->name('legpro.store');
+        Route::get('/edit/legpro/{id}', [KelolaLegalitasProdukController::class, 'edit'])->name('legpro.edit');
+        Route::put('/update/legpro/{id}', [KelolaLegalitasProdukController::class, 'update'])->name('legpro.update');
+        Route::put('/updateStatus/legpro/{id}', [KelolaLegalitasProdukController::class, 'updateStatus'])->name('legpro.status');
 
         Route::get('/list/mobil', [KelolaMobilController::class, 'show'])->name('mobil.list');
         Route::get('/create/mobil', [KelolaMobilController::class, 'create'])->name('mobil.create');

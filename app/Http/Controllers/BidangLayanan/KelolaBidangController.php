@@ -67,6 +67,6 @@ class KelolaBidangController extends Controller
         $bidang->status = $request->status;
         $bidang->save();
 
-        return redirect()->back()->with('success', 'Sttatus bidang layanan berhasil diperbaharui');
+        return redirect()->back()->with('success', 'Status bidang layanan berhasil diperbaharui');
     }
 }
