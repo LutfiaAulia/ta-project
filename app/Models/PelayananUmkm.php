@@ -46,4 +46,9 @@ class PelayananUmkm extends Model
     {
         return $this->belongsTo(Layanan::class, 'id_layanan');
     }
+
+    public function legalitasProduk()
+    {
+        return $this->belongsToMany(LegalitasProduk::class, 'pelayanan_legpro', 'id_pelayanan', 'id_legpro');
+    }
 }

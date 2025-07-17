@@ -5,6 +5,7 @@ namespace App\Http\Controllers\PelayananUmkm;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Layanan;
+use App\Models\LegalitasProduk;
 use App\Models\PelayananUmkm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -81,10 +82,12 @@ class KelolaPelayananUmkmController extends Controller
     public function create($id_booking)
     {
         $layanan = Layanan::where('status', 'aktif')->get();
+        $legpro = LegalitasProduk::where('status', 'aktif')->get();
 
         return Inertia::render('Pegawai/PelayananUmkm/TambahUmkmPeg', [
             'id_booking' => $id_booking,
             'layanan' => $layanan,
+            'legpro' => $legpro,
         ]);
     }
 
@@ -99,7 +102,8 @@ class KelolaPelayananUmkmController extends Controller
             'no_hp' => 'nullable|string|max:20',
             'nama_usaha' => 'required|string|max:255',
             'legalitas_usaha' => 'required|string|max:100',
-            'legalitas_produk' => 'required|string|max:100',
+            'legalitas_produk' => 'required|array',
+            'legalitas_produk.*' => 'exists:legalitas_produk,id_legpro',
             'alamat_usaha' => 'required|string|max:255',
             'kabupaten_kota' => 'required|string|max:100',
             'kecamatan' => 'required|string|max:100',
@@ -115,22 +119,31 @@ class KelolaPelayananUmkmController extends Controller
             'id_layanan' => 'required|exists:layanan,id_layanan',
         ]);
 
-
-        PelayananUmkm::create($request->all());
+        $umkm = PelayananUmkm::create($request->except('legalitas_produk'));
+        $umkm->legalitas_produk()->sync($request->legalitas_produk);
 
         return redirect()->route('umkmlayan.list', ['id' => $request->id_booking])->with('success', 'Data UMKM berhasil disimpan.');
     }
 
     public function edit($id_pelayanan)
     {
-        $umkm = PelayananUmkm::findOrFail($id_pelayanan);
+        $umkm = PelayananUmkm::with('legalitasProduk')->findOrFail($id_pelayanan);
+
         $layanan = Layanan::select('id_layanan', 'layanan')->where('status', 'aktif')->get();
+        $legpro = LegalitasProduk::select('id_legpro', 'singkatan')->where('status', 'aktif')->get();
+
+        $legalitasIds = $umkm->legalitasProduk->pluck('id_legpro')->map(fn($id) => (string)$id)->toArray();
+
+        $umkmData = $umkm->toArray();
+        $umkmData['legalitas_produk'] = $legalitasIds;
 
         return Inertia::render('Pegawai/PelayananUmkm/EditUmkm', [
-            'umkm' => $umkm,
+            'umkm' => $umkmData,
             'layanan' => $layanan,
+            'legalitas_produk' => $legpro,
         ]);
     }
+
 
     public function update(Request $request, $id_pelayanan)
     {
@@ -143,7 +156,8 @@ class KelolaPelayananUmkmController extends Controller
             'no_hp' => 'nullable|string|max:20',
             'nama_usaha' => 'required|string|max:255',
             'legalitas_usaha' => 'required|string|max:100',
-            'legalitas_produk' => 'required|string|max:100',
+            'legalitas_produk' => 'required|array',
+            'legalitas_produk.*' => 'exists:legalitas_produk,id_legpro',
             'alamat_usaha' => 'required|string|max:255',
             'kabupaten_kota' => 'required|string|max:100',
             'kecamatan' => 'required|string|max:100',
@@ -158,29 +172,9 @@ class KelolaPelayananUmkmController extends Controller
         ]);
 
         $umkm = PelayananUmkm::findOrFail($id_pelayanan);
+        $umkm->update($request->except('legalitas_produk'));
 
-        $umkm->update([
-            'nama_lengkap' => $request->nama_lengkap,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'umur' => $request->umur,
-            'nik' => $request->nik,
-            'pendidikan' => $request->pendidikan,
-            'no_hp' => $request->no_hp,
-            'nama_usaha' => $request->nama_usaha,
-            'legalitas_usaha' => $request->legalitas_usaha,
-            'legalitas_produk' => $request->legalitas_produk,
-            'alamat_usaha' => $request->alamat_usaha,
-            'kabupaten_kota' => $request->kabupaten_kota,
-            'kecamatan' => $request->kecamatan,
-            'kenagarian_kelurahan' => $request->kenagarian_kelurahan,
-            'tenaga_kerja' => $request->tenaga_kerja,
-            'aset' => $request->aset,
-            'omset' => $request->omset,
-            'pendapatan_bersih' => $request->pendapatan_bersih,
-            'pelatihan' => $request->pelatihan,
-            'tindak_lanjut' => $request->tindak_lanjut,
-            'id_layanan' => $request->id_layanan,
-        ]);
+        $umkm->legalitasProduk()->sync($request->legalitas_produk);
 
         return redirect()->route('umkmlayan.list', ['id' => $umkm->id_booking])
             ->with('success', 'Data UMKM berhasil diperbarui.');

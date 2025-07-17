@@ -7,6 +7,11 @@ type Layanan = {
     layanan: string;
 };
 
+type LegalitasProduk = {
+    id_legpro: number;
+    singkatan: string;
+};
+
 type Umkm = {
     nama_lengkap: string;
     jenis_kelamin: string;
@@ -16,7 +21,7 @@ type Umkm = {
     no_hp?: string | null;
     nama_usaha: string;
     legalitas_usaha: string;
-    legalitas_produk: string;
+    legalitas_produk: string[];
     alamat_usaha: string;
     kabupaten_kota: string;
     kecamatan: string;
@@ -35,11 +40,31 @@ type Umkm = {
 type EditUmkmProps = {
     layanan: Layanan[];
     umkm: Umkm;
+    legalitas_produk: LegalitasProduk[];
 };
 
-const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
-    const [form, setForm] = useState<Umkm>({ ...umkm });
+const EditUmkm: React.FC<EditUmkmProps> = ({
+    layanan,
+    umkm,
+    legalitas_produk,
+}) => {
+    const [form, setForm] = useState<Umkm>({
+        ...umkm,
+        legalitas_produk: Array.isArray(umkm.legalitas_produk)
+            ? umkm.legalitas_produk
+            : [],
+    });
+
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [showLegalitas, setShowLegalitas] = useState(false);
+
+    const numberFields = new Set([
+        "tenaga_kerja",
+        "aset",
+        "omset",
+        "pendapatan_bersih",
+        "umur",
+    ]);
 
     const handleChange = (
         e: React.ChangeEvent<
@@ -47,14 +72,38 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
         >
     ) => {
         const { name, value } = e.target;
-        setForm((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-        setErrors((prev) => ({
-            ...prev,
-            [name]: "",
-        }));
+
+        if (numberFields.has(name)) {
+            if (value === "" || /^\d*$/.test(value)) {
+                setForm((prev) => ({
+                    ...prev,
+                    [name]: value,
+                }));
+                setErrors((prev) => ({
+                    ...prev,
+                    [name]: "",
+                }));
+            }
+        } else {
+            setForm((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+            setErrors((prev) => ({
+                ...prev,
+                [name]: "",
+            }));
+        }
+    };
+
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = e.target;
+        setForm((prev) => {
+            const updated = checked
+                ? [...prev.legalitas_produk, value]
+                : prev.legalitas_produk.filter((v) => v !== value);
+            return { ...prev, legalitas_produk: updated };
+        });
     };
 
     const validate = () => {
@@ -66,7 +115,6 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
             "pendidikan",
             "nama_usaha",
             "legalitas_usaha",
-            "legalitas_produk",
             "alamat_usaha",
             "kabupaten_kota",
             "kecamatan",
@@ -83,7 +131,10 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
                 newErrors[field] = "Wajib diisi";
             }
         });
-
+        if (form.legalitas_produk.length === 0) {
+            newErrors.legalitas_produk =
+                "Pilih setidaknya satu legalitas produk.";
+        }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -108,130 +159,402 @@ const EditUmkm: React.FC<EditUmkmProps> = ({ layanan, umkm }) => {
     const renderInput = (
         label: string,
         name: keyof Umkm,
-        type: string = "text"
+        type: string = "text",
+        placeholder?: string
     ) => (
-        <div key={name}>
-            <label className="block mb-1 capitalize">{label}</label>
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+                {label}
+                {!["no_hp", "pelatihan", "tindak_lanjut"].includes(
+                    name as string
+                ) && <span className="text-red-500 ml-1">*</span>}
+            </label>
             <input
                 type={type}
                 name={name}
                 value={form[name] || ""}
                 onChange={handleChange}
-                className="w-full border px-3 py-2 rounded"
-                inputMode={
-                    [
-                        "tenaga_kerja",
-                        "aset",
-                        "omset",
-                        "pendapatan_bersih",
-                        "umur",
-                    ].includes(name as string)
-                        ? "numeric"
-                        : undefined
-                }
-                pattern={
-                    [
-                        "tenaga_kerja",
-                        "aset",
-                        "omset",
-                        "pendapatan_bersih",
-                        "umur",
-                    ].includes(name as string)
-                        ? "[0-9]*"
-                        : undefined
-                }
+                placeholder={placeholder}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                    errors[name] ? "border-red-500" : "border-gray-300"
+                }`}
+                inputMode={numberFields.has(name) ? "numeric" : undefined}
+                pattern={numberFields.has(name) ? "[0-9]*" : undefined}
             />
             {errors[name] && (
-                <p className="text-red-500 text-xs mt-1">{errors[name]}</p>
+                <p className="text-red-500 text-sm mt-1 flex items-center">
+                    <span className="mr-1">⚠</span>
+                    {errors[name]}
+                </p>
+            )}
+        </div>
+    );
+
+    const renderSelect = (
+        label: string,
+        name: keyof Umkm,
+        options: { value: string; label: string }[]
+    ) => (
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+                {label}
+                <span className="text-red-500 ml-1">*</span>
+            </label>
+            <select
+                name={name}
+                value={form[name] as string}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                    errors[name] ? "border-red-500" : "border-gray-300"
+                }`}
+            >
+                <option value="">-- Pilih {label} --</option>
+                {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
+            </select>
+            {errors[name] && (
+                <p className="text-red-500 text-sm mt-1 flex items-center">
+                    <span className="mr-1">⚠</span>
+                    {errors[name]}
+                </p>
             )}
         </div>
     );
 
     return (
         <Layout>
-            <div className="max-w-screen-lg mx-auto p-12">
-                <h1 className="text-xl font-semibold mb-6 text-center">
-                    Edit Data UMKM
-                </h1>
+            <div className="min-h-screen bg-gray-50 py-8">
+                <div className="max-w-6xl mx-auto px-4">
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                        {/* Section 1: Data Pribadi */}
+                        <div className="bg-white rounded-lg shadow-sm p-6">
+                            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                Data Pribadi
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {renderInput(
+                                    "Nama Lengkap",
+                                    "nama_lengkap",
+                                    "text",
+                                    "Masukkan nama lengkap"
+                                )}
+                                {renderSelect(
+                                    "Jenis Kelamin",
+                                    "jenis_kelamin",
+                                    [
+                                        {
+                                            value: "Laki-laki",
+                                            label: "Laki-laki",
+                                        },
+                                        {
+                                            value: "Perempuan",
+                                            label: "Perempuan",
+                                        },
+                                    ]
+                                )}
+                                {renderInput(
+                                    "Umur",
+                                    "umur",
+                                    "number",
+                                    "Masukkan umur"
+                                )}
+                                {renderInput(
+                                    "NIK",
+                                    "nik",
+                                    "text",
+                                    "Masukkan NIK (16 digit)"
+                                )}
+                                {renderInput(
+                                    "Pendidikan Terakhir",
+                                    "pendidikan",
+                                    "text",
+                                    "Contoh: SMA, D3, S1"
+                                )}
+                                {renderInput(
+                                    "No HP",
+                                    "no_hp",
+                                    "tel",
+                                    "Masukkan nomor HP"
+                                )}
+                            </div>
+                        </div>
 
-                <form
-                    onSubmit={handleSubmit}
-                    className="grid grid-cols-2 gap-6 text-sm"
-                >
-                    {renderInput("Nama Lengkap", "nama_lengkap")}
-                    <div>
-                        <label className="block mb-1 capitalize">
-                            Jenis Kelamin
-                        </label>
-                        <select
-                            name="jenis_kelamin"
-                            value={form.jenis_kelamin}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                        >
-                            <option value="">-- Pilih Jenis Kelamin --</option>
-                            <option value="Laki-laki">Laki-laki</option>
-                            <option value="Perempuan">Perempuan</option>
-                        </select>
-                        {errors.jenis_kelamin && (
-                            <p className="text-red-500 text-xs mt-1">
-                                {errors.jenis_kelamin}
-                            </p>
-                        )}
-                    </div>
-                    {renderInput("Umur", "umur")}
-                    {renderInput("NIK", "nik")}
-                    {renderInput("Pendidikan", "pendidikan")}
-                    {renderInput("No HP", "no_hp")}
-                    {renderInput("Nama Usaha", "nama_usaha")}
-                    {renderInput("Legalitas Usaha", "legalitas_usaha")}
-                    {renderInput("Legalitas Produk", "legalitas_produk")}
-                    {renderInput("Alamat Usaha", "alamat_usaha")}
-                    {renderInput("Kabupaten/Kota", "kabupaten_kota")}
-                    {renderInput("Kecamatan", "kecamatan")}
-                    {renderInput(
-                        "Kenagarian/Kelurahan",
-                        "kenagarian_kelurahan"
-                    )}
-                    {renderInput("Tenaga Kerja", "tenaga_kerja")}
-                    {renderInput("Aset", "aset")}
-                    {renderInput("Omset", "omset")}
-                    {renderInput("Pendapatan Bersih", "pendapatan_bersih")}
-                    {renderInput("Pelatihan yang Diikuti", "pelatihan")}
-                    {renderInput("Tindak Lanjut", "tindak_lanjut")}
+                        {/* Section 2: Data Usaha */}
+                        <div className="bg-white rounded-lg shadow-sm p-6">
+                            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                Data Usaha
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {renderInput(
+                                    "Nama Usaha",
+                                    "nama_usaha",
+                                    "text",
+                                    "Masukkan nama usaha"
+                                )}
+                                {renderSelect(
+                                    "Legalitas Usaha",
+                                    "legalitas_usaha",
+                                    [
+                                        { value: "Ada NIB", label: "Ada NIB" },
+                                        {
+                                            value: "Tidak ada NIB",
+                                            label: "Tidak ada NIB",
+                                        },
+                                    ]
+                                )}
 
-                    {/* Dropdown Layanan */}
-                    <div>
-                        <label className="block mb-1">Pilih Layanan</label>
-                        <select
-                            name="id_layanan"
-                            value={form.id_layanan}
-                            onChange={handleChange}
-                            className="w-full border px-3 py-2 rounded"
-                        >
-                            <option value="">-- Pilih Layanan --</option>
-                            {layanan.map((l) => (
-                                <option key={l.id_layanan} value={l.id_layanan}>
-                                    {l.layanan}
-                                </option>
-                            ))}
-                        </select>
-                        {errors.id_layanan && (
-                            <p className="text-red-500 text-xs mt-1">
-                                {errors.id_layanan}
-                            </p>
-                        )}
-                    </div>
+                                {/* Legalitas Produk */}
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Legalitas Produk
+                                        <span className="text-red-500 ml-1">
+                                            *
+                                        </span>
+                                    </label>
+                                    <div className="border rounded-lg p-4 bg-gray-50">
+                                        <button
+                                            type="button"
+                                            className="flex items-center text-blue-600 hover:text-blue-800 font-medium mb-3 transition-colors"
+                                            onClick={() =>
+                                                setShowLegalitas(!showLegalitas)
+                                            }
+                                        >
+                                            <span className="mr-2">
+                                                {showLegalitas ? "📋" : "📄"}
+                                            </span>
+                                            {showLegalitas
+                                                ? "Sembunyikan Daftar"
+                                                : "Tampilkan Daftar Legalitas"}
+                                        </button>
 
-                    <div className="col-span-2 text-right">
-                        <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold text-sm px-4 py-2 rounded"
-                        >
-                            Update
-                        </button>
-                    </div>
-                </form>
+                                        {showLegalitas && (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3 max-h-64 overflow-y-auto">
+                                                {legalitas_produk?.map(
+                                                    (item) => (
+                                                        <label
+                                                            key={item.id_legpro}
+                                                            className="flex items-center p-3 border rounded-lg hover:bg-white cursor-pointer transition-colors"
+                                                        >
+                                                            <input
+                                                                type="checkbox"
+                                                                value={String(
+                                                                    item.id_legpro
+                                                                )}
+                                                                checked={form.legalitas_produk.includes(
+                                                                    String(
+                                                                        item.id_legpro
+                                                                    )
+                                                                )}
+                                                                onChange={
+                                                                    handleCheckboxChange
+                                                                }
+                                                                className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                            />
+                                                            <span className="text-sm text-gray-700">
+                                                                {item.singkatan}
+                                                            </span>
+                                                        </label>
+                                                    )
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {form.legalitas_produk.length > 0 && (
+                                            <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                                                <p className="text-sm text-blue-800 font-medium">
+                                                    Dipilih:{" "}
+                                                    {
+                                                        form.legalitas_produk
+                                                            .length
+                                                    }{" "}
+                                                    legalitas produk
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {errors.legalitas_produk && (
+                                        <p className="text-red-500 text-sm mt-1 flex items-center">
+                                            <span className="mr-1">⚠</span>
+                                            {errors.legalitas_produk}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Section 3: Lokasi Usaha */}
+                        <div className="bg-white rounded-lg shadow-sm p-6">
+                            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                Lokasi Usaha
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Alamat Usaha
+                                        <span className="text-red-500 ml-1">
+                                            *
+                                        </span>
+                                    </label>
+                                    <textarea
+                                        name="alamat_usaha"
+                                        value={form.alamat_usaha || ""}
+                                        onChange={handleChange}
+                                        rows={3}
+                                        placeholder="Masukkan alamat lengkap usaha"
+                                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                                            errors.alamat_usaha
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                    />
+                                    {errors.alamat_usaha && (
+                                        <p className="text-red-500 text-sm mt-1 flex items-center">
+                                            <span className="mr-1">⚠</span>
+                                            {errors.alamat_usaha}
+                                        </p>
+                                    )}
+                                </div>
+                                {renderInput(
+                                    "Kabupaten/Kota",
+                                    "kabupaten_kota",
+                                    "text",
+                                    "Masukkan kabupaten/kota"
+                                )}
+                                {renderInput(
+                                    "Kecamatan",
+                                    "kecamatan",
+                                    "text",
+                                    "Masukkan kecamatan"
+                                )}
+                                {renderInput(
+                                    "Kenagarian/Kelurahan",
+                                    "kenagarian_kelurahan",
+                                    "text",
+                                    "Masukkan kenagarian/kelurahan"
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Section 4: Data Finansial */}
+                        <div className="bg-white rounded-lg shadow-sm p-6">
+                            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                Data Finansial & Operasional
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {renderInput(
+                                    "Jumlah Tenaga Kerja",
+                                    "tenaga_kerja",
+                                    "number",
+                                    "Masukkan jumlah tenaga kerja"
+                                )}
+                                {renderInput(
+                                    "Aset (Rp)",
+                                    "aset",
+                                    "number",
+                                    "Masukkan nilai aset"
+                                )}
+                                {renderInput(
+                                    "Omset (Rp)",
+                                    "omset",
+                                    "number",
+                                    "Masukkan omset bulanan"
+                                )}
+                                {renderInput(
+                                    "Pendapatan Bersih (Rp)",
+                                    "pendapatan_bersih",
+                                    "number",
+                                    "Masukkan pendapatan bersih"
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Section 5: Layanan & Tindak Lanjut */}
+                        <div className="bg-white rounded-lg shadow-sm p-6">
+                            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                Layanan & Tindak Lanjut
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Pelatihan yang Diikuti
+                                    </label>
+                                    <textarea
+                                        name="pelatihan"
+                                        value={form.pelatihan || ""}
+                                        onChange={handleChange}
+                                        rows={3}
+                                        placeholder="Masukkan pelatihan yang pernah diikuti"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Tindak Lanjut
+                                    </label>
+                                    <textarea
+                                        name="tindak_lanjut"
+                                        value={form.tindak_lanjut || ""}
+                                        onChange={handleChange}
+                                        rows={3}
+                                        placeholder="Masukkan rencana tindak lanjut"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Pilih Layanan
+                                        <span className="text-red-500 ml-1">
+                                            *
+                                        </span>
+                                    </label>
+                                    <select
+                                        name="id_layanan"
+                                        value={form.id_layanan}
+                                        onChange={handleChange}
+                                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                                            errors.id_layanan
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                    >
+                                        <option value="">
+                                            -- Pilih Layanan --
+                                        </option>
+                                        {layanan.map((l) => (
+                                            <option
+                                                key={l.id_layanan}
+                                                value={l.id_layanan}
+                                            >
+                                                {l.layanan}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors.id_layanan && (
+                                        <p className="text-red-500 text-sm mt-1 flex items-center">
+                                            <span className="mr-1">⚠</span>
+                                            {errors.id_layanan}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="bg-white rounded-lg shadow-sm p-6">
+                            <div className="flex justify-center space-x-4">
+                                <button
+                                    type="submit"
+                                    className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center"
+                                >
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </Layout>
     );

@@ -18,4 +18,9 @@ class LegalitasProduk extends Model
         'deskripsi',
         'status',
     ];
+
+    public function pelayanan_umkm()
+    {
+        return $this->belongsToMany(PelayananUmkm::class, 'pelayanan_legpro', 'id_legpro', 'id_pelayanan');
+    }
 }
