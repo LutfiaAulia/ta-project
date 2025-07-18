@@ -84,6 +84,7 @@ export default function Welcome() {
         nagariTerliput,
         jumlahInstansi,
         jumlahUmkm,
+        dokumentasiTerbaru,
     } = usePage().props as unknown as {
         layanan: Record<string, LayananItem[]>;
         jadwalTerdekat: Jadwal[];
@@ -91,6 +92,7 @@ export default function Welcome() {
         nagariTerliput: number;
         jumlahInstansi: number;
         jumlahUmkm: number;
+        dokumentasiTerbaru: any;
     };
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -357,6 +359,34 @@ export default function Welcome() {
                                 />
                             </div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Dokumentasi Terbaru Slider */}
+            <section className="bg-white py-8 border-t border-gray-200">
+                <div className="overflow-hidden whitespace-nowrap relative">
+                    <div className="animate-scroll flex items-center space-x-6">
+                        {dokumentasiTerbaru.map((item: any) => {
+                            const imgSrc = item.path_file.startsWith(
+                                "/storage/"
+                            )
+                                ? item.path_file
+                                : `/storage/${item.path_file}`;
+
+                            return (
+                                <div
+                                    key={item.id_dokumentasi}
+                                    className="inline-block min-w-[200px] max-w-[240px]"
+                                >
+                                    <img
+                                        src={imgSrc}
+                                        alt="Dokumentasi terbaru"
+                                        className="rounded-lg h-40 w-full object-cover shadow"
+                                    />
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </section>

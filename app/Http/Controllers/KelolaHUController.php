@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\BidangLayanan;
 use App\Models\Booking;
+use App\Models\Dokumentasi;
 use App\Models\Instansi;
-use App\Models\Layanan;
 use App\Models\PelayananUmkm;
 use App\Models\Umkm;
 use Carbon\Carbon;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -64,6 +63,11 @@ class KelolaHUController extends Controller
 
         $jumlahUmkm = Umkm::count();
 
+        $dokumentasiTerbaru = Dokumentasi::orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get(['id_dokumentasi', 'path_file', 'created_at']);
+
+
         return Inertia::render('Welcome', [
             'jadwalTerdekat' => $jadwalTerdekat,
             'layanan' => $layananGrouped,
@@ -71,6 +75,7 @@ class KelolaHUController extends Controller
             'nagariTerliput' => $nagariTerliput,
             'jumlahInstansi' => $jumlahInstansi,
             'jumlahUmkm' => $jumlahUmkm,
+            'dokumentasiTerbaru' => $dokumentasiTerbaru,
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'laravelVersion' => Application::VERSION,
