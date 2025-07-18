@@ -13,10 +13,12 @@ import {
     CheckCircle,
 } from "lucide-react";
 
-interface Layanan {
+interface LayananItem {
+    id_layanan: number;
     layanan: string;
+    bidang: string;
+    deskripsi_layanan: string;
 }
-
 interface Jadwal {
     layanan: { layanan: string };
     tanggal_mulai: string;
@@ -27,7 +29,7 @@ interface Jadwal {
 }
 
 interface PageProps {
-    layanan: Layanan[];
+    layanan: Record<string, LayananItem[]>;
     jadwalTerdekat: Jadwal[];
 }
 
@@ -76,7 +78,7 @@ export default function Welcome() {
     }
 
     const { layanan, jadwalTerdekat } = usePage().props as unknown as {
-        layanan: Layanan[];
+        layanan: Record<string, LayananItem[]>;
         jadwalTerdekat: Jadwal[];
     };
 
@@ -133,28 +135,6 @@ export default function Welcome() {
                             </div>
                         </div>
 
-                        {/* Desktop Navigation */}
-                        <nav className="hidden md:flex space-x-8">
-                            <a
-                                href="#"
-                                className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-                            >
-                                Beranda
-                            </a>
-                            <a
-                                href="#"
-                                className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-                            >
-                                Tentang Program
-                            </a>
-                            <a
-                                href="#"
-                                className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-                            >
-                                Bantuan & Kontak
-                            </a>
-                        </nav>
-
                         {/* Mobile menu button */}
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -167,32 +147,6 @@ export default function Welcome() {
                             )}
                         </button>
                     </div>
-
-                    {/* Mobile Navigation */}
-                    {isMenuOpen && (
-                        <div className="md:hidden py-4 border-t">
-                            <div className="flex flex-col space-y-3">
-                                <a
-                                    href="#"
-                                    className="text-gray-700 hover:text-green-600 font-medium py-2"
-                                >
-                                    Beranda
-                                </a>
-                                <a
-                                    href="#"
-                                    className="text-gray-700 hover:text-green-600 font-medium py-2"
-                                >
-                                    Tentang Program
-                                </a>
-                                <a
-                                    href="#"
-                                    className="text-gray-700 hover:text-green-600 font-medium py-2"
-                                >
-                                    Bantuan & Kontak
-                                </a>
-                            </div>
-                        </div>
-                    )}
                 </div>
             </header>
 
@@ -270,24 +224,40 @@ export default function Welcome() {
                             pertumbuhan dan legalitas usaha UMKM Anda
                         </p>
                     </div>
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {services.map((service, index) => (
-                            <div
-                                key={index}
-                                className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-2 group"
-                            >
-                                <div className="text-green-600 mb-4 group-hover:scale-110 transition-transform">
-                                    {service.icon}
-                                </div>
-                                <h4 className="text-xl font-semibold text-gray-900 mb-3">
-                                    {service.title}
-                                </h4>
-                                <p className="text-gray-600 leading-relaxed">
-                                    {service.description}
+                    {Object.entries(layanan).length === 0 && (
+                        <p className="text-center text-gray-500">
+                            Tidak ada layanan saat ini.
+                        </p>
+                    )}
+                    {Object.entries(layanan).map(([bidang, daftarLayanan]) => (
+                        <div key={bidang} className="mb-12">
+                            <h4 className="text-2xl font-bold mb-6">
+                                {bidang}
+                            </h4>
+
+                            {daftarLayanan.length === 0 ? (
+                                <p className="text-gray-500 italic">
+                                    Tidak ada layanan.
                                 </p>
-                            </div>
-                        ))}
-                    </div>
+                            ) : (
+                                <div className="grid md:grid-cols-3 gap-6">
+                                    {daftarLayanan.map((item) => (
+                                        <div
+                                            key={item.id_layanan}
+                                            className="bg-white rounded-xl p-6 shadow hover:shadow-lg transition transform hover:-translate-y-1"
+                                        >
+                                            <h5 className="text-xl font-semibold mb-2">
+                                                {item.layanan}
+                                            </h5>
+                                            <p className="text-gray-600 text-sm">
+                                                {item.deskripsi_layanan}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
             </section>
 
@@ -386,21 +356,24 @@ export default function Welcome() {
                         <div>
                             <h5 className="font-semibold mb-4">Layanan</h5>
                             <ul className="space-y-2 text-gray-400">
-                                {layanan.length === 0 && (
+                                {Object.values(layanan).flat().length === 0 && (
                                     <li className="text-gray-500 italic">
                                         Tidak ada layanan.
                                     </li>
                                 )}
-                                {layanan.map((item, index) => (
-                                    <li key={index}>
-                                        <a
-                                            href="#"
-                                            className="hover:text-white transition-colors"
-                                        >
-                                            {item.layanan}
-                                        </a>
-                                    </li>
-                                ))}
+
+                                {Object.values(layanan)
+                                    .flat()
+                                    .map((item, index) => (
+                                        <li key={index}>
+                                            <a
+                                                href="#"
+                                                className="hover:text-white transition-colors"
+                                            >
+                                                {item.layanan}
+                                            </a>
+                                        </li>
+                                    ))}
                             </ul>
                         </div>
                         <div>
@@ -409,7 +382,8 @@ export default function Welcome() {
                                 <div className="flex items-start">
                                     <MapPin className="w-5 h-5 mr-2" />
                                     <span className="text-sm">
-                                        Jl.Khatib Sulaiman No.11, Padang, Sumatera Barat
+                                        Jl.Khatib Sulaiman No.11, Padang,
+                                        Sumatera Barat
                                     </span>
                                 </div>
                                 <div className="flex items-center">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BidangLayanan;
 use App\Models\Booking;
 use App\Models\Layanan;
 use Carbon\Carbon;
@@ -30,11 +31,26 @@ class KelolaHUController extends Controller
                 ];
             });
 
-        $layananList = Layanan::all(['id_layanan', 'layanan']);
+        $layananGrouped = BidangLayanan::where('status', 'aktif')
+            ->with(['layanan' => function ($query) {
+                $query->select('id_layanan', 'layanan', 'id_bidang', 'deskripsi_layanan', 'status')
+                    ->where('status', 'aktif');
+            }])->get()->mapWithKeys(function ($bidang) {
+                return [
+                    $bidang->nama_bidang => $bidang->layanan->map(function ($item) use ($bidang) {
+                        return [
+                            'id_layanan' => $item->id_layanan,
+                            'layanan' => $item->layanan,
+                            'deskripsi_layanan' => $item->deskripsi_layanan,
+                            'bidang' => $bidang->nama_bidang,
+                        ];
+                    }),
+                ];
+            });
 
         return Inertia::render('Welcome', [
             'jadwalTerdekat' => $jadwalTerdekat,
-            'layanan' => $layananList,
+            'layanan' => $layananGrouped,
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'laravelVersion' => Application::VERSION,
