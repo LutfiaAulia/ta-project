@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\BidangLayanan;
 use App\Models\Booking;
+use App\Models\Instansi;
 use App\Models\Layanan;
+use App\Models\PelayananUmkm;
+use App\Models\Umkm;
 use Carbon\Carbon;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
@@ -48,9 +51,26 @@ class KelolaHUController extends Controller
                 ];
             });
 
+        $umkmTerlayani = PelayananUmkm::whereNotNull('nik')
+            ->distinct('nik')
+            ->count('nik');
+
+        $nagariTerliput = Booking::whereNotNull('kenagarian_kelurahan')
+            ->where('status_booking', '!=', 'Ditolak')
+            ->distinct('kenagarian_kelurahan')
+            ->count('kenagarian_kelurahan');
+
+        $jumlahInstansi = Instansi::count();
+
+        $jumlahUmkm = Umkm::count();
+
         return Inertia::render('Welcome', [
             'jadwalTerdekat' => $jadwalTerdekat,
             'layanan' => $layananGrouped,
+            'umkmTerlayani' => $umkmTerlayani,
+            'nagariTerliput' => $nagariTerliput,
+            'jumlahInstansi' => $jumlahInstansi,
+            'jumlahUmkm' => $jumlahUmkm,
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'laravelVersion' => Application::VERSION,

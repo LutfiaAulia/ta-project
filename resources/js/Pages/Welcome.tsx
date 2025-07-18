@@ -77,9 +77,20 @@ export default function Welcome() {
         })}`;
     }
 
-    const { layanan, jadwalTerdekat } = usePage().props as unknown as {
+    const {
+        layanan,
+        jadwalTerdekat,
+        umkmTerlayani,
+        nagariTerliput,
+        jumlahInstansi,
+        jumlahUmkm,
+    } = usePage().props as unknown as {
         layanan: Record<string, LayananItem[]>;
         jadwalTerdekat: Jadwal[];
+        umkmTerlayani: number;
+        nagariTerliput: number;
+        jumlahInstansi: number;
+        jumlahUmkm: number;
     };
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -108,6 +119,13 @@ export default function Welcome() {
             description:
                 "Fasilitasi pengurusan sertifikat halal untuk produk UMKM",
         },
+    ];
+
+    const stats = [
+        { number: `${umkmTerlayani}`, label: "UMKM Terlayani" },
+        { number: `${nagariTerliput}`, label: "Nagari Terjangkau" },
+        { number: `${jumlahInstansi}`, label: "Instansi Terdaftar" },
+        { number: `${jumlahUmkm}`, label: "UMKM Promosi" },
     ];
 
     return (
@@ -208,6 +226,24 @@ export default function Welcome() {
                                 />
                             </div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Stats Section */}
+            <section className="py-16 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        {stats.map((stat, index) => (
+                            <div key={index} className="text-center">
+                                <div className="text-3xl md:text-4xl font-bold text-green-600 mb-2">
+                                    {stat.number}
+                                </div>
+                                <div className="text-gray-600 font-medium">
+                                    {stat.label}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
