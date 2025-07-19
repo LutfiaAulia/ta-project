@@ -23,4 +23,9 @@ class LegalitasProduk extends Model
     {
         return $this->belongsToMany(PelayananUmkm::class, 'pelayanan_legpro', 'id_legpro', 'id_pelayanan');
     }
+
+    public function promosi()
+    {
+        return $this->belongsToMany(Promosi::class, 'produk_legpro', 'id_legpro', 'id_promosi');
+    }
 }

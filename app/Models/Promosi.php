@@ -30,4 +30,9 @@ class Promosi extends Model
     {
         return $this->belongsTo(Umkm::class, 'id_umkm');
     }
+
+    public function legalitasProduk()
+    {
+        return $this->belongsToMany(LegalitasProduk::class, 'produk_legpro', 'id_promosi', 'id_legpro');
+    }
 }
