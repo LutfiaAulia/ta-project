@@ -3,22 +3,30 @@ import LayoutUmkm from "@/Components/LayoutUmkm";
 import LayoutPegawai from "@/Components/Layout";
 import { router, usePage } from "@inertiajs/react";
 
+type LegalitasProduk = {
+    id_legpro: number;
+    singkatan: string;
+};
+
 interface Produk {
     id_promosi: number;
     nama_produk: string;
     kategori_produk: string;
     sub_kategori: string;
     harga_produk: string;
+    legalitas_produk: string[];
     deskripsi_produk: string;
     foto_produk?: string;
 }
 
 interface Props {
+    legalitas_produk: LegalitasProduk[];
     userType: "umkm" | "pegawai";
 }
 
-const EditProduk: React.FC<Props> = ({ userType }) => {
+const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
     const { props } = usePage();
+    const errors = props.errors || {};
     const produk = props.produk as Produk;
     const id_umkm = props.id_umkm as number | undefined;
 
@@ -29,8 +37,12 @@ const EditProduk: React.FC<Props> = ({ userType }) => {
         harga_produk: produk.harga_produk,
         deskripsi_produk: produk.deskripsi_produk,
         foto_produk: null as File | null,
+        legalitas_produk: Array.isArray(produk.legalitas_produk)
+            ? produk.legalitas_produk.map(String)
+            : [],
     });
 
+    const [showLegalitas, setShowLegalitas] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(
         produk.foto_produk ? `/storage/${produk.foto_produk}` : null
     );
@@ -54,6 +66,16 @@ const EditProduk: React.FC<Props> = ({ userType }) => {
         }
     };
 
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = e.target;
+        setForm((prev) => {
+            const updated = checked
+                ? [...prev.legalitas_produk, value]
+                : prev.legalitas_produk.filter((v) => v !== value);
+            return { ...prev, legalitas_produk: updated };
+        });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const data = new FormData();
@@ -68,6 +90,11 @@ const EditProduk: React.FC<Props> = ({ userType }) => {
         if (id_umkm) {
             data.append("id_umkm", id_umkm.toString());
         }
+
+        form.legalitas_produk.forEach((val) => {
+            data.append("legalitas_produk[]", val);
+        });
+
         data.append("_method", "PUT");
 
         const route =
@@ -179,6 +206,67 @@ const EditProduk: React.FC<Props> = ({ userType }) => {
                         {form.foto_produk && (
                             <p className="mt-2 text-sm text-gray-600">
                                 {form.foto_produk.name}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Legalitas Produk */}
+                    <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Legalitas Produk
+                            <span className="text-red-500 ml-1">*</span>
+                        </label>
+                        <div className="border rounded-lg p-4 bg-gray-50">
+                            <button
+                                type="button"
+                                className="flex items-center text-blue-600 hover:text-blue-800 font-medium mb-3 transition-colors"
+                                onClick={() => setShowLegalitas(!showLegalitas)}
+                            >
+                                <span className="mr-2">
+                                    {showLegalitas ? "📋" : "📄"}
+                                </span>
+                                {showLegalitas
+                                    ? "Sembunyikan Daftar"
+                                    : "Tampilkan Daftar Legalitas"}
+                            </button>
+
+                            {showLegalitas && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3 max-h-64 overflow-y-auto">
+                                    {legalitas_produk?.map((item) => (
+                                        <label
+                                            key={item.id_legpro}
+                                            className="flex items-center p-3 border rounded-lg hover:bg-white cursor-pointer transition-colors"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                value={String(item.id_legpro)}
+                                                checked={form.legalitas_produk.includes(
+                                                    String(item.id_legpro)
+                                                )}
+                                                onChange={handleCheckboxChange}
+                                                className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                            />
+                                            <span className="text-sm text-gray-700">
+                                                {item.singkatan}
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+                            )}
+
+                            {form.legalitas_produk.length > 0 && (
+                                <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                                    <p className="text-sm text-blue-800 font-medium">
+                                        Dipilih: {form.legalitas_produk.length}{" "}
+                                        legalitas produk
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                        {errors.legalitas_produk && (
+                            <p className="text-red-500 text-sm mt-1 flex items-center">
+                                <span className="mr-1">⚠</span>
+                                {errors.legalitas_produk}
                             </p>
                         )}
                     </div>

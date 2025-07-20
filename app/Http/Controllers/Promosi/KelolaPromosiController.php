@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Promosi;
 
 use App\Http\Controllers\Controller;
+use App\Models\LegalitasProduk;
 use App\Models\Promosi;
 use App\Models\Umkm;
 use Illuminate\Http\Request;
@@ -29,7 +30,11 @@ class KelolaPromosiController extends Controller
 
     public function create()
     {
-        return Inertia::render('Umkm/TambahProduk');
+        $legpro = LegalitasProduk::where('status', 'aktif')->get();
+
+        return Inertia::render('Umkm/TambahProduk', [
+            'legpro' => $legpro,
+        ]);
     }
 
     public function store(Request $request)
@@ -41,6 +46,8 @@ class KelolaPromosiController extends Controller
             'harga_produk' => 'required|numeric',
             'deskripsi_produk' => 'required|string',
             'foto_produk' => 'nullable|image|max:2048',
+            'legalitas_produk' => 'nullable|array',
+            'legalitas_produk.*' => 'exists:legalitas_produk,id_legpro',
         ]);
 
         $fotoPath = null;
@@ -53,7 +60,7 @@ class KelolaPromosiController extends Controller
             ? $user->umkm->id
             : null;
 
-        Promosi::create([
+        $promosi = Promosi::create([
             'nama_produk' => $request->nama_produk,
             'kategori_produk' => $request->kategori_produk,
             'sub_kategori' => $request->sub_kategori,
@@ -64,15 +71,26 @@ class KelolaPromosiController extends Controller
             'user_type' => $user->user_type,
         ]);
 
+        if ($request->filled('legalitas_produk')) {
+            $promosi->legalitasProduk()->sync($request->legalitas_produk);
+        }
+
         return redirect()->route('umkm.produk')->with('success', 'Produk berhasil ditambahkan');
     }
 
     public function edit($id)
     {
-        $produk = Promosi::findOrFail($id);
+        $produk = Promosi::with('legalitasProduk')->findOrFail($id);
+        $legpro = LegalitasProduk::select('id_legpro', 'singkatan')->where('status', 'aktif')->get();
+
+        $legalitasIds = $produk->legalitasProduk->pluck('id_legpro')->map(fn($id) => (string)$id)->toArray();
+        $produkData = $produk->toArray();
+        $produkData['legalitas_produk'] = $legalitasIds;
+
         return inertia('Umkm/EditProduk', [
-            'produk' => $produk,
+            'produk' => $produkData,
             'userType' => 'umkm',
+            'legalitas_produk' => $legpro,
         ]);
     }
 
@@ -85,6 +103,8 @@ class KelolaPromosiController extends Controller
             'kategori_produk' => 'required|string|max:255',
             'sub_kategori' => 'required|string|max:255',
             'harga_produk' => 'required|numeric',
+            'legalitas_produk' => 'required|array',
+            'legalitas_produk.*' => 'exists:legalitas_produk,id_legpro',
             'deskripsi_produk' => 'required|string',
             'foto_produk' => 'nullable|image|max:2048',
         ]);
@@ -96,6 +116,10 @@ class KelolaPromosiController extends Controller
 
             $path = $request->file('foto_produk')->store('produk', 'public');
             $validated['foto_produk'] = $path;
+        }
+
+        if ($request->filled('legalitas_produk')) {
+            $produk->legalitasProduk()->sync($request->legalitas_produk);
         }
 
         $produk->update($validated);

@@ -120,7 +120,7 @@ class KelolaPelayananUmkmController extends Controller
         ]);
 
         $umkm = PelayananUmkm::create($request->except('legalitas_produk'));
-        $umkm->legalitas_produk()->sync($request->legalitas_produk);
+        $umkm->legalitasProduk()->sync($request->legalitas_produk);
 
         return redirect()->route('umkmlayan.list', ['id' => $request->id_booking])->with('success', 'Data UMKM berhasil disimpan.');
     }
