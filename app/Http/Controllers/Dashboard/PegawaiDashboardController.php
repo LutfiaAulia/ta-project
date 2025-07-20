@@ -426,6 +426,9 @@ class PegawaiDashboardController extends Controller
             ->whereYear('tanggal_mulai', $year)
             ->count();
 
+        $totalProdukDiajukan = Promosi::where('status', 'diajukan')->count();
+        $totalProdukDiterima = Promosi::where('status', 'diterima')->count();
+        $totalProdukDitolak = Promosi::where('status', 'ditolak')->count();
 
         $totalUMKM = PelayananUmkm::count();
         $totalProduk = Promosi::count();
@@ -532,6 +535,9 @@ class PegawaiDashboardController extends Controller
                 'totalMobil' => $totalMobil,
                 'totalSopir' => $totalSopir,
                 'totalLayanan' => $totalLayanan,
+                'totalProdukDiajukan' => $totalProdukDiajukan,
+                'totalProdukDiterima' => $totalProdukDiterima,
+                'totalProdukDitolak' => $totalProdukDitolak,
             ],
             'bookingStatus' => [
                 ['name' => 'Selesai',   'value' => $totalBookingSelesai,  'color' => '#16a34a'],

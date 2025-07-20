@@ -16,12 +16,13 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import {
+    AlertTriangle,
     ClipboardList,
     Building2,
-    Layers3,
+    CheckCircle,
     PackageSearch,
-    Users,
-    Car,
+    XCircle,
+    FilePlus,
     TrendingUp,
 } from "lucide-react";
 interface PageProps {
@@ -32,6 +33,9 @@ interface PageProps {
         totalBookingDiterima: number;
         totalBookingDitolak: number;
         totalBookingSelesai: number;
+        totalProdukDiajukan: number;
+        totalProdukDiterima: number;
+        totalProdukDitolak: number;
         totalUMKM: number;
         totalProduk: number;
         totalMobil: number;
@@ -138,21 +142,45 @@ export default function DashboardAdmin({
                     {/* Secondary Stats */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <StatCard
-                            title="Layanan Aktif"
-                            value={statistik.totalLayanan}
-                            icon={<Layers3 className="text-blue-500" />}
+                            title="Produk Diajukan"
+                            value={statistik.totalProdukDiajukan}
+                            icon={<FilePlus className="text-blue-500" />}
                         />
                         <StatCard
-                            title="Sopir Tersedia"
-                            value={statistik.totalSopir}
-                            icon={<Users className="text-green-500" />}
+                            title="Produk Diterima"
+                            value={statistik.totalProdukDiterima}
+                            icon={<CheckCircle className="text-green-500" />}
                         />
                         <StatCard
-                            title="Armada Aktif"
-                            value={statistik.totalMobil}
-                            icon={<Car className="text-red-500" />}
+                            title="Produk Ditolak"
+                            value={statistik.totalProdukDitolak}
+                            icon={<XCircle className="text-red-500" />}
                         />
                     </div>
+
+                    {/* Notifikasi */}
+                    {statistik.totalProdukDiajukan > 0 && (
+                        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 p-6 rounded-2xl shadow-md mb-6">
+                            <div className="flex items-center space-x-3">
+                                <div className="p-2 bg-yellow-100 rounded-full">
+                                    <AlertTriangle className="w-6 h-6 text-yellow-600" />
+                                </div>
+                                <div>
+                                    <h3 className="text-yellow-800 font-bold text-lg">
+                                        Perhatian!
+                                    </h3>
+                                    <p className="text-yellow-700">
+                                        Ada{" "}
+                                        <span className="font-bold">
+                                            {statistik.totalProdukDiajukan}
+                                        </span>{" "}
+                                        produk UMKM yang perlu diverifikasi
+                                        segera.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Charts Row 1 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
