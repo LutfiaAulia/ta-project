@@ -15,7 +15,7 @@ class KelolaShowPromosiController extends Controller
         $search = $request->query('search');
         $kategori = $request->query('kategori');
 
-        $query = IdentitasUmkm::with(['kategori_umkm', 'sosial_media', 'umkm.promosi']);
+        $query = IdentitasUmkm::with(['kategori_umkm', 'sosial_media', 'umkm.promosi.legalitasProduk']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -64,6 +64,10 @@ class KelolaShowPromosiController extends Controller
                         'harga_produk' => $p->harga_produk,
                         'foto_produk' => $p->foto_produk,
                         'deskripsi_produk' => $p->deskripsi_produk,
+                        'legalitas_produk' => $p->legalitasProduk->map(fn($l) => [
+                            'id_legpro' => $l->id_legpro,
+                            'singkatan' => $l->singkatan,
+                        ]),
                     ];
                 }) ?? [],
             ];

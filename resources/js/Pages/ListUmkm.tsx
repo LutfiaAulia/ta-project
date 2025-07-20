@@ -11,12 +11,18 @@ import {
     Facebook,
 } from "lucide-react";
 
+type Legalitas = {
+    id_legpro: number;
+    singkatan: string;
+};
+
 type Product = {
     id: number;
     nama_produk: string;
     harga_produk: string;
     foto_produk: string;
     deskripsi_produk: string;
+    legalitas_produk?: Legalitas[];
 };
 
 type UMKM = {
@@ -279,7 +285,7 @@ const ListUmkm: React.FC = () => {
                                             <p className="text-gray-600 text-sm mb-3">
                                                 {product.deskripsi_produk}
                                             </p>
-                                            <div className="flex items-center justify-between">
+                                            <div className="flex flex-col gap-2">
                                                 <span className="text-2xl font-bold text-blue-600">
                                                     {new Intl.NumberFormat(
                                                         "id-ID",
@@ -293,6 +299,27 @@ const ListUmkm: React.FC = () => {
                                                         )
                                                     )}
                                                 </span>
+
+                                                {/* Tag legalitas produk */}
+                                                <div className="flex flex-wrap gap-2 mt-2">
+                                                    {product.legalitas_produk?.map(
+                                                        (legalitas: {
+                                                            id_legpro: number;
+                                                            singkatan: string;
+                                                        }) => (
+                                                            <span
+                                                                key={
+                                                                    legalitas.id_legpro
+                                                                }
+                                                                className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full"
+                                                            >
+                                                                {
+                                                                    legalitas.singkatan
+                                                                }
+                                                            </span>
+                                                        )
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
