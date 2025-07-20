@@ -9,6 +9,7 @@ use App\Models\Umkm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class KelolaPromosiController extends Controller
@@ -18,7 +19,7 @@ class KelolaPromosiController extends Controller
         $user = Auth::user();
         $id_umkm = $user->umkm->id ?? null;
 
-        $promosi = Promosi::select('id_promosi', 'nama_produk', 'deskripsi_produk', 'harga_produk')
+        $promosi = Promosi::select('id_promosi', 'nama_produk', 'deskripsi_produk', 'harga_produk', 'status')
             ->where('id_umkm', $id_umkm)
             ->get();
 
@@ -122,6 +123,7 @@ class KelolaPromosiController extends Controller
             $produk->legalitasProduk()->sync($request->legalitas_produk);
         }
 
+        $validated['status'] = 'diajukan';
         $produk->update($validated);
 
         return redirect()->route('umkm.produk')->with('success', 'Produk berhasil diperbarui.');
@@ -168,7 +170,7 @@ class KelolaPromosiController extends Controller
             ->get();
 
         if ($id_umkm) {
-            $promosi = Promosi::select('id_promosi', 'nama_produk', 'deskripsi_produk', 'harga_produk')
+            $promosi = Promosi::select('id_promosi', 'nama_produk', 'deskripsi_produk', 'harga_produk', 'status')
                 ->where('id_umkm', $id_umkm)
                 ->get();
         }
@@ -239,5 +241,31 @@ class KelolaPromosiController extends Controller
         $produk->delete();
 
         return redirect()->route('pegawai.show.promosi', ['id_umkm' => $id_umkm])->with('success', 'Produk berhasil dihapus.');
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => ['required', Rule::in(['diajukan', 'diterima', 'ditolak'])],
+            'alasan_penolakan' => [
+                Rule::requiredIf($request->status === 'ditolak'),
+                'nullable',
+                'string',
+                'max:255'
+            ],
+        ]);
+
+        $promosi = Promosi::findOrFail($id);
+        $promosi->status = $request->status;
+
+        if ($request->status === 'ditolak') {
+            $promosi->alasan_penolakan = $request->alasan_penolakan;
+        }
+
+        $promosi->save();
+        $id_umkm = $promosi->id_umkm;
+
+        return redirect()->route('pegawai.show.promosi', ['id_umkm' => $id_umkm])
+            ->with('success', 'Status berhasil diperbarui.');
     }
 }

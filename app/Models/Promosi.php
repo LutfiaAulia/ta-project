@@ -19,6 +19,8 @@ class Promosi extends Model
         'harga_produk',
         'deskripsi_produk',
         'foto_produk',
+        'status',
+        'alasan_penolakan',
         'id_umkm',
         'user_type',
     ];

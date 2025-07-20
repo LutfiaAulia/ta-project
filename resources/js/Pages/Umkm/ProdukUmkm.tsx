@@ -8,6 +8,7 @@ interface Produk {
     nama_produk: string;
     deskripsi_produk: string;
     harga_produk: number;
+    status: string;
 }
 
 interface PageProps {
@@ -62,6 +63,9 @@ const ProdukUmkm: React.FC = () => {
                             <th className="border px-4 py-2 text-center w-[200px]">
                                 Harga
                             </th>
+                            <th className="border px-4 py-2 text-center w-[100px]">
+                                Status
+                            </th>
                             <th className="border px-4 py-2 text-center w-[200px]">
                                 Aksi
                             </th>
@@ -86,45 +90,78 @@ const ProdukUmkm: React.FC = () => {
                                             "id-ID"
                                         )}
                                     </td>
+                                    <td className="border px-4 py-2 text-center">
+                                        <span
+                                            className={`px-2 py-1 rounded text-xs font-semibold ${
+                                                produk.status === "diterima"
+                                                    ? "bg-green-100 text-green-700"
+                                                    : produk.status ===
+                                                      "diajukan"
+                                                    ? "bg-yellow-100 text-yellow-700"
+                                                    : "bg-red-100 text-red-700"
+                                            }`}
+                                        >
+                                            {produk.status
+                                                ? produk.status
+                                                      .charAt(0)
+                                                      .toUpperCase() +
+                                                  produk.status.slice(1)
+                                                : "Status tidak tersedia"}
+                                        </span>
+                                    </td>
+
                                     <td className="border px-4 py-2 text-center space-x-2">
                                         {(user_type === "umkm" ||
-                                            user_type === "pegawai") && (
-                                            <>
-                                                <button
-                                                    onClick={() =>
-                                                        router.visit(
-                                                            user_type === "umkm"
-                                                                ? `/umkm/edit/produk/${produk.id_promosi}`
-                                                                : `/pegawai/edit/produk/${produk.id_promosi}`
-                                                        )
+                                            user_type === "pegawai") &&
+                                            (produk.status === "diajukan" ? (
+                                                <Link
+                                                    href={
+                                                        user_type === "umkm"
+                                                            ? `/umkm/edit/produk/${produk.id_promosi}`
+                                                            : `/pegawai/edit/produk/${produk.id_promosi}`
                                                     }
-                                                    className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
+                                                    className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs"
                                                 >
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        if (
-                                                            confirm(
-                                                                "Yakin ingin menghapus produk ini?"
-                                                            )
-                                                        ) {
-                                                            const route =
+                                                    Detail
+                                                </Link>
+                                            ) : (
+                                                <>
+                                                    <button
+                                                        onClick={() =>
+                                                            router.visit(
                                                                 user_type ===
-                                                                "umkm"
-                                                                    ? `/umkm/destroy/produk/${produk.id_promosi}`
-                                                                    : `/pegawai/destroy/produk/${produk.id_promosi}`;
-                                                            router.delete(
-                                                                route
-                                                            );
+                                                                    "umkm"
+                                                                    ? `/umkm/edit/produk/${produk.id_promosi}`
+                                                                    : `/pegawai/edit/produk/${produk.id_promosi}`
+                                                            )
                                                         }
-                                                    }}
-                                                    className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
-                                                >
-                                                    Hapus
-                                                </button>
-                                            </>
-                                        )}
+                                                        className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            if (
+                                                                confirm(
+                                                                    "Yakin ingin menghapus produk ini?"
+                                                                )
+                                                            ) {
+                                                                const route =
+                                                                    user_type ===
+                                                                    "umkm"
+                                                                        ? `/umkm/destroy/produk/${produk.id_promosi}`
+                                                                        : `/pegawai/destroy/produk/${produk.id_promosi}`;
+                                                                router.delete(
+                                                                    route
+                                                                );
+                                                            }
+                                                        }}
+                                                        className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+                                                    >
+                                                        Hapus
+                                                    </button>
+                                                </>
+                                            ))}
                                     </td>
                                 </tr>
                             ))

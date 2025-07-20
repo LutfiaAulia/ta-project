@@ -13,10 +13,12 @@ interface Produk {
     nama_produk: string;
     kategori_produk: string;
     sub_kategori: string;
-    harga_produk: string;
+    harga_produk: number;
     legalitas_produk: string[];
     deskripsi_produk: string;
     foto_produk?: string;
+    status: string;
+    alasan_penolakan: string;
 }
 
 interface Props {
@@ -25,7 +27,7 @@ interface Props {
 }
 
 const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
-    const { props } = usePage();
+    const { props } = usePage() as any;
     const errors = props.errors || {};
     const produk = props.produk as Produk;
     const id_umkm = props.id_umkm as number | undefined;
@@ -47,14 +49,18 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
         produk.foto_produk ? `/storage/${produk.foto_produk}` : null
     );
 
+    const isDisabled = produk.status.toLowerCase() === "diajukan";
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
+        if (isDisabled) return;
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isDisabled) return;
         const file = e.target.files?.[0] || null;
         if (file) {
             setForm({ ...form, foto_produk: file });
@@ -67,6 +73,7 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
     };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isDisabled) return;
         const { value, checked } = e.target;
         setForm((prev) => {
             const updated = checked
@@ -78,11 +85,13 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (isDisabled) return;
+
         const data = new FormData();
         data.append("nama_produk", form.nama_produk);
         data.append("kategori_produk", form.kategori_produk);
         data.append("sub_kategori", form.sub_kategori);
-        data.append("harga_produk", form.harga_produk);
+        data.append("harga_produk", form.harga_produk.toString());
         data.append("deskripsi_produk", form.deskripsi_produk);
         if (form.foto_produk) {
             data.append("foto_produk", form.foto_produk);
@@ -90,10 +99,12 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
         if (id_umkm) {
             data.append("id_umkm", id_umkm.toString());
         }
-
         form.legalitas_produk.forEach((val) => {
             data.append("legalitas_produk[]", val);
         });
+        if (userType === "umkm") {
+            data.append("status", "diajukan");
+        }
 
         data.append("_method", "PUT");
 
@@ -105,6 +116,17 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
         router.post(route, data, {
             forceFormData: true,
         });
+    };
+
+    const [showModal, setShowModal] = useState(false);
+    const [alasan, setAlasan] = useState("");
+
+    const handleTolak = () => {
+        router.put(`/pegawai/produk/${produk.id_promosi}/status`, {
+            status: "ditolak",
+            alasan_penolakan: alasan,
+        });
+        setShowModal(false);
     };
 
     const Layout = userType === "umkm" ? LayoutUmkm : LayoutPegawai;
@@ -129,6 +151,7 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
                                 onChange={handleChange}
                                 className="w-full border rounded px-4 py-2"
                                 required
+                                disabled={isDisabled}
                             />
                         </div>
 
@@ -143,6 +166,7 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
                                 onChange={handleChange}
                                 className="w-full border rounded px-4 py-2"
                                 required
+                                disabled={isDisabled}
                             />
                         </div>
 
@@ -157,6 +181,7 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
                                 onChange={handleChange}
                                 className="w-full border rounded px-4 py-2"
                                 required
+                                disabled={isDisabled}
                             />
                         </div>
 
@@ -171,6 +196,7 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
                                 onChange={handleChange}
                                 className="w-full border rounded px-4 py-2"
                                 required
+                                disabled={isDisabled}
                             />
                         </div>
                     </div>
@@ -181,7 +207,9 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
                         </label>
                         <label
                             htmlFor="foto_produk"
-                            className="border-dashed border-2 border-green-400 w-48 h-48 flex items-center justify-center text-center rounded-md cursor-pointer bg-green-100 hover:bg-green-200 overflow-hidden"
+                            className={`border-dashed border-2 border-green-400 w-48 h-48 flex items-center justify-center text-center rounded-md cursor-pointer bg-green-100 hover:bg-green-200 overflow-hidden ${
+                                isDisabled ? "pointer-events-none" : ""
+                            }`}
                         >
                             {imagePreview ? (
                                 <img
@@ -201,13 +229,9 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
                                 accept="image/*"
                                 onChange={handleFileChange}
                                 className="hidden"
+                                disabled={isDisabled}
                             />
                         </label>
-                        {form.foto_produk && (
-                            <p className="mt-2 text-sm text-gray-600">
-                                {form.foto_produk.name}
-                            </p>
-                        )}
                     </div>
 
                     {/* Legalitas Produk */}
@@ -219,8 +243,16 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
                         <div className="border rounded-lg p-4 bg-gray-50">
                             <button
                                 type="button"
-                                className="flex items-center text-blue-600 hover:text-blue-800 font-medium mb-3 transition-colors"
-                                onClick={() => setShowLegalitas(!showLegalitas)}
+                                className={`flex items-center text-blue-600 hover:text-blue-800 font-medium mb-3 transition-colors ${
+                                    isDisabled
+                                        ? "pointer-events-none opacity-50"
+                                        : ""
+                                }`}
+                                onClick={() =>
+                                    !isDisabled &&
+                                    setShowLegalitas(!showLegalitas)
+                                }
+                                disabled={isDisabled}
                             >
                                 <span className="mr-2">
                                     {showLegalitas ? "📋" : "📄"}
@@ -245,6 +277,7 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
                                                 )}
                                                 onChange={handleCheckboxChange}
                                                 className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                disabled={isDisabled}
                                             />
                                             <span className="text-sm text-gray-700">
                                                 {item.singkatan}
@@ -259,6 +292,18 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
                                     <p className="text-sm text-blue-800 font-medium">
                                         Dipilih: {form.legalitas_produk.length}{" "}
                                         legalitas produk
+                                    </p>
+                                    <p className="text-sm text-blue-700 mt-1">
+                                        {form.legalitas_produk.length > 0
+                                            ? legalitas_produk
+                                                  .filter((item) =>
+                                                      form.legalitas_produk.includes(
+                                                          String(item.id_legpro)
+                                                      )
+                                                  )
+                                                  .map((item) => item.singkatan)
+                                                  .join(", ")
+                                            : "Belum ada legalitas dipilih"}
                                     </p>
                                 </div>
                             )}
@@ -282,19 +327,87 @@ const EditProduk: React.FC<Props> = ({ userType, legalitas_produk }) => {
                             rows={5}
                             className="w-full border rounded px-4 py-2"
                             required
+                            disabled={isDisabled}
                         />
+                        {(produk.status.toLowerCase() === "ditolak" ||
+                            (produk.status.toLowerCase() === "diajukan" &&
+                                props.produk.alasan_penolakan)) &&
+                            props.produk.alasan_penolakan && (
+                                <p className="mt-2 text-red-600 font-medium">
+                                    <strong>Alasan Penolakan:</strong>{" "}
+                                    {props.produk.alasan_penolakan}
+                                </p>
+                            )}
                     </div>
 
-                    <div className="col-span-2 flex justify-end">
-                        <button
-                            type="submit"
-                            className="bg-green-500 text-white font-semibold px-6 py-2 rounded hover:bg-green-600"
-                        >
-                            Simpan
-                        </button>
-                    </div>
+                    {/* Sembunyikan tombol simpan jika status "diajukan" */}
+                    {!isDisabled && (
+                        <div className="col-span-2 flex justify-end">
+                            <button
+                                type="submit"
+                                className="bg-green-500 text-white font-semibold px-6 py-2 rounded hover:bg-green-600"
+                            >
+                                Simpan
+                            </button>
+                        </div>
+                    )}
+
+                    {userType === "pegawai" && produk.status === "diajukan" && (
+                        <div className="col-span-2 flex justify-end gap-3">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    router.put(
+                                        `/pegawai/produk/${produk.id_promosi}/status`,
+                                        {
+                                            status: "diterima",
+                                        }
+                                    )
+                                }
+                                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                            >
+                                Verifikasi
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setShowModal(true)}
+                                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                            >
+                                Tolak
+                            </button>
+                        </div>
+                    )}
                 </form>
             </div>
+            {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+                    <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+                        <h2 className="text-lg font-semibold mb-4">
+                            Alasan Penolakan
+                        </h2>
+                        <textarea
+                            rows={4}
+                            className="w-full border rounded px-3 py-2 mb-4"
+                            value={alasan}
+                            onChange={(e) => setAlasan(e.target.value)}
+                        />
+                        <div className="flex justify-end gap-2">
+                            <button
+                                className="px-4 py-2 bg-gray-300 rounded"
+                                onClick={() => setShowModal(false)}
+                            >
+                                Batal
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                                onClick={handleTolak}
+                            >
+                                Kirim
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </Layout>
     );
 };
