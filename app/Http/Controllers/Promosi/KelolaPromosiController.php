@@ -144,21 +144,26 @@ class KelolaPromosiController extends Controller
 
     public function index()
     {
-        $umkm = Umkm::with(['user', 'identitas'])
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'nib' => $item->user->nib ?? '-',
-                    'nama_pemilik' => $item->user->nama ?? '-',
-                    'nama_usaha' => $item->identitas->nama_usaha ?? '-',
-                ];
-            });
+        $umkm = Umkm::with(['user', 'identitas'])->get();
+
+        $mappedUmkm = $umkm->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'nib' => $item->user->nib ?? '-',
+                'nama_pemilik' => $item->user->nama ?? '-',
+                'nama_usaha' => $item->identitas->nama_usaha ?? '-',
+                'kabupaten_kota' => $item->identitas->kabupaten_kota ?? '-',
+            ];
+        });
+        
+        $listKabupaten = $umkm->pluck('identitas.kabupaten_kota')->unique()->filter()->values();
 
         return Inertia::render('Pegawai/Promosi/ListUmkm', [
-            'daftar_umkm' => $umkm,
+            'daftar_umkm' => $mappedUmkm,
+            'list_kabupaten' => $listKabupaten,
         ]);
     }
+
 
     public function showPegawai(Request $request)
     {

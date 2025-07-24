@@ -7,31 +7,54 @@ interface Umkm {
     nib: string;
     nama_pemilik: string;
     nama_usaha: string;
+    kabupaten_kota: string;
 }
 
 const ListUmkm: React.FC = () => {
-    const { daftar_umkm = [] } = usePage().props as { daftar_umkm?: Umkm[] };
+    const { daftar_umkm = [], list_kabupaten = [] } = usePage().props as {
+        daftar_umkm?: Umkm[];
+        list_kabupaten?: string[];
+    };
 
     const [search, setSearch] = useState("");
+    const [selectedKabupaten, setSelectedKabupaten] = useState("");
 
-    const filteredUmkm = daftar_umkm.filter((umkm) =>
-        umkm.nib.toLowerCase().includes(search.toLowerCase())
-    );
+    const filteredUmkm = daftar_umkm.filter((umkm) => {
+        const matchSearch = umkm.nib
+            .toLowerCase()
+            .includes(search.toLowerCase());
+        const matchKabupaten = selectedKabupaten
+            ? umkm.kabupaten_kota === selectedKabupaten
+            : true;
+        return matchSearch && matchKabupaten;
+    });
 
     return (
         <Layout>
             <div className="max-w-6xl mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-6">Kelola Data Promosi</h1>
 
-                {/* Input search */}
-                <div className="mb-4">
+                <div className="mb-4 flex gap-4 items-center flex-wrap">
                     <input
                         type="text"
                         placeholder="Cari berdasarkan NIB..."
-                        className="border rounded px-3 py-2 w-45 sm:w-48 text-sm"
+                        className="border rounded px-3 py-2 text-sm w-64"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
+
+                    <select
+                        className="border rounded px-3 py-2 text-sm w-64"
+                        value={selectedKabupaten}
+                        onChange={(e) => setSelectedKabupaten(e.target.value)}
+                    >
+                        <option value="">Semua Kabupaten/Kota</option>
+                        {list_kabupaten.map((kota, idx) => (
+                            <option key={idx} value={kota}>
+                                {kota}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -44,6 +67,7 @@ const ListUmkm: React.FC = () => {
                                 <th className="border px-4 py-2">NIB</th>
                                 <th className="border px-4 py-2">Nama</th>
                                 <th className="border px-4 py-2">Usaha</th>
+                                <th className="border px-4 py-2">Kab/Kota</th>
                                 <th className="border px-4 py-2 text-center">
                                     Aksi
                                 </th>
@@ -64,6 +88,9 @@ const ListUmkm: React.FC = () => {
                                         </td>
                                         <td className="border px-4 py-2">
                                             {umkm.nama_usaha}
+                                        </td>
+                                        <td className="border px-4 py-2">
+                                            {umkm.kabupaten_kota}
                                         </td>
                                         <td className="border px-4 py-2 text-center">
                                             <Link
