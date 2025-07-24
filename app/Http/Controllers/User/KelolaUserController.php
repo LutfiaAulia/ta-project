@@ -59,8 +59,18 @@ class KelolaUserController extends Controller
             'user_type' => 'required|in:pegawai,umkm',
             'nama' => 'required|string|max:255',
             'nip' => 'nullable|string|max:18',
-            'nib' => 'nullable|string|max:16',
-            'nik' => 'nullable|string|max:16',
+            'nib' => [
+                Rule::requiredIf($request->user_type === 'umkm'),
+                'string',
+                'max:16',
+                Rule::unique('users', 'nib'),
+            ],
+            'nik' => [
+                Rule::requiredIf($request->user_type === 'umkm'),
+                'string',
+                'max:16',
+                Rule::unique('umkm', 'nik'),
+            ],
             'no_hp' => 'nullable|string|min:12|max:13',
             'jabatan' => 'nullable|string|max:100',
             'role' => $request->user_type === 'pegawai' ? 'required|string|in:Admin,Kepala Bidang,Pegawai Lapangan,Administrasi Umum,Kepala Dinas' : '',
@@ -136,13 +146,23 @@ class KelolaUserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = User::with(['pegawai','instansi', 'umkm'])->findOrFail($id);
+        $user = User::with(['pegawai', 'instansi', 'umkm'])->findOrFail($id);
 
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'nip' => 'nullable|string|max:18',
-            'nib' => 'nullable|string|max:13',
-            'nik' => 'nullable|string|max:16',
+            'nib' => [
+                Rule::requiredIf($user->user_type === 'umkm'),
+                'string',
+                'max:16',
+                Rule::unique('users', 'nib')->ignore($user->id),
+            ],
+            'nik' => [
+                Rule::requiredIf($user->user_type === 'umkm'),
+                'string',
+                'max:16',
+                Rule::unique('umkm', 'nik')->ignore(optional($user->umkm)->id ?? null, 'id'),
+            ],
             'no_hp' => 'nullable|string|min:12|max:13',
             'jabatan' => 'nullable|string|max:100',
             'role' => Rule::requiredIf($user->user_type === 'pegawai'),
