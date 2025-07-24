@@ -21,7 +21,7 @@ class UmkmDashboardController extends Controller
         $identitas = IdentitasUmkm::where('id_umkm', $umkm->id)->first();
 
         if (!$identitas) {
-            return redirect()->route('umkm.update-data')->with('error', 'Identitas UMKM belum diisi.');
+            return redirect('/umkm/data/umkm')->with('error', 'Identitas UMKM belum diisi.');
         }
 
         $produk = Promosi::where('id_umkm', $umkm->id)
