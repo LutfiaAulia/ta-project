@@ -189,4 +189,38 @@ class KelolaPelayananUmkmController extends Controller
         return redirect()->route('umkmlayan.list', ['id' => $id_booking])
             ->with('success', 'Data UMKM berhasil dihapus.');
     }
+
+    public function pdfUmkmPerBooking($id_booking)
+    {
+        $umkm = PelayananUmkm::with('layanan')
+            ->where('id_booking', $id_booking)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'nama_lengkap' => $item->nama_lengkap,
+                    'jenis_kelamin' => $item->jenis_kelamin,
+                    'umur' => $item->umur,
+                    'nik' => $item->nik,
+                    'pendidikan' => $item->pendidikan,
+                    'no_hp' => $item->no_hp,
+                    'nama_usaha' => $item->nama_usaha,
+                    'legalitas_usaha' => $item->legalitas_usaha,
+                    'alamat_usaha' => $item->alamat_usaha,
+                    'kabupaten_kota' => $item->kabupaten_kota,
+                    'kecamatan' => $item->kecamatan,
+                    'kenagarian_kelurahan' => $item->kenagarian_kelurahan,
+                    'tenaga_kerja' => $item->tenaga_kerja,
+                    'aset' => $item->aset,
+                    'omset' => $item->omset,
+                    'pendapatan_bersih' => $item->pendapatan_bersih,
+                    'pelatihan' => $item->pelatihan,
+                    'tindak_lanjut' => $item->tindak_lanjut,
+                    'layanan' => $item->layanan?->layanan ?? '-',
+                ];
+            });
+
+        return Inertia::render('Pegawai/PelayananUmkm/PdfUmkmPerBooking', [
+            'umkm' => $umkm,
+        ]);
+    }
 }

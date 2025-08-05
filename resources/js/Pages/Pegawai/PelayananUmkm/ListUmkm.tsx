@@ -67,14 +67,23 @@ const ListUmkm: React.FC<ListUmkmProps> = ({
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    {isInRange && (
+                    <div className="flex items-center space-x-2">
+                        {isInRange && (
+                            <Link
+                                href={`/pegawai/create/umkmlayan/${id_booking}`}
+                                className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
+                            >
+                                + Tambah
+                            </Link>
+                        )}
                         <Link
-                            href={`/pegawai/create/umkmlayan/${id_booking}`}
-                            className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded"
+                            href={`/pegawai/umkmlayan/pdf/${id_booking}`}
+                            className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded"
+                            target="_blank"
                         >
-                            + Tambah
+                            Generate PDF
                         </Link>
-                    )}
+                    </div>
                 </div>
 
                 <div className="overflow-x-auto">
