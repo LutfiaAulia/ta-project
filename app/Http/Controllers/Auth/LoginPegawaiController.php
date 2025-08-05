@@ -21,6 +21,17 @@ class LoginPegawaiController extends Controller
             'password' => ['required'],
         ]);
 
+        $userNonaktif = \App\Models\User::where('nip', $credentials['nip'])
+            ->where('user_type', 'pegawai')
+            ->where('status', 'nonaktif')
+            ->first();
+
+        if ($userNonaktif) {
+            return back()->withErrors([
+                'nip' => 'Akun Anda dinonaktifkan, silakan hubungi admin.'
+            ]);
+        }
+
         if (Auth::attempt([
             'nip' => $credentials['nip'],
             'password' => $credentials['password'],

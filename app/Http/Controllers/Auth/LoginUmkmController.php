@@ -14,11 +14,23 @@ class LoginUmkmController extends Controller
         return Inertia::render('Auth/LoginUmkm');
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $credentials = $request->validate([
             'nib' => ['required'],
             'password' => ['required'],
         ]);
+
+        $userNonaktif = \App\Models\User::where('nib', $credentials['nib'])
+            ->where('user_type', 'umkm')
+            ->where('status', 'nonaktif')
+            ->first();
+
+        if ($userNonaktif) {
+            return back()->withErrors([
+                'nib' => 'Akun Anda dinonaktifkan, silakan hubungi admin.'
+            ]);
+        }
 
         if (Auth::attempt([
             'nib' => $credentials['nib'],
@@ -36,7 +48,8 @@ class LoginUmkmController extends Controller
         ]);
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         Auth::logout();
 
         $request->session()->invalidate();
