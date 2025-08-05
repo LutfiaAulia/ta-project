@@ -83,17 +83,27 @@ const ListBookingTerlaksana: React.FC<PageProps<{ booking: any[] }>> = ({
                         placeholder="Cari acara..."
                         className="border border-gray-300 p-2 rounded text-sm w-64"
                     />
-                    <select
-                        value={itemsPerPage}
-                        onChange={(e) =>
-                            setItemsPerPage(Number(e.target.value))
-                        }
-                        className="border border-gray-300 p-2 rounded text-sm w-20"
-                    >
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={50}>50</option>
-                    </select>
+                    <div className="flex items-center space-x-2">
+                        <select
+                            value={itemsPerPage}
+                            onChange={(e) =>
+                                setItemsPerPage(Number(e.target.value))
+                            }
+                            className="border border-gray-300 p-2 rounded text-sm w-20"
+                        >
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                        </select>
+
+                        <Link
+                            href={`/pegawai/umkmlayan/pdfAll`}
+                            className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded"
+                            target="_blank"
+                        >
+                            Generate PDF
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="overflow-x-auto">

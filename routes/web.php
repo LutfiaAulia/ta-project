@@ -179,6 +179,7 @@ Route::prefix('pegawai')->group(function () {
         Route::put('/update/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'update'])->name('umkmlayan.update');
         Route::delete('/destroy/umkmlayan/{id}', [KelolaPelayananUmkmController::class, 'destroy'])->name('umkmlayan.destroy');
         Route::get('/umkmlayan/pdf/{id_booking}', [KelolaPelayananUmkmController::class, 'pdfUmkmPerBooking']);
+        Route::get('/umkmlayan/pdfAll', [KelolaPelayananUmkmController::class, 'pdfUmkmAll']);
 
         Route::get('/list/laporan', [KelolaLaporanController::class, 'show'])->name('laporan.list');
         Route::get('/create/laporan', [KelolaLaporanController::class, 'create'])->name('laporan.create');
