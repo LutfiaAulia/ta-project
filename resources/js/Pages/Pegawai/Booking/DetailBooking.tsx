@@ -186,7 +186,7 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                             {booking.no_hp}
                         </DetailItem>
 
-                        {booking.status_booking === "Diterima" &&
+                        {(booking.status_booking === "Diterima" || booking.status_booking === "Selesai") &&
                             booking.pegawailap &&
                             booking.pegawailap.length > 0 && (
                                 <DetailItem label="Pegawai Lapangan">
@@ -200,14 +200,14 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                                 </DetailItem>
                             )}
 
-                        {booking.status_booking === "Diterima" &&
+                        {(booking.status_booking === "Diterima" || booking.status_booking === "Selesai") &&
                             booking.sopir && (
                                 <DetailItem label="Sopir">
                                     {booking.sopir.nama}
                                 </DetailItem>
                             )}
 
-                        {booking.status_booking === "Diterima" &&
+                        {(booking.status_booking === "Diterima" || booking.status_booking === "Selesai") &&
                             booking.mobil && (
                                 <DetailItem label="Mobil">
                                     {booking.mobil.nama}
