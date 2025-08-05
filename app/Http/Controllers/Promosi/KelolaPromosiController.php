@@ -155,7 +155,7 @@ class KelolaPromosiController extends Controller
                 'kabupaten_kota' => $item->identitas->kabupaten_kota ?? '-',
             ];
         });
-        
+
         $listKabupaten = $umkm->pluck('identitas.kabupaten_kota')->unique()->filter()->values();
 
         return Inertia::render('Pegawai/Promosi/ListUmkm', [
@@ -192,11 +192,17 @@ class KelolaPromosiController extends Controller
     {
         $produk = Promosi::with('umkm')->findOrFail($id);
         $id_umkm = $produk->umkm ? $produk->umkm->id : null;
+        $legpro = LegalitasProduk::select('id_legpro', 'singkatan')->where('status', 'aktif')->get();
+
+        $legalitasIds = $produk->legalitasProduk->pluck('id_legpro')->map(fn($id) => (string)$id)->toArray();
+        $produkData = $produk->toArray();
+        $produkData['legalitas_produk'] = $legalitasIds;
 
         return inertia('Umkm/EditProduk', [
-            'produk' => $produk,
+            'produk' => $produkData,
             'userType' => 'pegawai',
             'id_umkm' => $id_umkm,
+            'legalitas_produk' => $legpro,
         ]);
     }
 
@@ -213,6 +219,8 @@ class KelolaPromosiController extends Controller
             'deskripsi_produk' => 'required|string',
             'foto_produk' => 'nullable|image|max:2048',
             'id_umkm' => 'nullable|integer',
+            'legalitas_produk' => 'nullable|array',
+            'legalitas_produk.*' => 'exists:legalitas_produk,id_legpro',
         ]);
 
         if ($request->hasFile('foto_produk')) {
@@ -221,6 +229,12 @@ class KelolaPromosiController extends Controller
             }
             $path = $request->file('foto_produk')->store('produk', 'public');
             $validated['foto_produk'] = $path;
+        }
+
+        if ($request->filled('legalitas_produk')) {
+            $produk->legalitasProduk()->sync($request->legalitas_produk);
+        } else {
+            $produk->legalitasProduk()->sync([]);
         }
 
         $produk->update($validated);
