@@ -57,7 +57,8 @@ class RiwayatBooking extends Controller
 
         $query = Booking::with([
             'instansi.user:id,nama',
-            'layanan:id_layanan,layanan as nama_layanan'
+            'layanan:id_layanan,layanan as nama_layanan',
+            'suratMasuk.disposisi',
         ])->latest();
 
         if ($role === "Pegawai Lapangan") {
@@ -67,7 +68,20 @@ class RiwayatBooking extends Controller
                 });
         }
 
-        $booking = $query->get();
+        $booking = $query->get()->map(function ($b) {
+            return [
+                'id_booking' => $b->id_booking,
+                'acara' => $b->acara,
+                'lokasi' => $b->lokasi,
+                'tanggal_mulai' => $b->tanggal_mulai,
+                'tanggal_akhir' => $b->tanggal_akhir,
+                'waktu_mulai' => $b->waktu_mulai,
+                'waktu_akhir' => $b->waktu_akhir,
+                'status_booking' => $b->status_booking,
+                'instansi' => $b->instansi,
+                'hasDisposisi' => $b->suratMasuk && $b->suratMasuk->disposisi->isNotEmpty(),
+            ];
+        });
 
         return Inertia::render('Pegawai/Booking/ListBooking', [
             'booking' => $booking,

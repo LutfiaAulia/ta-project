@@ -69,7 +69,7 @@ class Booking extends Model
 
     public function suratMasuk()
     {
-        return $this->hasOne(SuratMasuk::class, 'id_booking');
+        return $this->hasOne(SuratMasuk::class, 'id_booking', 'id_booking');
     }
 
     public function pelayananUmkm()
