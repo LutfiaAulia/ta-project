@@ -137,7 +137,7 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
             ? auth.role || auth.user?.pegawai?.role || ""
             : "";
 
-    const isKepalaBidang = role === "Kepala Bidang";
+    const isAuthorizedRole = auth.role === "Kepala Bidang" || auth.role === "Admin";
 
     return (
         <Layout>
@@ -244,7 +244,7 @@ const DetailBooking: React.FC<DetailBookingProps> = ({
                     </div>
 
                     {booking.status_booking === "Diajukan" &&
-                        isKepalaBidang && (
+                        isAuthorizedRole && (
                             <div className="flex justify-center gap-6 mt-6">
                                 <button
                                     onClick={handleVerifikasi}
