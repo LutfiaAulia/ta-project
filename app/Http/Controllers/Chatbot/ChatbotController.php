@@ -64,6 +64,9 @@ class ChatbotController extends Controller
                     'id' => $umkm->id_identitas,
                     'name' => $umkm->nama_usaha,
                     'image' => $umkm->foto_usaha,
+                    'kategori' => $umkm->kategori_umkm->pluck('nama_kategori')->implode(', '),
+                    'lokasi' => "{$umkm->kabupaten_kota}, {$umkm->kanagarian_kelurahan}",
+                    'produk' => $umkm->umkm?->promosi->take(5)->map(fn($p) => $p->nama_produk)->toArray() ?? [],
                 ];
             })
         ]);

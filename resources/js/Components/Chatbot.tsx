@@ -15,7 +15,7 @@ type Message = {
     sender: "bot" | "user";
     timestamp: string;
     status: "read" | "sent";
-    umkmList?: { id: number; name: string; image: string }[];
+    umkmList?: { id: number; name: string; image: string; kategori: string; lokasi: string; produk: string[] }[];
 };
 
 interface ChatbotProps {}
@@ -190,16 +190,35 @@ const Chatbot: React.FC<ChatbotProps> = () => {
                                     onClick={() =>
                                         (window.location.href = `/umkm/${umkm.id}`)
                                     }
-                                    className="border rounded-lg p-2 bg-white shadow hover:shadow-lg cursor-pointer flex items-center space-x-3"
+                                    className="border rounded-lg p-2 bg-white shadow hover:shadow-lg cursor-pointer flex flex-col space-y-1"
                                 >
-                                    <img
-                                        src={umkm.image}
-                                        alt={umkm.name}
-                                        className="w-12 h-12 object-cover rounded"
-                                    />
-                                    <span className="text-sm font-medium">
-                                        {umkm.name}
-                                    </span>
+                                    <div className="flex items-center space-x-3">
+                                        <img
+                                            src={`/storage/${umkm.image}`}
+                                            alt={umkm.name}
+                                            className="w-12 h-12 object-cover rounded"
+                                        />
+                                        <span className="text-sm font-medium">
+                                            {umkm.name}
+                                        </span>
+                                    </div>
+                                    <div className="text-xs text-gray-600">
+                                        <div>
+                                            <strong>Kategori:</strong>{" "}
+                                            {umkm.kategori}
+                                        </div>
+                                        <div>
+                                            <strong>Lokasi:</strong>{" "}
+                                            {umkm.lokasi}
+                                        </div>
+                                        {umkm.produk &&
+                                            umkm.produk.length > 0 && (
+                                                <div>
+                                                    <strong>Produk:</strong>{" "}
+                                                    {umkm.produk.join(", ")}
+                                                </div>
+                                            )}
+                                    </div>
                                 </div>
                             ))}
                         </div>
