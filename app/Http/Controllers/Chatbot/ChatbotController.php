@@ -52,39 +52,20 @@ class ChatbotController extends Controller
 
         if ($results->isEmpty()) {
             return response()->json([
-                'response' => "Maaf, saya tidak menemukan UMKM yang cocok dengan '{$request->message}'.\n\nCoba cari dengan kata kunci:\n• Kategori: makanan, kerajinan, fashion\n• Lokasi: padang, bukittinggi, payakumbuh\n• Atau ketik 'bantuan' untuk panduan lengkap",
+                'type' => 'text', 
+                'response' => "Maaf, saya tidak menemukan UMKM yang cocok ..."
             ]);
         }
 
-        $response = "Saya menemukan " . $results->count() . " UMKM yang cocok:\n\n";
-        foreach ($results as $index => $umkm) {
-            $response .= ($index + 1) . ". *{$umkm->nama_usaha}*\n";
-            $response .= "   📍 Lokasi: {$umkm->kabupaten_kota}\n";
-
-            if ($umkm->kategori_umkm && $umkm->kategori_umkm->count()) {
-                $kategori = $umkm->kategori_umkm->pluck('nama_kategori')->join(', ');
-                $response .= "   🏷️ Kategori: {$kategori}\n";
-            }
-
-            if ($umkm->deskripsi) {
-                $response .= "   📝 " . Str::limit($umkm->deskripsi, 100) . "\n";
-            }
-
-            $sosmed = $umkm->sosial_media->first();
-            if ($sosmed && $sosmed->instagram) {
-                $response .= "   📱 Instagram: {$sosmed->instagram}\n";
-            }
-
-            if ($umkm->promosi && $umkm->promosi->count()) {
-                $produkList = $umkm->promosi->take(3)->pluck('nama_produk')->join(', ');
-                $response .= "   🛍️ Produk: {$produkList}\n";
-            }
-
-            $response .= "\n";
-        }
-
-        $response .= "Butuh info lebih detail? Ketik nama UMKM yang ingin Anda ketahui lebih lanjut.";
-
-        return response()->json(['response' => $response]);
+        return response()->json([
+            'type' => 'umkm_list',
+            'data' => $results->map(function ($umkm) {
+                return [
+                    'id' => $umkm->id_identitas,
+                    'name' => $umkm->nama_usaha,
+                    'image' => $umkm->foto_usaha,
+                ];
+            })
+        ]);
     }
 }

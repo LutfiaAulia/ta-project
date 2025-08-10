@@ -15,6 +15,7 @@ type Message = {
     sender: "bot" | "user";
     timestamp: string;
     status: "read" | "sent";
+    umkmList?: { id: number; name: string; image: string }[];
 };
 
 interface ChatbotProps {}
@@ -87,22 +88,33 @@ const Chatbot: React.FC<ChatbotProps> = () => {
             }
 
             const data = await res.json();
-            console.log("Response data:", data); // Debug log
 
-            const botMessage: Message = {
-                id: newMessage.id + 1,
-                text:
-                    data.response ||
-                    "Maaf, terjadi kesalahan dalam memproses pesan.",
-                sender: "bot",
-                timestamp: new Date().toLocaleTimeString("id-ID", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                }),
-                status: "read",
-            };
-
-            setMessages((prev) => [...prev, botMessage]);
+            if (data.type === "umkm_list") {
+                const botMessage: Message = {
+                    id: newMessage.id + 1,
+                    text: "",
+                    sender: "bot",
+                    timestamp: new Date().toLocaleTimeString("id-ID", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    }),
+                    status: "read",
+                    umkmList: data.data,
+                };
+                setMessages((prev) => [...prev, botMessage]);
+            } else {
+                const botMessage: Message = {
+                    id: newMessage.id + 1,
+                    text: data.response || "Maaf, terjadi kesalahan ...",
+                    sender: "bot",
+                    timestamp: new Date().toLocaleTimeString("id-ID", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    }),
+                    status: "read",
+                };
+                setMessages((prev) => [...prev, botMessage]);
+            }
         } catch (error) {
             console.error("Error:", error); // Debug log
 
@@ -170,9 +182,33 @@ const Chatbot: React.FC<ChatbotProps> = () => {
                             : "bg-white text-gray-800 border rounded-bl-sm"
                     }`}
                 >
-                    <p className="text-sm whitespace-pre-line leading-relaxed">
-                        {message.text}
-                    </p>
+                    {message.umkmList ? (
+                        <div className="grid gap-2">
+                            {message.umkmList.map((umkm) => (
+                                <div
+                                    key={umkm.id}
+                                    onClick={() =>
+                                        (window.location.href = `/umkm/${umkm.id}`)
+                                    }
+                                    className="border rounded-lg p-2 bg-white shadow hover:shadow-lg cursor-pointer flex items-center space-x-3"
+                                >
+                                    <img
+                                        src={umkm.image}
+                                        alt={umkm.name}
+                                        className="w-12 h-12 object-cover rounded"
+                                    />
+                                    <span className="text-sm font-medium">
+                                        {umkm.name}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-sm whitespace-pre-line leading-relaxed">
+                            {message.text}
+                        </p>
+                    )}
+
                     <div
                         className={`flex items-center justify-end mt-1 text-xs ${
                             message.sender === "user"

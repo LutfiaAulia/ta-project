@@ -36,6 +36,7 @@ use Inertia\Inertia;
 
 Route::get('/', [KelolaHUController::class, 'beranda'])->name('home');
 Route::get('/list/umkm/promosi', [KelolaShowPromosiController::class, 'show'])->name('list.umkm.promosi');
+Route::get('/umkm/{id}', [KelolaShowPromosiController::class, 'detail'])->name('umkm.show');
 Route::post('/chatbot', [ChatbotController::class, 'handle'])->name('chatbot.handle');
 
 Route::get('/email/verify', function () {

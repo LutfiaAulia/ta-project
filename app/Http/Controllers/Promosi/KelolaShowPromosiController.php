@@ -47,7 +47,6 @@ class KelolaShowPromosiController extends Controller
                 'longitude' => $identitas->longitude,
                 'no_hp' => $identitas->umkm?->no_hp ?? null,
 
-
                 // sosial media
                 'instagram' => $instagram?->url,
                 'whatsapp' => $whatsapp?->url,
@@ -72,11 +71,56 @@ class KelolaShowPromosiController extends Controller
                 }) ?? [],
             ];
         });
+
         $kategori_umkm = Kategori::pluck('nama_kategori')->prepend('Semua');
 
         return Inertia::render('ListUmkm', [
             'daftar_umkm' => $umkmList,
             'kategori_umkm' => $kategori_umkm,
+        ]);
+    }
+
+    public function detail($id)
+    {
+        $identitas = IdentitasUmkm::with(['kategori_umkm', 'sosial_media', 'umkm.promosi.legalitasProduk'])
+            ->findOrFail($id);
+
+        $instagram = $identitas->sosial_media->firstWhere('platform', 'instagram');
+        $whatsapp = $identitas->sosial_media->firstWhere('platform', 'whatsapp');
+        $facebook = $identitas->sosial_media->firstWhere('platform', 'facebook');
+
+        return Inertia::render('DetailUmkm', [
+            'umkm' => [
+                'id' => $identitas->id_identitas,
+                'nama_usaha' => $identitas->nama_usaha,
+                'lokasi' => "{$identitas->kabupaten_kota}, {$identitas->kanagarian_kelurahan}",
+                'alamat_detail' => $identitas->alamat_detail,
+                'deskripsi' => $identitas->deskripsi,
+                'foto_usaha' => $identitas->foto_usaha,
+                'latitude' => $identitas->latitude,
+                'longitude' => $identitas->longitude,
+                'no_hp' => $identitas->umkm?->no_hp ?? null,
+
+                'instagram' => $instagram?->url,
+                'whatsapp' => $whatsapp?->url,
+                'facebook' => $facebook?->url,
+
+                'kategori' => $identitas->kategori_umkm->pluck('nama_kategori')->implode(', '),
+
+                'products' => $identitas->umkm?->promosi->map(function ($p) {
+                    return [
+                        'id' => $p->id,
+                        'nama_produk' => $p->nama_produk,
+                        'harga_produk' => $p->harga_produk,
+                        'foto_produk' => $p->foto_produk,
+                        'deskripsi_produk' => $p->deskripsi_produk,
+                        'legalitas_produk' => $p->legalitasProduk->map(fn($l) => [
+                            'id_legpro' => $l->id_legpro,
+                            'singkatan' => $l->singkatan,
+                        ]),
+                    ];
+                }) ?? [],
+            ],
         ]);
     }
 }
