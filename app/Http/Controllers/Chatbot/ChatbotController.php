@@ -4,11 +4,7 @@ namespace App\Http\Controllers\Chatbot;
 
 use App\Http\Controllers\Controller;
 use App\Models\IdentitasUmkm;
-use App\Models\Kategori;
-use App\Models\Promosi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class ChatbotController extends Controller
 {
@@ -21,25 +17,53 @@ class ChatbotController extends Controller
         }
 
         $commonResponses = [
-            'halo' => 'Halo! Saya siap membantu Anda mencari informasi UMKM di Sumatera Barat. Silakan tanya tentang produk, kategori, atau lokasi tertentu.',
+            'halo' => 'Halo! Saya siap membantu Anda mencari informasi UMKM di Sumatera Barat. Silakan tanya tentang produk, kategori, atau lokasi UMKM.',
             'hai' => 'Hai! Ada yang bisa saya bantu tentang UMKM Sumatera Barat?',
             'help' => "Saya bisa membantu Anda mencari UMKM berdasarkan:\n• Kategori (makanan, kerajinan, dll)\n• Lokasi (kota/kabupaten)\n• Nama produk\n\nContoh: \"makanan padang\" atau \"kerajinan payakumbuh\"",
             'bantuan' => "Saya bisa membantu Anda mencari UMKM berdasarkan:\n• Kategori (makanan, kerajinan, dll)\n• Lokasi (kota/kabupaten)\n• Nama produk\n\nContoh: \"makanan padang\" atau \"kerajinan payakumbuh\"",
         ];
 
+        // Jika pesan mengandung kata kunci umum, langsung balas
         foreach ($commonResponses as $keyword => $response) {
             if (strpos($message, $keyword) !== false) {
                 return response()->json(['response' => $response]);
             }
         }
 
-        $keywords = explode(' ', $message);
+        // Pisah kata
+        $words = explode(' ', $message);
+        $validWords = [];
 
-        // Query dengan minimal 1 kata cocok (OR antar kata)
+        // Cek tiap kata, apakah ada di database (minimal 1 kolom/relasi)
+        foreach ($words as $word) {
+            $word = trim($word);
+            if ($word === '') continue;
+
+            $exists = IdentitasUmkm::where('kabupaten_kota', 'like', "%$word%")
+                ->orWhere('kecamatan', 'like', "%$word%")
+                ->orWhere('kanagarian_kelurahan', 'like', "%$word%")
+                ->orWhereHas('kategori_umkm', fn($q) => $q->where('nama_kategori', 'like', "%$word%"))
+                ->orWhereHas('promosi', fn($q) => $q->where('nama_produk', 'like', "%$word%"))
+                ->orWhere('nama_usaha', 'like', "%$word%")
+                ->exists();
+
+            if ($exists) {
+                $validWords[] = $word;
+            }
+        }
+
+        if (empty($validWords)) {
+            return response()->json([
+                'type' => 'text',
+                'response' => 'Maaf, kata yang Anda masukkan tidak dikenali. Silakan gunakan kata kunci seperti kategori, lokasi, atau produk UMKM yang anda cari.'
+            ]);
+        }
+
+        // Query dengan AND antar kata valid
         $query = IdentitasUmkm::with(['kategori_umkm', 'sosial_media', 'promosi', 'umkm'])
-            ->where(function ($q) use ($keywords) {
-                foreach ($keywords as $word) {
-                    $q->orWhere(function ($qq) use ($word) {
+            ->where(function ($q) use ($validWords) {
+                foreach ($validWords as $word) {
+                    $q->where(function ($qq) use ($word) {
                         $qq->where('kabupaten_kota', 'like', "%$word%")
                             ->orWhere('kecamatan', 'like', "%$word%")
                             ->orWhere('kanagarian_kelurahan', 'like', "%$word%")
@@ -55,7 +79,7 @@ class ChatbotController extends Controller
         if ($results->isEmpty()) {
             return response()->json([
                 'type' => 'text',
-                'response' => "Maaf, saya tidak menemukan UMKM yang cocok ..."
+                'response' => "Maaf, saya tidak menemukan UMKM yang cocok dengan Anda cari."
             ]);
         }
 
@@ -70,7 +94,7 @@ class ChatbotController extends Controller
                     'lokasi' => "{$umkm->kabupaten_kota}, {$umkm->kanagarian_kelurahan}",
                     'produk' => $umkm->umkm?->promosi->take(5)->map(fn($p) => $p->nama_produk)->toArray() ?? [],
                 ];
-            })
+            }),
         ]);
     }
 }
