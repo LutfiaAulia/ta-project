@@ -69,7 +69,7 @@ const Chatbot: React.FC<ChatbotProps> = () => {
                 .querySelector('meta[name="csrf-token"]')
                 ?.getAttribute("content");
 
-            console.log("Sending message:", currentMessage); // Debug log
+            console.log("Sending message:", currentMessage);
 
             const res = await fetch("/chatbot", {
                 method: "POST",
@@ -81,7 +81,7 @@ const Chatbot: React.FC<ChatbotProps> = () => {
                 body: JSON.stringify({ message: currentMessage }),
             });
 
-            console.log("Response status:", res.status); // Debug log
+            console.log("Response status:", res.status);
 
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
@@ -116,7 +116,7 @@ const Chatbot: React.FC<ChatbotProps> = () => {
                 setMessages((prev) => [...prev, botMessage]);
             }
         } catch (error) {
-            console.error("Error:", error); // Debug log
+            console.error("Error:", error);
 
             const errorMessage: Message = {
                 id: newMessage.id + 1,

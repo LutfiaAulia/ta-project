@@ -20,7 +20,6 @@ class ChatbotController extends Controller
             return response()->json(['response' => 'Silakan ketik pertanyaan Anda.']);
         }
 
-        // Keyword umum & respons sederhana
         $commonResponses = [
             'halo' => 'Halo! Saya siap membantu Anda mencari informasi UMKM di Sumatera Barat. Silakan tanya tentang produk, kategori, atau lokasi tertentu.',
             'hai' => 'Hai! Ada yang bisa saya bantu tentang UMKM Sumatera Barat?',
@@ -34,17 +33,20 @@ class ChatbotController extends Controller
             }
         }
 
-        // Jika bukan keyword umum, lanjut pencarian fleksibel
         $keywords = explode(' ', $message);
 
+        // Query dengan minimal 1 kata cocok (OR antar kata)
         $query = IdentitasUmkm::with(['kategori_umkm', 'sosial_media', 'promosi', 'umkm'])
             ->where(function ($q) use ($keywords) {
                 foreach ($keywords as $word) {
-                    $q->orWhere('kabupaten_kota', 'like', "%$word%")
-                        ->orWhereHas('kategori_umkm', fn($qq) => $qq->where('nama_kategori', 'like', "%$word%"))
-                        ->orWhereHas('promosi', fn($qq) => $qq->where('nama_produk', 'like', "%$word%"))
-                        ->orWhere('nama_usaha', 'like', "%$word%")
-                        ->orWhere('deskripsi', 'like', "%$word%");
+                    $q->orWhere(function ($qq) use ($word) {
+                        $qq->where('kabupaten_kota', 'like', "%$word%")
+                            ->orWhere('kecamatan', 'like', "%$word%")
+                            ->orWhere('kanagarian_kelurahan', 'like', "%$word%")
+                            ->orWhereHas('kategori_umkm', fn($qk) => $qk->where('nama_kategori', 'like', "%$word%"))
+                            ->orWhereHas('promosi', fn($qp) => $qp->where('nama_produk', 'like', "%$word%"))
+                            ->orWhere('nama_usaha', 'like', "%$word%");
+                    });
                 }
             });
 
@@ -52,7 +54,7 @@ class ChatbotController extends Controller
 
         if ($results->isEmpty()) {
             return response()->json([
-                'type' => 'text', 
+                'type' => 'text',
                 'response' => "Maaf, saya tidak menemukan UMKM yang cocok ..."
             ]);
         }
