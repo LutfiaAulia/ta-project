@@ -56,19 +56,21 @@ class KelolaShowPromosiController extends Controller
                 'kategori' => $identitas->kategori_umkm->pluck('nama_kategori')->implode(', '),
 
                 // produk
-                'products' => $identitas->umkm?->promosi->map(function ($p) {
-                    return [
-                        'id' => $p->id,
-                        'nama_produk' => $p->nama_produk,
-                        'harga_produk' => $p->harga_produk,
-                        'foto_produk' => $p->foto_produk,
-                        'deskripsi_produk' => $p->deskripsi_produk,
-                        'legalitas_produk' => $p->legalitasProduk->map(fn($l) => [
-                            'id_legpro' => $l->id_legpro,
-                            'singkatan' => $l->singkatan,
-                        ]),
-                    ];
-                }) ?? [],
+                'products' => $identitas->umkm?->promosi
+                    ->where('status', 'diterima')
+                    ->map(function ($p) {
+                        return [
+                            'id' => $p->id,
+                            'nama_produk' => $p->nama_produk,
+                            'harga_produk' => $p->harga_produk,
+                            'foto_produk' => $p->foto_produk,
+                            'deskripsi_produk' => $p->deskripsi_produk,
+                            'legalitas_produk' => $p->legalitasProduk->map(fn($l) => [
+                                'id_legpro' => $l->id_legpro,
+                                'singkatan' => $l->singkatan,
+                            ]),
+                        ];
+                    }) ?? [],
             ];
         });
 
@@ -107,19 +109,21 @@ class KelolaShowPromosiController extends Controller
 
                 'kategori' => $identitas->kategori_umkm->pluck('nama_kategori')->implode(', '),
 
-                'products' => $identitas->umkm?->promosi->map(function ($p) {
-                    return [
-                        'id' => $p->id,
-                        'nama_produk' => $p->nama_produk,
-                        'harga_produk' => $p->harga_produk,
-                        'foto_produk' => $p->foto_produk,
-                        'deskripsi_produk' => $p->deskripsi_produk,
-                        'legalitas_produk' => $p->legalitasProduk->map(fn($l) => [
-                            'id_legpro' => $l->id_legpro,
-                            'singkatan' => $l->singkatan,
-                        ]),
-                    ];
-                }) ?? [],
+                'products' => $identitas->umkm?->promosi
+                    ->where('status', 'diterima')
+                    ->map(function ($p) {
+                        return [
+                            'id' => $p->id,
+                            'nama_produk' => $p->nama_produk,
+                            'harga_produk' => $p->harga_produk,
+                            'foto_produk' => $p->foto_produk,
+                            'deskripsi_produk' => $p->deskripsi_produk,
+                            'legalitas_produk' => $p->legalitasProduk->map(fn($l) => [
+                                'id_legpro' => $l->id_legpro,
+                                'singkatan' => $l->singkatan,
+                            ]),
+                        ];
+                    }) ?? [],
             ],
         ]);
     }
