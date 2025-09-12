@@ -52,30 +52,27 @@ class KelolaUserController extends Controller
         ]);
     }
 
-
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $rules = [
             'user_type' => 'required|in:pegawai,umkm',
             'nama' => 'required|string|max:255',
             'nip' => 'nullable|string|max:18',
-            'nib' => [
-                Rule::requiredIf($request->user_type === 'umkm'),
-                'string',
-                'max:16',
-                Rule::unique('users', 'nib'),
-            ],
-            'nik' => [
-                Rule::requiredIf($request->user_type === 'umkm'),
-                'string',
-                'max:16',
-                Rule::unique('umkm', 'nik'),
-            ],
             'no_hp' => 'nullable|string|min:12|max:13',
             'jabatan' => 'nullable|string|max:100',
-            'role' => $request->user_type === 'pegawai' ? 'required|string|in:Admin,Kepala Bidang,Pegawai Lapangan,Administrasi Umum,Kepala Dinas' : '',
             'password' => 'required|string|min:8|confirmed',
-        ]);
+        ];
+
+        if ($request->user_type === 'umkm') {
+            $rules['nib'] = ['required', 'string', 'max:16', \Illuminate\Validation\Rule::unique('users', 'nib')];
+            $rules['nik'] = ['required', 'string', 'max:16', \Illuminate\Validation\Rule::unique('umkm', 'nik')];
+        }
+
+        if ($request->user_type === 'pegawai') {
+            $rules['role'] = 'required|string|in:Admin,Kepala Bidang,Pegawai Lapangan,Administrasi Umum,Kepala Dinas';
+        }
+
+        $validated = $request->validate($rules);
 
         $user = User::create([
             'nama' => $validated['nama'],
@@ -148,29 +145,39 @@ class KelolaUserController extends Controller
     {
         $user = User::with(['pegawai', 'instansi', 'umkm'])->findOrFail($id);
 
-        $validated = $request->validate([
+        $rules = [
             'nama' => 'required|string|max:255',
             'nip' => 'nullable|string|max:18',
-            'nib' => [
-                Rule::requiredIf($user->user_type === 'umkm'),
-                'string',
-                'max:16',
-                Rule::unique('users', 'nib')->ignore($user->id),
-            ],
-            'nik' => [
-                Rule::requiredIf($user->user_type === 'umkm'),
-                'string',
-                'max:16',
-                Rule::unique('umkm', 'nik')->ignore(optional($user->umkm)->id ?? null, 'id'),
-            ],
             'no_hp' => 'nullable|string|min:12|max:13',
             'jabatan' => 'nullable|string|max:100',
-            'role' => Rule::requiredIf($user->user_type === 'pegawai'),
-            'email' => Rule::requiredIf($user->user_type === 'instansi'),
-            'nama_instansi' => Rule::requiredIf($user->user_type === 'instansi'),
             'password' => 'nullable|string|min:8|confirmed',
-        ]);
+        ];
 
+        if ($user->user_type === 'umkm') {
+            $rules['nib'] = [
+                'required',
+                'string',
+                'max:16',
+                \Illuminate\Validation\Rule::unique('users', 'nib')->ignore($user->id),
+            ];
+            $rules['nik'] = [
+                'required',
+                'string',
+                'max:16',
+                \Illuminate\Validation\Rule::unique('umkm', 'nik')->ignore(optional($user->umkm)->id ?? null, 'id'),
+            ];
+        }
+
+        if ($user->user_type === 'pegawai') {
+            $rules['role'] = 'required|string|in:Admin,Kepala Bidang,Pegawai Lapangan,Administrasi Umum,Kepala Dinas';
+        }
+
+        if ($user->user_type === 'instansi') {
+            $rules['email'] = 'required|email';
+            $rules['nama_instansi'] = 'required|string|max:255';
+        }
+
+        $validated = $request->validate($rules);
         $user->nama = $validated['nama'];
         if ($request->filled('password')) {
             $user->password = bcrypt($validated['password']);
