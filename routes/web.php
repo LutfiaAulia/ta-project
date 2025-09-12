@@ -209,12 +209,12 @@ Route::prefix('pegawai')->group(function () {
 
 // ========== ROUTE UNTUK UMKM (user_type: umkm) ========== //
 Route::prefix('umkm')->group(function () {
-    Route::get('/login', [LoginUmkmController::class, 'showLoginForm'])->name('umkm.login.form');
+    Route::get('/form/login', [LoginUmkmController::class, 'showLoginForm'])->name('umkm.login.form');
     Route::post('/login', [LoginUmkmController::class, 'login'])->name('umkm.login');
     Route::post('/logout', [LoginUmkmController::class, 'logout'])->name('umkm.logout');
 
     Route::middleware(['auth', 'check.user.type:umkm'])->group(function () {
-        Route::get('/dashboard', [UmkmDashboardController::class, 'dashboard'])->name('umkm.dashboard');
+        Route::get('/dashboard/umkm', [UmkmDashboardController::class, 'dashboard'])->name('umkm.dashboard');
 
         //Data Umkm
         Route::get('/data/umkm', [KelolaDataUmkmController::class, 'show'])->name('umkm.data');

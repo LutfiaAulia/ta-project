@@ -40,7 +40,7 @@ class LoginUmkmController extends Controller
         ])) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/umkm/dashboard');
+            return redirect()->intended('/umkm/dashboard/umkm');
         }
 
         return back()->withErrors([
