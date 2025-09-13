@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Layout from "@/Components/Layout";
 import { PageProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
+import axios from "axios";
 
 type PegawaiUser = {
     type: "pegawai";
@@ -60,34 +61,27 @@ const ListUser: React.FC<PageProps<{ users: UserType[] }>> = ({ users }) => {
             )
         ) {
             try {
-                const response = await fetch(
+                await axios.get("/sanctum/csrf-cookie");
+                await axios.patch(
                     `/pegawai/status/user/${user.type}/${user.id}`,
                     {
-                        method: "PATCH",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN":
-                                document
-                                    .querySelector('meta[name="csrf-token"]')
-                                    ?.getAttribute("content") || "",
-                        },
-                        body: JSON.stringify({ status: newStatus }),
-                        credentials: "include",
+                        status: newStatus,
                     }
                 );
 
-                if (response.ok) {
-                    alert(
-                        `User "${user.nama}" berhasil di${
-                            newStatus === "aktif" ? "aktifkan" : "nonaktifkan"
-                        }.`
-                    );
-                    window.location.reload();
+                alert(
+                    `User "${user.nama}" berhasil di${
+                        newStatus === "aktif" ? "aktifkan" : "nonaktifkan"
+                    }.`
+                );
+                window.location.reload();
+            } catch (error: any) {
+                console.error(error);
+                if (error.response?.status === 419) {
+                    alert("Sesi login sudah habis, silakan login ulang.");
                 } else {
                     alert("Gagal mengubah status user.");
                 }
-            } catch (error) {
-                alert("Terjadi kesalahan saat mengubah status user.");
             }
         }
     }
