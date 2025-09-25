@@ -10,7 +10,7 @@ import CustomDateInput from "@/Components/CustomDateInput";
 interface BookingInsProps extends PageProps {
     layananList: Array<{ id: number; nama: string }>;
     selectedLayanan?: number[];
-    bookedDates: string[];
+    bookedDates: Array<{ tanggal: string; status: string }>;
 }
 
 export default function BookingIns({
@@ -39,7 +39,15 @@ export default function BookingIns({
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const excludeDatesParsed = bookedDates.map((d) => parseISO(d));
+    const diajukanDates = bookedDates
+        .filter((d) => d.status === "diajukan")
+        .map((d) => parseISO(d.tanggal));
+
+    const disetujuiDates = bookedDates
+        .filter((d) => d.status === "diterima")
+        .map((d) => parseISO(d.tanggal));
+
+    const excludeDatesParsed = bookedDates.map((d) => parseISO(d.tanggal));
 
     const isTimeBefore = (start: string, end: string) => {
         if (!start || !end) return false;
@@ -128,7 +136,18 @@ export default function BookingIns({
                                                 }
                                             }}
                                             minDate={tomorrow}
-                                            excludeDates={excludeDatesParsed}
+                                            excludeDates={disetujuiDates}
+                                            dayClassName={(date) => {
+                                                const isDiajukan =
+                                                    diajukanDates.some(
+                                                        (d) =>
+                                                            d.toDateString() ===
+                                                            date.toDateString()
+                                                    );
+                                                return isDiajukan
+                                                    ? "bg-orange-300 text-white rounded-full"
+                                                    : "";
+                                            }}
                                             dateFormat="dd-MM-yyyy"
                                             placeholderText="Pilih Tanggal Mulai"
                                             customInput={<CustomDateInput />}
@@ -172,7 +191,18 @@ export default function BookingIns({
                                                       )
                                                     : tomorrow
                                             }
-                                            excludeDates={excludeDatesParsed}
+                                            excludeDates={disetujuiDates}
+                                            dayClassName={(date) => {
+                                                const isDiajukan =
+                                                    diajukanDates.some(
+                                                        (d) =>
+                                                            d.toDateString() ===
+                                                            date.toDateString()
+                                                    );
+                                                return isDiajukan
+                                                    ? "bg-orange-300 text-white rounded-full"
+                                                    : "";
+                                            }}
                                             dateFormat="dd-MM-yyyy"
                                             placeholderText="Pilih Tanggal Akhir"
                                             customInput={<CustomDateInput />}
@@ -405,7 +435,7 @@ export default function BookingIns({
                                     </label>
                                     <input
                                         type="text"
-                                        name="kenagaraian_kelurahan"
+                                        name="kenagarian_kelurahan"
                                         value={data.kenagarian_kelurahan}
                                         onChange={(e) =>
                                             setData(

@@ -19,8 +19,8 @@ class BookingController extends Controller
             ->select('id_layanan as id', 'layanan as nama')
             ->get();
 
-        $bookings = Booking::where('status_booking', 'Diterima')
-            ->select('tanggal_mulai', 'tanggal_akhir')
+        $bookings = Booking::select('tanggal_mulai', 'tanggal_akhir', 'status_booking')
+            ->whereIn('status_booking', ['Diajukan', 'Diterima'])
             ->get();
 
         $bookedDates = [];
@@ -30,11 +30,14 @@ class BookingController extends Controller
             $end = \Carbon\Carbon::parse($booking->tanggal_akhir);
 
             for ($date = $start; $date->lte($end); $date->addDay()) {
-                $bookedDates[] = $date->format('Y-m-d');
+                $bookedDates[] = [
+                    'tanggal' => $date->format('Y-m-d'),
+                    'status' => strtolower($booking->status_booking),
+                ];
             }
         }
 
-        $bookedDates = array_unique($bookedDates);
+        $bookedDates = array_values($bookedDates);
 
         return Inertia::render('Instansi/BookingIns', [
             'layananList' => $layananList,
@@ -43,7 +46,6 @@ class BookingController extends Controller
             'today' => now()->format('Y-m-d'),
         ]);
     }
-
 
     public function store(Request $request): RedirectResponse
     {

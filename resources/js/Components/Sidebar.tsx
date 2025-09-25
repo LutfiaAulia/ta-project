@@ -109,7 +109,7 @@ const Sidebar: React.FC = () => {
                             } transition cursor-pointer`}
                         >
                             <FaStore />
-                            <span>Data UMKM</span>
+                            <span>Data Pelaksanaan Mobil Klinik</span>
                         </Link>
                     )}
 
