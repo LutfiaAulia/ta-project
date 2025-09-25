@@ -68,9 +68,10 @@ class KelolaShowPromosiController extends Controller
                             'legalitas_produk' => $p->legalitasProduk->map(fn($l) => [
                                 'id_legpro' => $l->id_legpro,
                                 'singkatan' => $l->singkatan,
-                            ]),
+                            ])->values()->toArray(),
                         ];
-                    }) ?? [],
+                    })->values()
+                    ->toArray() ?? [],
             ];
         });
 
