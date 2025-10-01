@@ -181,15 +181,23 @@ class BookingController extends Controller
         $booking = Booking::findOrFail($id);
 
         $booking->update([
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_akhir' => $request->tanggal_akhir,
-            'waktu_mulai' => $request->waktu_mulai,
-            'waktu_akhir' => $request->waktu_akhir,
+            'tanggal_mulai'  => $request->tanggal_mulai,
+            'tanggal_akhir'  => $request->tanggal_akhir,
+            'waktu_mulai'    => $request->waktu_mulai,
+            'waktu_akhir'    => $request->waktu_akhir,
             'status_booking' => 'Diajukan',
+            'id_mobil'       => null,
+            'id_sopir'       => null,
         ]);
 
-        return redirect()->route('booking.riwayat')->with('success', 'Booking berhasil direschedule, status kembali menjadi Diajukan.');
+        $booking->pegawaiLapangan()->detach();
+
+        return redirect()->route('booking.riwayat')->with(
+            'success',
+            'Booking berhasil direschedule, status kembali menjadi Diajukan.'
+        );
     }
+
 
     public function pdfBookingByStatus(Request $request): Response
     {
