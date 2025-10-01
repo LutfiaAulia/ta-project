@@ -101,7 +101,7 @@ const ListBookingTerlaksana: React.FC<PageProps<{ booking: any[] }>> = ({
                             className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded"
                             target="_blank"
                         >
-                            Generate PDF
+                            Cetak Semua Data UMKM
                         </Link>
                     </div>
                 </div>

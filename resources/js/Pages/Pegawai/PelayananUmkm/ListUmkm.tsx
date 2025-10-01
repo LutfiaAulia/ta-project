@@ -81,7 +81,7 @@ const ListUmkm: React.FC<ListUmkmProps> = ({
                             className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded"
                             target="_blank"
                         >
-                            Generate PDF
+                            Cetak Data UMKM
                         </Link>
                     </div>
                 </div>
