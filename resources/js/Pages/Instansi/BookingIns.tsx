@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { parseISO } from "date-fns";
 import CustomDateInput from "@/Components/CustomDateInput";
+import { format } from "date-fns";
 
 interface BookingInsProps extends PageProps {
     layananList: Array<{ id: number; nama: string }>;
@@ -75,6 +76,13 @@ export default function BookingIns({
         });
     };
 
+    const diajukanCounts: Record<string, number> = bookedDates
+        .filter((d) => d.status === "diajukan")
+        .reduce((acc, d) => {
+            acc[d.tanggal] = (acc[d.tanggal] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+
     return (
         <AuthenticatedLayout
             header={
@@ -115,14 +123,14 @@ export default function BookingIns({
                                             }
                                             onChange={(date: Date | null) => {
                                                 if (date) {
-                                                    const isoDate = date
-                                                        .toISOString()
-                                                        .split("T")[0];
+                                                    const isoDate = format(
+                                                        date,
+                                                        "yyyy-MM-dd"
+                                                    );
                                                     setData(
                                                         "tanggal_mulai",
                                                         isoDate
                                                     );
-
                                                     if (
                                                         !data.tanggal_akhir ||
                                                         data.tanggal_akhir <
@@ -138,21 +146,41 @@ export default function BookingIns({
                                             minDate={tomorrow}
                                             excludeDates={disetujuiDates}
                                             dayClassName={(date) => {
-                                                const isDiajukan =
-                                                    diajukanDates.some(
-                                                        (d) =>
-                                                            d.toDateString() ===
-                                                            date.toDateString()
-                                                    );
-                                                return isDiajukan
+                                                const isoDate = format(
+                                                    date,
+                                                    "yyyy-MM-dd"
+                                                );
+                                                return diajukanCounts[isoDate]
                                                     ? "bg-orange-300 text-white rounded-full"
                                                     : "";
+                                            }}
+                                            renderDayContents={(day, date) => {
+                                                const isoDate = format(
+                                                    date,
+                                                    "yyyy-MM-dd"
+                                                );
+                                                const count =
+                                                    diajukanCounts[isoDate] ||
+                                                    0;
+
+                                                return (
+                                                    <div
+                                                        title={
+                                                            count > 0
+                                                                ? `${count} booking diajukan`
+                                                                : ""
+                                                        }
+                                                        className="relative w-full h-full flex items-center justify-center"
+                                                    >
+                                                        {day}
+                                                    </div>
+                                                );
                                             }}
                                             dateFormat="dd-MM-yyyy"
                                             placeholderText="Pilih Tanggal Mulai"
                                             customInput={<CustomDateInput />}
-                                            required
                                         />
+
                                         {errors.tanggal_mulai && (
                                             <p className="mt-2 text-xs text-red-500">
                                                 {errors.tanggal_mulai}
