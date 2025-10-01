@@ -115,6 +115,8 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/booking/{id}', [RiwayatBooking::class, 'showBook'])->name('booking.showbook');
         Route::post('/booking/{id}/verifikasi', [BookingController::class, 'verifikasi'])->name('booking.verif');
         Route::post('/booking/{id}/tolak', [BookingController::class, 'tolak'])->name('booking.tolak');
+        Route::get('/pdf-booking/cetak', [BookingController::class, 'pdfBookingByStatus'])
+            ->name('pegawai.pdf.booking.byStatus');
 
         Route::get('/show/user', [KelolaUserController::class, 'show'])->name('user.show');
         Route::get('/create/user', [KelolaUserController::class, 'create'])->name('user.create');

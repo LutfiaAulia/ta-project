@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
+use Carbon\Carbon;
 
 class BookingController extends Controller
 {
@@ -188,5 +189,49 @@ class BookingController extends Controller
         ]);
 
         return redirect()->route('booking.riwayat')->with('success', 'Booking berhasil direschedule, status kembali menjadi Diajukan.');
+    }
+
+    public function pdfBookingByStatus(Request $request): Response
+    {
+        $status = $request->query('status');
+
+        $bookings = Booking::with(['instansi', 'pegawaiLapangan'])
+            ->when($status, function ($query) use ($status) {
+                $query->where('status_booking', $status);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($b) {
+                return [
+                    'id_booking'       => $b->id_booking,
+                    'nama_instansi'    => $b->instansi?->nama_instansi ?? '-',
+                    'acara'            => $b->acara ?? '-',
+                    'tanggal_mulai'    => $b->tanggal_mulai
+                        ? Carbon::parse($b->tanggal_mulai)->format('d-m-Y')
+                        : '-',
+                    'tanggal_akhir'    => $b->tanggal_akhir
+                        ? Carbon::parse($b->tanggal_akhir)->format('d-m-Y')
+                        : '-',
+                    'waktu_mulai'      => $b->waktu_mulai
+                        ? Carbon::parse($b->waktu_mulai)->format('H:i')
+                        : '-',
+                    'waktu_akhir'      => $b->waktu_akhir
+                        ? Carbon::parse($b->waktu_akhir)->format('H:i')
+                        : '-',
+                    'lokasi'           => $b->lokasi,
+                    'status_booking'   => $b->status_booking,
+                    'pegawai_lapangan' => $b->pegawaiLapangan
+                        ? $b->pegawaiLapangan->map(fn($p) => $p->user->nama)->toArray()
+                        : [],
+
+                    'mobil'            => $b->mobil?->nama_mobil ?? '-',
+                    'sopir'            => $b->sopir?->nama ?? '-',
+                ];
+            });
+
+        return Inertia::render('Pegawai/Booking/PdfBooking', [
+            'bookings' => $bookings,
+            'status'   => $status,
+        ]);
     }
 }

@@ -51,6 +51,7 @@ const ListBooking: React.FC<PageProps<{ booking: any[] }>> = ({ booking }) => {
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [selectedStatus, setSelectedStatus] = useState("");
 
     const filtered = booking.filter((b) =>
         [b.acara, b.lokasi, b.status_booking, b.instansi?.user?.nama]
@@ -85,17 +86,56 @@ const ListBooking: React.FC<PageProps<{ booking: any[] }>> = ({ booking }) => {
                         placeholder="Cari booking..."
                         className="border border-gray-300 p-2 rounded text-sm w-64"
                     />
-                    <select
-                        value={itemsPerPage}
-                        onChange={(e) =>
-                            setItemsPerPage(Number(e.target.value))
-                        }
-                        className="border border-gray-300 p-2 rounded text-sm w-20"
-                    >
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={50}>50</option>
-                    </select>
+
+                    <div className="flex items-center gap-2">
+                        {/* Filter jumlah data per halaman */}
+                        <select
+                            value={itemsPerPage}
+                            onChange={(e) =>
+                                setItemsPerPage(Number(e.target.value))
+                            }
+                            className="border border-gray-300 p-2 rounded text-sm w-20"
+                        >
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                        </select>
+
+                        {/* Filter status untuk cetak */}
+                        <select
+                            id="statusCetak"
+                            className="border border-gray-300 p-2 rounded text-sm"
+                            onChange={(e) => setSelectedStatus(e.target.value)}
+                        >
+                            <option value="">-- Pilih Status --</option>
+                            <option value="Diajukan">Diajukan</option>
+                            <option value="Diterima">Diterima</option>
+                            <option value="Ditolak">Ditolak</option>
+                            <option value="Selesai">Selesai</option>
+                        </select>
+
+                        {/* Tombol cetak */}
+                        <a
+                            href={`/pegawai/pdf-booking/cetak?status=${selectedStatus}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`px-4 py-2 rounded text-sm font-medium ${
+                                selectedStatus
+                                    ? "bg-green-500 hover:bg-green-600 text-white"
+                                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                            }`}
+                            onClick={(e) => {
+                                if (!selectedStatus) {
+                                    e.preventDefault();
+                                    alert(
+                                        "Pilih status dulu sebelum mencetak!"
+                                    );
+                                }
+                            }}
+                        >
+                            Cetak
+                        </a>
+                    </div>
                 </div>
 
                 <div className="overflow-x-auto">
