@@ -134,4 +134,59 @@ class BookingController extends Controller
 
         return redirect()->route('booking.listBooking')->with('success', 'Booking berhasil ditolak.');
     }
+
+    public function showReschedule($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        $bookings = Booking::select('tanggal_mulai', 'tanggal_akhir', 'status_booking')
+            ->whereIn('status_booking', ['Diajukan', 'Diterima'])
+            ->get();
+
+        $bookedDates = [];
+        foreach ($bookings as $b) {
+            $start = \Carbon\Carbon::parse($b->tanggal_mulai);
+            $end = \Carbon\Carbon::parse($b->tanggal_akhir);
+
+            for ($date = $start; $date->lte($end); $date->addDay()) {
+                $bookedDates[] = [
+                    'tanggal' => $date->format('Y-m-d'),
+                    'status' => strtolower($b->status_booking),
+                ];
+            }
+        }
+
+        return Inertia::render('Instansi/ReschBooking', [
+            'booking' => $booking,
+            'bookedDates' => $bookedDates,
+        ]);
+    }
+
+    public function reschedule(Request $request, $id): RedirectResponse
+    {
+        $request->validate([
+            'tanggal_mulai' => 'required|date',
+            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_mulai',
+            'waktu_mulai' => 'required|date_format:H:i',
+            'waktu_akhir' => 'required|date_format:H:i',
+        ]);
+
+        if ($request->tanggal_mulai === $request->tanggal_akhir) {
+            if (strtotime($request->waktu_akhir) <= strtotime($request->waktu_mulai)) {
+                return back()->withErrors(['waktu_akhir' => 'Waktu akhir harus lebih besar'])->withInput();
+            }
+        }
+
+        $booking = Booking::findOrFail($id);
+
+        $booking->update([
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_akhir' => $request->tanggal_akhir,
+            'waktu_mulai' => $request->waktu_mulai,
+            'waktu_akhir' => $request->waktu_akhir,
+            'status_booking' => 'Diajukan',
+        ]);
+
+        return redirect()->route('booking.riwayat')->with('success', 'Booking berhasil direschedule, status kembali menjadi Diajukan.');
+    }
 }

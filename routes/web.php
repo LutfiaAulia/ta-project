@@ -90,6 +90,8 @@ Route::middleware(['auth', 'verified', 'check.user.type:instansi'])->group(funct
     Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
     Route::get('/booking/{id}/show', [RiwayatBooking::class, 'show'])->name('booking.show');
+    Route::get('/booking/{id}/reschedule', [BookingController::class, 'showReschedule'])->name('booking.reschedule');
+    Route::put('/booking/{id}/reschedule', [BookingController::class, 'reschedule'])->name('booking.reschedule');
 });
 
 // ========== ROUTE UNTUK PEGAWAI (user_type: pegawai) ========== //

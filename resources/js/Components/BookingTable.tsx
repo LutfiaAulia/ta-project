@@ -53,6 +53,18 @@ const formatJadwalLengkap = (
     return `${tgl}\n${jam}`;
 };
 
+const canReschedule = (status: string, tanggalMulai: string) => {
+    if (status !== "Diterima") return false;
+
+    const today = new Date();
+    const tglMulai = new Date(tanggalMulai);
+
+    const diffTime = tglMulai.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays > 2;
+};
+
 interface BookingTableProps {
     bookings: Booking[];
     startIndex: number;
@@ -107,13 +119,24 @@ const BookingTable: React.FC<BookingTableProps> = ({
                                     {booking.status_booking}
                                 </span>
                             </td>
-                            <td className="border px-4 py-2 text-center">
+                            <td className="border px-4 py-2 text-center space-x-2">
                                 <a
                                     href={`/booking/${booking.id_booking}/show`}
                                     className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-[11px]"
                                 >
                                     Detail
                                 </a>
+                                {canReschedule(
+                                    booking.status_booking,
+                                    booking.tanggal_mulai
+                                ) && (
+                                    <a
+                                        href={`/booking/${booking.id_booking}/reschedule`}
+                                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded text-[11px]"
+                                    >
+                                        Reschedule
+                                    </a>
+                                )}
                             </td>
                         </tr>
                     ))}

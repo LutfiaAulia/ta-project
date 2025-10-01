@@ -37,14 +37,20 @@ export default function RiwayatBooking({ booking }: RiwayatBookingProps) {
         )
     );
 
+    const sortedBookings = [...filteredBookings].sort((a, b) => {
+        const dateA = new Date(a.tanggal_mulai).getTime();
+        const dateB = new Date(b.tanggal_mulai).getTime();
+        return dateB - dateA;
+    });
+
     useEffect(() => {
         setCurrentPage(1);
     }, [search, itemsPerPage]);
 
-    const totalItems = filteredBookings.length;
+    const totalItems = sortedBookings.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentBookings = filteredBookings.slice(
+    const currentBookings = sortedBookings.slice(
         startIndex,
         startIndex + itemsPerPage
     );
