@@ -27,9 +27,7 @@ const Sidebar: React.FC = () => {
     const isAkunActive = route().current("user.show");
 
     useEffect(() => {
-        if (isAkunActive) {
-            setAkunOpen(true);
-        }
+        if (isAkunActive) setAkunOpen(true);
     }, [isAkunActive]);
 
     const canAccess = (roles: string[]) => roles.includes(role);
@@ -51,271 +49,255 @@ const Sidebar: React.FC = () => {
         }
     };
 
+    const baseItem =
+        "flex items-center gap-4 p-2.5 rounded-lg transition-all text-[15px]";
+    const hover = "hover:bg-green-600 hover:text-white cursor-pointer";
+    const active = "bg-green-600 text-white font-medium";
+
     return (
-        <div className="w-60 h-screen bg-green-600 text-white flex flex-col fixed">
-            {/* Logo */}
-            <div className="flex items-center gap-3 px-5 py-4 border-b border-green-500 sticky top-0 bg-green-600 z-10">
+        <div className="w-64 h-screen bg-green-700 text-white flex flex-col fixed shadow-lg">
+            {/* Header */}
+            <div className="w-64 h-[74px] flex items-center gap-3 px-[18px] bg-green-800 shadow-md">
                 <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
-                <div className="text-sm leading-tight font-medium">
+                <div className="text-sm font-medium leading-tight">
                     <p>Dinas Koperasi UKM</p>
                     <p>Sumatera Barat</p>
                 </div>
             </div>
 
-            {/* Menu */}
-            <div className="flex-1 overflow-y-auto scrollbar-hide">
-                <ul className="flex flex-col mt-6 space-y-1 px-4 pb-4">
+            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 scrollbar-hide">
+                {/* Dashboard */}
+                <Link
+                    href={getDashboardRoute()}
+                    className={`${baseItem} ${
+                        route().current(
+                            `${role.toLowerCase().replace(" ", "")}.dashboard`
+                        ) && !window.location.href.includes("user/show")
+                            ? active
+                            : hover
+                    }`}
+                >
+                    <FaTh />
+                    <span>Beranda</span>
+                </Link>
+
+                {/* List Booking */}
+                {canAccess(["Admin", "Kepala Bidang", "Pegawai Lapangan"]) && (
                     <Link
-                        href={getDashboardRoute()}
-                        className={`flex items-center gap-3 p-2 rounded ${
-                            route().current(
-                                `${role
-                                    .toLowerCase()
-                                    .replace(" ", "")}.dashboard`
-                            ) && !window.location.href.includes("user/show")
-                                ? "bg-green-500"
-                                : "hover:bg-green-500"
-                        } transition cursor-pointer`}
+                        href={route("booking.listBooking")}
+                        className={`${baseItem} ${
+                            route().current("booking.listBooking")
+                                ? active
+                                : hover
+                        }`}
                     >
-                        <FaTh />
-                        <span>Beranda</span>
+                        <FaClipboardList />
+                        <span>List Booking</span>
                     </Link>
+                )}
 
-                    {canAccess([
-                        "Admin",
-                        "Kepala Bidang",
-                        "Pegawai Lapangan",
-                    ]) && (
-                        <Link
-                            href={route("booking.listBooking")}
-                            className={`flex items-center gap-3 p-2 rounded ${
-                                route().current("booking.listBooking")
-                                    ? "bg-green-500"
-                                    : "hover:bg-green-500"
-                            } transition cursor-pointer`}
+                {/* Pelaksanaan */}
+                {canAccess(["Admin", "Pegawai Lapangan"]) && (
+                    <Link
+                        href={route("bookinglaksana.list")}
+                        className={`${baseItem} ${
+                            route().current("bookinglaksana.list")
+                                ? active
+                                : hover
+                        }`}
+                    >
+                        <FaStore />
+                        <span>Data Pelaksanaan Mobil Klinik</span>
+                    </Link>
+                )}
+
+                {/* Laporan */}
+                {canAccess([
+                    "Admin",
+                    "Kepala Bidang",
+                    "Kepala Dinas",
+                    "Pegawai Lapangan",
+                ]) && (
+                    <Link
+                        href={route("laporan.list")}
+                        className={`${baseItem} ${
+                            route().current("laporan.list") ? active : hover
+                        }`}
+                    >
+                        <FaFileAlt />
+                        <span>Laporan</span>
+                    </Link>
+                )}
+
+                {/* Surat Masuk */}
+                {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
+                    <Link
+                        href={route("surat.list")}
+                        className={`${baseItem} ${
+                            route().current("surat.list") ? active : hover
+                        }`}
+                    >
+                        <FaInbox />
+                        <span>Surat Masuk</span>
+                    </Link>
+                )}
+
+                {/* Disposisi */}
+                {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
+                    <Link
+                        href={route("disposisi.list")}
+                        className={`${baseItem} ${
+                            route().current("disposisi.list") ? active : hover
+                        }`}
+                    >
+                        <FaShareSquare />
+                        <span>Disposisi</span>
+                    </Link>
+                )}
+
+                {/* ADMIN SECTION */}
+                {canAccess(["Admin"]) && (
+                    <>
+                        {/* Kelola Akun dropdown */}
+                        <button
+                            onClick={() => setAkunOpen(!akunOpen)}
+                            className={`${baseItem} justify-between w-full ${
+                                isAkunActive || akunOpen ? active : hover
+                            }`}
                         >
-                            <FaClipboardList />
-                            <span>List Booking</span>
-                        </Link>
-                    )}
+                            <span className="flex items-center gap-4">
+                                <FaUsersCog /> Kelola Akun
+                            </span>
+                            <FaChevronDown
+                                className={`transition-transform duration-300 ${
+                                    akunOpen ? "rotate-180" : ""
+                                }`}
+                            />
+                        </button>
 
-                    {canAccess(["Admin", "Pegawai Lapangan"]) && (
+                        {akunOpen && (
+                            <div className="ml-7 mt-1 space-y-1">
+                                <Link
+                                    href={route("user.show", {
+                                        type: "pegawai",
+                                    })}
+                                    className={`${baseItem} text-sm px-3 ${
+                                        isAkunActive && typeParam === "pegawai"
+                                            ? active
+                                            : hover
+                                    }`}
+                                >
+                                    <FaUsersCog className="text-xs" />
+                                    Pegawai
+                                </Link>
+
+                                <Link
+                                    href={route("user.show", {
+                                        type: "instansi",
+                                    })}
+                                    className={`${baseItem} text-sm px-3 ${
+                                        isAkunActive && typeParam === "instansi"
+                                            ? active
+                                            : hover
+                                    }`}
+                                >
+                                    <FaUsersCog className="text-xs" />
+                                    Instansi
+                                </Link>
+
+                                <Link
+                                    href={route("user.show", {
+                                        type: "umkm",
+                                    })}
+                                    className={`${baseItem} text-sm px-3 ${
+                                        isAkunActive && typeParam === "umkm"
+                                            ? active
+                                            : hover
+                                    }`}
+                                >
+                                    <FaUsersCog className="text-xs" />
+                                    UMKM
+                                </Link>
+                            </div>
+                        )}
+
+                        {/* Menu Admin lain */}
                         <Link
-                            href={route("bookinglaksana.list")}
-                            className={`flex items-center gap-3 p-2 rounded ${
-                                route().current("bookinglaksana.list")
-                                    ? "bg-green-500"
-                                    : "hover:bg-green-500"
-                            } transition cursor-pointer`}
+                            href={route("bidang.list")}
+                            className={`${baseItem} ${
+                                route().current("bidang.list") ? active : hover
+                            }`}
                         >
-                            <FaStore />
-                            <span>Data Pelaksanaan Mobil Klinik</span>
+                            <FaLayerGroup />
+                            <span>Kelola Bidang Layanan</span>
                         </Link>
-                    )}
 
-                    {canAccess([
-                        "Admin",
-                        "Kepala Bidang",
-                        "Kepala Dinas",
-                        "Pegawai Lapangan",
-                    ]) && (
                         <Link
-                            href={route("laporan.list")}
-                            className={`flex items-center gap-3 p-2 rounded ${
-                                route().current("laporan.list")
-                                    ? "bg-green-500"
-                                    : "hover:bg-green-500"
-                            } transition cursor-pointer`}
+                            href={route("layanan.list")}
+                            className={`${baseItem} ${
+                                route().current("layanan.list") ? active : hover
+                            }`}
                         >
                             <FaFileAlt />
-                            <span>Laporan</span>
+                            <span>Kelola Layanan</span>
                         </Link>
-                    )}
 
-                    {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
                         <Link
-                            href={route("surat.list")}
-                            className={`flex items-center gap-3 p-2 rounded ${
-                                route().current("surat.list")
-                                    ? "bg-green-500"
-                                    : "hover:bg-green-500"
-                            } transition cursor-pointer`}
+                            href={route("legpro.list")}
+                            className={`${baseItem} ${
+                                route().current("legpro.list") ? active : hover
+                            }`}
                         >
-                            <FaInbox />
-                            <span>Surat Masuk</span>
+                            <FaFileAlt />
+                            <span>Kelola Legalitas Produk</span>
                         </Link>
-                    )}
 
-                    {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
                         <Link
-                            href={route("disposisi.list")}
-                            className={`flex items-center gap-3 p-2 rounded ${
-                                route().current("disposisi.list")
-                                    ? "bg-green-500"
-                                    : "hover:bg-green-500"
-                            } transition cursor-pointer`}
+                            href={route("mobil.list")}
+                            className={`${baseItem} ${
+                                route().current("mobil.list") ? active : hover
+                            }`}
                         >
-                            <FaShareSquare />
-                            <span>Disposisi</span>
+                            <FaCar />
+                            <span>Kelola Mobil</span>
                         </Link>
-                    )}
 
-                    {/* Kelola Hanya untuk Admin */}
-                    {canAccess(["Admin"]) && (
-                        <>
-                            <button
-                                onClick={() => setAkunOpen(!akunOpen)}
-                                className={`flex items-center justify-between w-full gap-3 p-2 rounded ${
-                                    isAkunActive || akunOpen
-                                        ? "bg-green-500"
-                                        : "hover:bg-green-500"
-                                } transition cursor-pointer`}
-                            >
-                                <span className="flex items-center gap-3">
-                                    <FaUsersCog />
-                                    Kelola Akun
-                                </span>
-                                <FaChevronDown
-                                    className={`transition-transform duration-300 ${
-                                        akunOpen ? "rotate-180" : ""
-                                    }`}
-                                />
-                            </button>
+                        <Link
+                            href={route("sopir.list")}
+                            className={`${baseItem} ${
+                                route().current("sopir.list") ? active : hover
+                            }`}
+                        >
+                            <FaUserTie />
+                            <span>Kelola Sopir</span>
+                        </Link>
 
-                            {akunOpen && (
-                                <div className="ml-8 space-y-1">
-                                    <Link
-                                        href={route("user.show", {
-                                            type: "pegawai",
-                                        })}
-                                        className={`block px-4 py-2 rounded hover:bg-green-500 flex items-center gap-2 ${
-                                            isAkunActive &&
-                                            typeParam === "pegawai"
-                                                ? "bg-green-500"
-                                                : ""
-                                        }`}
-                                    >
-                                        <FaUsersCog className="text-xs" />{" "}
-                                        Pegawai
-                                    </Link>
+                        <Link
+                            href={route("kategori.list")}
+                            className={`${baseItem} ${
+                                route().current("kategori.list")
+                                    ? active
+                                    : hover
+                            }`}
+                        >
+                            <FaTags />
+                            <span>Kelola Kategori</span>
+                        </Link>
 
-                                    <Link
-                                        href={route("user.show", {
-                                            type: "instansi",
-                                        })}
-                                        className={`block px-4 py-2 rounded hover:bg-green-500 flex items-center gap-2 ${
-                                            isAkunActive &&
-                                            typeParam === "instansi"
-                                                ? "bg-green-500"
-                                                : ""
-                                        }`}
-                                    >
-                                        <FaUsersCog className="text-xs" />{" "}
-                                        Instansi
-                                    </Link>
-
-                                    <Link
-                                        href={route("user.show", {
-                                            type: "umkm",
-                                        })}
-                                        className={`block px-4 py-2 rounded hover:bg-green-500 flex items-center gap-2 ${
-                                            isAkunActive && typeParam === "umkm"
-                                                ? "bg-green-500"
-                                                : ""
-                                        }`}
-                                    >
-                                        <FaUsersCog className="text-xs" /> UMKM
-                                    </Link>
-                                </div>
-                            )}
-
-                            <Link
-                                href={route("bidang.list")}
-                                className={`flex items-center gap-3 p-2 rounded ${
-                                    route().current("bidang.list")
-                                        ? "bg-green-500"
-                                        : "hover:bg-green-500"
-                                } transition cursor-pointer`}
-                            >
-                                <FaLayerGroup />
-                                <span>Kelola Bidang Layanan</span>
-                            </Link>
-
-                            <Link
-                                href={route("layanan.list")}
-                                className={`flex items-center gap-3 p-2 rounded ${
-                                    route().current("layanan.list")
-                                        ? "bg-green-500"
-                                        : "hover:bg-green-500"
-                                } transition cursor-pointer`}
-                            >
-                                <FaFileAlt />
-                                <span>Kelola Layanan</span>
-                            </Link>
-
-                            <Link
-                                href={route("legpro.list")}
-                                className={`flex items-center gap-3 p-2 rounded ${
-                                    route().current("legpro.list")
-                                        ? "bg-green-500"
-                                        : "hover:bg-green-500"
-                                } transition cursor-pointer`}
-                            >
-                                <FaFileAlt />
-                                <span>Kelola LegalitasProduk</span>
-                            </Link>
-
-                            <Link
-                                href={route("mobil.list")}
-                                className={`flex items-center gap-3 p-2 rounded ${
-                                    route().current("mobil.list")
-                                        ? "bg-green-500"
-                                        : "hover:bg-green-500"
-                                } transition cursor-pointer`}
-                            >
-                                <FaCar />
-                                <span>Kelola Mobil</span>
-                            </Link>
-
-                            <Link
-                                href={route("sopir.list")}
-                                className={`flex items-center gap-3 p-2 rounded ${
-                                    route().current("sopir.list")
-                                        ? "bg-green-500"
-                                        : "hover:bg-green-500"
-                                } transition cursor-pointer`}
-                            >
-                                <FaUserTie />
-                                <span>Kelola Sopir</span>
-                            </Link>
-
-                            <Link
-                                href={route("kategori.list")}
-                                className={`flex items-center gap-3 p-2 rounded ${
-                                    route().current("kategori.list")
-                                        ? "bg-green-500"
-                                        : "hover:bg-green-500"
-                                } transition cursor-pointer`}
-                            >
-                                <FaTags />
-                                <span>Kelola Kategori</span>
-                            </Link>
-
-                            <Link
-                                href={route("pegawai.kelola.promosi")}
-                                className={`flex items-center gap-3 p-2 rounded ${
-                                    route().current("pegawai.kelola.promosi") &&
-                                    !window.location.href.includes("user/show")
-                                        ? "bg-green-500"
-                                        : "hover:bg-green-500"
-                                } transition cursor-pointer`}
-                            >
-                                <FaShoppingBag />
-                                <span>Kelola Promosi</span>
-                            </Link>
-                        </>
-                    )}
-                </ul>
+                        <Link
+                            href={route("pegawai.kelola.promosi")}
+                            className={`${baseItem} ${
+                                route().current("pegawai.kelola.promosi") &&
+                                !window.location.href.includes("user/show")
+                                    ? active
+                                    : hover
+                            }`}
+                        >
+                            <FaShoppingBag />
+                            <span>Kelola Promosi</span>
+                        </Link>
+                    </>
+                )}
             </div>
         </div>
     );

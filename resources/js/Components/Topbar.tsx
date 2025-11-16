@@ -12,15 +12,7 @@ const Topbar: React.FC = () => {
     };
 
     return (
-        <div
-            className="flex justify-end items-center px-4 py-6 bg-white border-b shadow-sm fixed z-40"
-            style={{
-                paddingLeft: "16rem",
-                width: "calc(100% - 15rem)",
-                top: 0,
-                height: "74px",
-            }}
-        >
+        <div className="fixed top-0 left-64 right-0 h-[74px] bg-white border-b shadow-sm flex items-center justify-end px-4 z-40">
             <div className="relative">
                 <button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -33,13 +25,14 @@ const Topbar: React.FC = () => {
                         }`}
                     />
                 </button>
+
                 {dropdownOpen && (
                     <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50">
                         <ul className="py-1 text-sm text-gray-700">
                             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                                 <Link
                                     href="/pegawai/pegawai/profile"
-                                    className="block w-full h-full"
+                                    className="block"
                                 >
                                     Profil
                                 </Link>
