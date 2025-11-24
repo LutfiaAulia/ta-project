@@ -11,6 +11,10 @@ import {
     X,
     ChevronRight,
     CheckCircle,
+    Home as HomeIcon,
+    ClipboardList,
+    Truck,
+    Store,
 } from "lucide-react";
 
 interface LayananItem {
@@ -27,11 +31,78 @@ interface Jadwal {
     waktu_akhir: string;
     lokasi: string;
 }
+interface Berita {
+    id: number;
+    judul: string;
+    tanggal: string;
+    ringkasan: string;
+    imageUrl: string;
+}
 
 interface PageProps {
     layanan: Record<string, LayananItem[]>;
     jadwalTerdekat: Jadwal[];
 }
+
+const DUMMY_BERITA_UTAMA: Berita = {
+    id: 101,
+    judul: "Diskop UKM Sumbar Kembangkan Pasar Digital untuk 5.000 UMKM Lokal",
+    tanggal: "2025-11-20",
+    ringkasan:
+        "Dinas Koperasi dan UMKM Provinsi Sumatera Barat sukses meluncurkan platform pasar digital baru, menghubungkan ribuan UMKM dengan pasar yang lebih luas di Indonesia.",
+    imageUrl: "/images/mobilklinik.jpg",
+};
+
+const DUMMY_DAFTAR_BERITA: Berita[] = [
+    {
+        id: 102,
+        judul: "Pelatihan Pengemasan Produk Kreatif di Nagari Sumpur Sukses",
+        tanggal: "2025-11-15",
+        ringkasan:
+            "Kegiatan ini dihadiri puluhan pelaku UMKM yang mendapat bimbingan langsung dari ahli desain produk.",
+        imageUrl: "/images/berita/pelatihan-sumpur.jpg",
+    },
+    {
+        id: 103,
+        judul: "Bantuan Modal Usaha Bergulir untuk Korban Bencana Alam",
+        tanggal: "2025-11-10",
+        ringkasan:
+            "Dinas menyalurkan bantuan dana bergulir untuk pemulihan usaha kecil yang terdampak bencana alam di beberapa daerah.",
+        imageUrl: "/images/berita/bantuan-modal.jpg",
+    },
+    {
+        id: 104,
+        judul: "Sertifikasi Halal Gratis Capai Target 1.500 Produk UMKM",
+        tanggal: "2025-11-05",
+        ringkasan:
+            "Target sertifikasi halal gratis tercapai sepenuhnya, menandakan komitmen dinas dalam meningkatkan daya saing produk lokal.",
+        imageUrl: "/images/berita/sertif-halal.jpg",
+    },
+    {
+        id: 105,
+        judul: "Pameran Produk Unggulan UMKM Sumbar di Jakarta Fair",
+        tanggal: "2025-10-28",
+        ringkasan:
+            "Produk-produk dari Sumatera Barat menarik perhatian pengunjung di pameran nasional.",
+        imageUrl: "/images/berita/pameran-jakarta.jpg",
+    },
+    {
+        id: 106,
+        judul: "Diskop UKM Selenggarakan Workshop Keuangan Digital",
+        tanggal: "2025-10-20",
+        ringkasan:
+            "Workshop ini bertujuan meningkatkan literasi keuangan digital bagi para pelaku usaha.",
+        imageUrl: "/images/berita/workshop-keuangan.jpg",
+    },
+];
+
+// Data Menu Navigasi
+const navItems = [
+    { name: "Home", href: "/", icon: HomeIcon },
+    { name: "Profile", href: "/profile", icon: ClipboardList },
+    { name: "Mobil Klinik", href: "/login", icon: Truck },
+    { name: "Promosi UKM", href: "/list/umkm/promosi", icon: Store },
+];
 
 export default function Welcome() {
     function formatTanggalRange(tanggalMulai: string, tanggalAkhir: string) {
@@ -85,6 +156,8 @@ export default function Welcome() {
         jumlahInstansi,
         jumlahUmkm,
         dokumentasiTerbaru,
+        beritaTerbaru = DUMMY_BERITA_UTAMA,
+        daftarBeritaLain = DUMMY_DAFTAR_BERITA,
     } = usePage().props as unknown as {
         layanan: Record<string, LayananItem[]>;
         jadwalTerdekat: Jadwal[];
@@ -93,6 +166,8 @@ export default function Welcome() {
         jumlahInstansi: number;
         jumlahUmkm: number;
         dokumentasiTerbaru: any;
+        beritaTerbaru?: Berita;
+        daftarBeritaLain?: Berita[];
     };
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -101,27 +176,6 @@ export default function Welcome() {
     useEffect(() => {
         setIsVisible(true);
     }, []);
-
-    const services = [
-        {
-            icon: <Users className="w-8 h-8" />,
-            title: "Konsultasi Usaha",
-            description:
-                "Pendampingan dan konsultasi untuk mengembangkan usaha UMKM Anda",
-        },
-        {
-            icon: <Award className="w-8 h-8" />,
-            title: "Legalitas NIB",
-            description:
-                "Bantuan pengurusan Nomor Induk Berusaha dan perizinan usaha",
-        },
-        {
-            icon: <CheckCircle className="w-8 h-8" />,
-            title: "Sertifikat Halal",
-            description:
-                "Fasilitasi pengurusan sertifikat halal untuk produk UMKM",
-        },
-    ];
 
     const stats = [
         { number: `${umkmTerlayani}`, label: "UMKM Terlayani" },
@@ -155,6 +209,19 @@ export default function Welcome() {
                             </div>
                         </div>
 
+                        {/* Navigasi Desktop */}
+                        <nav className="hidden md:flex space-x-8">
+                            {navItems.map((item) => (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className="text-gray-600 hover:text-green-600 font-medium transition-colors text-lg"
+                                >
+                                    {item.name}
+                                </Link>
+                            ))}
+                        </nav>
+
                         {/* Mobile menu button */}
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -168,205 +235,275 @@ export default function Welcome() {
                         </button>
                     </div>
                 </div>
+
+                {/* Navigasi Mobile (Conditional) */}
+                <div
+                    className={`md:hidden overflow-hidden transition-all duration-300 ${
+                        isMenuOpen
+                            ? "max-h-screen opacity-100 py-2"
+                            : "max-h-0 opacity-0"
+                    }`}
+                >
+                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                        {navItems.map((item) => (
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                onClick={() => setIsMenuOpen(false)}
+                                className="text-gray-700 hover:bg-green-50 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium flex items-center"
+                            >
+                                <item.icon className="w-5 h-5 mr-3" />
+                                {item.name}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
             </header>
 
             {/* Hero Section */}
-            <section className="relative bg-gradient-to-r from-green-600 to-green-700 text-white overflow-hidden">
-                <div className="absolute inset-0 bg-black opacity-10"></div>
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        <div
-                            className={`transform transition-all duration-1000 ${
-                                isVisible
-                                    ? "translate-x-0 opacity-100"
-                                    : "-translate-x-10 opacity-0"
-                            }`}
-                        >
-                            <h2 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                                Mendekatkan Pelayanan,
-                                <br />
-                                <span className="text-green-200">
-                                    Mendukung UMKM
-                                </span>{" "}
-                                Berkembang
-                            </h2>
-                            <p className="text-green-100 mb-8 text-lg max-w-lg">
-                                Pelayanan langsung ke masyarakat melalui mobil
-                                klinik dan promosi produk-produk lokal unggulan.
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <Link
-                                    href="/login"
-                                    className="bg-white text-green-600 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-all transform hover:scale-105 shadow-lg flex items-center justify-center"
-                                >
-                                    <Calendar className="w-5 h-5 mr-2" />
-                                    Booking Mobil Klinik
-                                </Link>
-
-                                <Link
-                                    href="/list/umkm/promosi"
-                                    className="bg-green-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-400 transition-all transform hover:scale-105 shadow-lg flex items-center justify-center"
-                                >
-                                    Lihat Produk UMKM
-                                    <ChevronRight className="w-5 h-5 ml-2" />
-                                </Link>
-                            </div>
-                        </div>
-                        <div
-                            className={`flex justify-center lg:justify-end transform transition-all duration-1000 delay-300 ${
-                                isVisible
-                                    ? "translate-x-0 opacity-100"
-                                    : "translate-x-10 opacity-0"
-                            }`}
-                        >
-                            <div className="relative">
-                                <div className="absolute -inset-4 bg-white rounded-2xl opacity-20 transform rotate-6"></div>
-                                <img
-                                    src="/images/mobilklinik.jpg"
-                                    alt="Mobil Klinik UMKM"
-                                    className="relative max-h-80 w-full object-cover rounded-2xl shadow-2xl"
-                                />
-                            </div>
-                        </div>
-                    </div>
+            <section className="relative h-[500px] flex items-center justify-center text-white overflow-hidden">
+                <img
+                    src="/images/mobilklinik.jpg"
+                    alt="Pelayanan UMKM"
+                    className="absolute inset-0 w-full h-full object-cover brightness-50"
+                />
+                <div className="relative max-w-4xl text-center p-8 z-10">
+                    <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight mb-4">
+                        Mendekatkan Pelayanan, Mendukung UMKM Berkembang
+                    </h1>
+                    <p className="text-lg mb-8 opacity-90">
+                        Pelayanan langsung ke masyarakat melalui mobil klinik
+                        dan promosi produk-produk lokal unggulan.
+                    </p>
+                    <Link
+                        href="/login"
+                        className="inline-flex items-center justify-center px-8 py-3 text-lg font-semibold text-green-700 bg-white rounded-full shadow-lg hover:bg-gray-100 transition transform hover:scale-105"
+                    >
+                        Booking Mobil Klinik{" "}
+                        <ChevronRight className="w-5 h-5 ml-2" />
+                    </Link>
                 </div>
             </section>
 
             {/* Stats Section */}
-            <section className="py-16 bg-white">
+            <section className="bg-white py-12 shadow-lg">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                         {stats.map((stat, index) => (
-                            <div key={index} className="text-center">
-                                <div className="text-3xl md:text-4xl font-bold text-green-600 mb-2">
+                            <div key={index}>
+                                <p className="text-4xl font-extrabold text-green-600">
                                     {stat.number}
-                                </div>
-                                <div className="text-gray-600 font-medium">
+                                </p>
+                                <p className="text-gray-600 mt-1">
                                     {stat.label}
-                                </div>
+                                </p>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* Services Section */}
+            {/* Beriya Terbaru */}
             <section className="py-20 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                            Layanan Unggulan Kami
-                        </h3>
-                        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                            Berbagai layanan profesional untuk mendukung
-                            pertumbuhan dan legalitas usaha UMKM Anda
-                        </p>
-                    </div>
-                    {Object.entries(layanan).length === 0 && (
-                        <p className="text-center text-gray-500">
-                            Tidak ada layanan saat ini.
-                        </p>
-                    )}
-                    {Object.entries(layanan).map(([bidang, daftarLayanan]) => (
-                        <div key={bidang} className="mb-12">
-                            <h4 className="text-2xl font-bold mb-6">
-                                {bidang}
-                            </h4>
-
-                            {daftarLayanan.length === 0 ? (
-                                <p className="text-gray-500 italic">
-                                    Tidak ada layanan.
-                                </p>
-                            ) : (
-                                <div className="grid md:grid-cols-3 gap-6">
-                                    {daftarLayanan.map((item) => (
-                                        <div
-                                            key={item.id_layanan}
-                                            className="bg-white rounded-xl p-6 shadow hover:shadow-lg transition transform hover:-translate-y-1"
-                                        >
-                                            <h5 className="text-xl font-semibold mb-2">
-                                                {item.layanan}
-                                            </h5>
-                                            <p className="text-gray-600 text-sm">
-                                                {item.deskripsi_layanan}
-                                            </p>
-                                        </div>
-                                    ))}
+                    <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-14">
+                        Informasi Terbaru
+                    </h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                        {/* Kolom Berita Utama */}
+                        <div className="lg:col-span-2 bg-white rounded-2xl shadow-xl overflow-hidden">
+                            <Link
+                                href={`/berita/${beritaTerbaru.id}`}
+                                className="block group"
+                            >
+                                <div className="grid md:grid-cols-2">
+                                    <img
+                                        src={beritaTerbaru.imageUrl}
+                                        alt={beritaTerbaru.judul}
+                                        className="w-full h-64 md:h-full object-cover transition-opacity duration-300 group-hover:opacity-90"
+                                    />
+                                    {/* Berita Utama */}
+                                    <div className="p-6 flex flex-col justify-center">
+                                        <h3 className="text-sm font-semibold text-blue-700 mb-1 flex items-center">
+                                            <Award className="w-4 h-4 mr-1" />
+                                            BERITA UTAMA
+                                        </h3>
+                                        <p className="text-2xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-green-600 line-clamp-3">
+                                            {beritaTerbaru.judul}
+                                        </p>
+                                        <span className="text-xs font-semibold text-gray-500 block mb-3">
+                                            <Calendar className="w-3 h-3 inline mr-1 -mt-0.5" />
+                                            {beritaTerbaru.tanggal}
+                                        </span>
+                                        <p className="text-base text-gray-600 line-clamp-3">
+                                            {beritaTerbaru.ringkasan}
+                                        </p>
+                                    </div>
                                 </div>
-                            )}
+                            </Link>
+                            <div className="p-4 bg-gray-50 text-right">
+                                <Link
+                                    href="/berita"
+                                    className="text-blue-600 hover:text-blue-800 font-semibold text-sm flex items-center justify-end"
+                                >
+                                    Lihat Arsip Berita
+                                    <ChevronRight className="w-4 h-4 ml-1" />
+                                </Link>
+                            </div>
                         </div>
-                    ))}
+
+                        {/* List Berita Terbaru */}
+                        <div className="bg-white rounded-2xl shadow-xl p-6 lg:p-4">
+                            <h3 className="text-xl font-bold text-green-700 pb-4 mb-4 border-b border-gray-200 flex items-center">
+                                <ClipboardList className="w-5 h-5 mr-2" />
+                                Berita Lainnya
+                            </h3>
+                            <ul className="space-y-4">
+                                {daftarBeritaLain.slice(0, 5).map((berita) => (
+                                    <li key={berita.id}>
+                                        <Link
+                                            href={`/berita/${berita.id}`}
+                                            className="block hover:bg-green-50 p-2 -m-2 rounded transition-colors group"
+                                        >
+                                            <p className="font-semibold text-gray-800 group-hover:text-green-700 line-clamp-2">
+                                                {berita.judul}
+                                            </p>
+                                            <span className="text-xs text-gray-500 flex items-center mt-0.5">
+                                                <Calendar className="w-3 h-3 inline mr-1" />
+                                                {berita.tanggal}
+                                            </span>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="mt-6 text-center">
+                                <Link
+                                    href="/berita"
+                                    className="text-gray-600 hover:text-gray-800 font-semibold text-sm underline"
+                                >
+                                    Lihat Semua Berita
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Layanan Unggulan */}
+            <section className="py-20 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+                        Layanan Unggulan Kami
+                    </h2>
+                    <div className="grid md:grid-cols-2 gap-10 items-center">
+                        <div>
+                            <p className="text-lg text-gray-700 mb-4">
+                                Mobil Klinik adalah program andalan kami untuk
+                                mendekatkan layanan perizinan, konsultasi, dan
+                                pendampingan UMKM langsung ke nagari-nagari.
+                            </p>
+                            <ul className="space-y-3 mb-6">
+                                <li className="flex items-start text-gray-600">
+                                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 mt-1 flex-shrink-0" />{" "}
+                                    Pelayanan Terpadu di lokasi
+                                </li>
+                                <li className="flex items-start text-gray-600">
+                                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 mt-1 flex-shrink-0" />{" "}
+                                    Pendaftaran NIB dan Halal di tempat
+                                </li>
+                                <li className="flex items-start text-gray-600">
+                                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 mt-1 flex-shrink-0" />{" "}
+                                    Konsultasi bisnis gratis
+                                </li>
+                            </ul>
+                            <Link
+                                href="/mobil-klinik"
+                                className="text-white bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition inline-flex items-center"
+                            >
+                                Lihat Detail Lengkap{" "}
+                                <ChevronRight className="w-4 h-4 ml-2" />
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             {/* Mobile Clinic Section */}
-            <section className="py-20 bg-white">
+            <section className="py-20 bg-white border-t border-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        <div>
-                            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                                Layanan Mobil Klinik untuk Masyarakat
-                            </h3>
-                            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-                                Mobil klinik UMKM memberikan layanan konsultasi
-                                usaha, legalitas seperti NIB, perizinan halal,
-                                hingga akses permodalan langsung ke daerah Anda.
-                            </p>
-
-                            <div className="bg-green-50 rounded-xl p-6 mb-8">
-                                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                                    <Calendar className="w-5 h-5 mr-2 text-green-600" />
-                                    Jadwal Layanan Terdekat
-                                </h4>
-                                <div className="space-y-3">
-                                    {jadwalTerdekat.length === 0 && (
-                                        <p className="text-gray-600">
-                                            Tidak ada jadwal terdekat.
-                                        </p>
-                                    )}
-                                    {jadwalTerdekat.map((jadwal, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-center justify-between p-3 bg-white rounded-lg"
-                                        >
-                                            <div>
-                                                <p className="font-medium text-gray-900">
-                                                    {jadwal.lokasi}
-                                                </p>
-                                                <p className="text-sm text-gray-600">
-                                                    {formatTanggalRange(
-                                                        jadwal.tanggal_mulai,
-                                                        jadwal.tanggal_akhir
-                                                    )}
-                                                </p>
-                                            </div>
-                                            <span className="text-green-600 text-sm font-medium">
-                                                {jadwal.waktu_mulai} -{" "}
-                                                {jadwal.waktu_akhir}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
+                    <div className="grid lg:grid-cols-2 gap-16 items-center">
+                        <div className="order-2 lg:order-1">
+                            <div className="relative p-4 bg-green-50 rounded-3xl shadow-xl transform hover:scale-[1.01] transition-transform duration-300">
+                                <img
+                                    src="/images/mobilnya.jpg"
+                                    alt="Mobil Klinik UMKM Sumatera Barat"
+                                    className="w-full h-96 object-cover rounded-2xl shadow-2xl"
+                                />
                             </div>
                         </div>
-                        <div className="flex justify-center">
-                            <div className="relative">
-                                <div className="absolute -inset-4 bg-gradient-to-r from-green-400 to-blue-400 rounded-full opacity-20 blur-lg"></div>
-                                <img
-                                    src="/images/mobilklinik.jpg"
-                                    alt="Mobil Klinik UMKM"
-                                    className="relative rounded-full w-80 h-80 object-cover shadow-2xl"
-                                />
+
+                        {/* Kolom Kiri */}
+                        <div className="order-1 lg:order-2 ">
+                            <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
+                                Layanan Mobil Klinik{" "}
+                                <span className="text-green-600">
+                                    Jemput Bola
+                                </span>{" "}
+                                untuk UMKM
+                            </h3>
+
+                            {/* Jadwal Terdekat */}
+                            <div className="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-6 shadow-md">
+                                <h4 className="text-xl font-bold text-blue-700 mb-4 flex items-center">
+                                    <Calendar className="w-6 h-6 mr-3 text-blue-500" />
+                                    Jadwal Terdekat Kami
+                                </h4>
+                                <div className="space-y-3">
+                                    {jadwalTerdekat.slice(0, 3).length === 0 ? (
+                                        <p className="text-gray-600 italic">
+                                            Belum ada jadwal mobil klinik yang
+                                            dirilis.
+                                        </p>
+                                    ) : (
+                                        jadwalTerdekat
+                                            .slice(0, 3)
+                                            .map((jadwal, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b border-blue-200 last:border-b-0"
+                                                >
+                                                    <div className="mb-1 sm:mb-0">
+                                                        <p className="font-semibold text-gray-900">
+                                                            {jadwal.lokasi}
+                                                        </p>
+                                                        <p className="text-xs text-gray-600">
+                                                            {formatTanggalRange(
+                                                                jadwal.tanggal_mulai,
+                                                                jadwal.tanggal_akhir
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                    <span className="text-blue-600 text-sm font-bold bg-blue-100 px-3 py-1 rounded-full">
+                                                        {jadwal.waktu_mulai} -{" "}
+                                                        {jadwal.waktu_akhir}
+                                                    </span>
+                                                </div>
+                                            ))
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Dokumentasi Terbaru Slider */}
-            <section className="bg-white py-8 border-t border-gray-200">
-                <div className="overflow-hidden whitespace-nowrap relative">
-                    <div className="animate-scroll flex items-center space-x-6">
+            {/* Dokumentasi Terbaru */}
+            <section className="py-20 bg-gray-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+                        Dokumentasi Terbaru
+                    </h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
                         {dokumentasiTerbaru.map((item: any) => {
                             const imgSrc = item.path_file.startsWith(
                                 "/storage/"
@@ -387,6 +524,14 @@ export default function Welcome() {
                                 </div>
                             );
                         })}
+                    </div>
+                    <div className="text-center mt-8">
+                        <Link
+                            href="/galeri"
+                            className="text-gray-600 hover:text-gray-800 font-semibold text-sm underline"
+                        >
+                            Lihat Semua Galeri
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -420,29 +565,6 @@ export default function Welcome() {
                             </p>
                         </div>
                         <div>
-                            <h5 className="font-semibold mb-4">Layanan</h5>
-                            <ul className="space-y-2 text-gray-400">
-                                {Object.values(layanan).flat().length === 0 && (
-                                    <li className="text-gray-500 italic">
-                                        Tidak ada layanan.
-                                    </li>
-                                )}
-
-                                {Object.values(layanan)
-                                    .flat()
-                                    .map((item, index) => (
-                                        <li key={index}>
-                                            <a
-                                                href="#"
-                                                className="hover:text-white transition-colors"
-                                            >
-                                                {item.layanan}
-                                            </a>
-                                        </li>
-                                    ))}
-                            </ul>
-                        </div>
-                        <div>
                             <h5 className="font-semibold mb-4">Kontak</h5>
                             <div className="space-y-2 text-gray-400">
                                 <div className="flex items-start">
@@ -473,16 +595,10 @@ export default function Welcome() {
                             Barat. All rights reserved.
                         </p>
                         <div className="flex space-x-6 mt-4 md:mt-0">
-                            <a
-                                href="#"
-                                className="text-gray-400 hover:text-white text-sm transition-colors"
-                            >
+                            <a className="text-gray-400 hover:text-white text-sm transition-colors">
                                 Privacy Policy
                             </a>
-                            <a
-                                href="#"
-                                className="text-gray-400 hover:text-white text-sm transition-colors"
-                            >
+                            <a className="text-gray-400 hover:text-white text-sm transition-colors">
                                 Terms of Service
                             </a>
                         </div>

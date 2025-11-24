@@ -17,18 +17,70 @@ import {
 import { Link, usePage } from "@inertiajs/react";
 
 const Sidebar: React.FC = () => {
-    const [akunOpen, setAkunOpen] = useState(false);
-
     const { auth } = usePage().props as any;
     const role: string = auth?.role || "";
+
+    const [openMK, setOpenMK] = useState(false);
+    const [openSurat, setOpenSurat] = useState(false);
+    const [openUmkm, setOpenUmkm] = useState(false);
+    const [openAdmin, setOpenAdmin] = useState(false);
+    const [akunOpen, setAkunOpen] = useState(false);
+    const [openHU, setOpenHU] = useState(false);
 
     const currentUrl = new URL(window.location.href);
     const typeParam = currentUrl.searchParams.get("type");
     const isAkunActive = route().current("user.show");
 
     useEffect(() => {
-        if (isAkunActive) setAkunOpen(true);
-    }, [isAkunActive]);
+        // Group: Mobil Klinik
+        if (
+            route().current("booking.listBooking") ||
+            route().current("bookinglaksana.list") ||
+            route().current("laporan.list")
+        ) {
+            setOpenMK(true);
+        }
+
+        // Group: Surat Menyurat
+        if (
+            route().current("surat.list") ||
+            route().current("disposisi.list")
+        ) {
+            setOpenSurat(true);
+        }
+
+        // Group: UMKM
+        if (
+            route().current("kategori.list") ||
+            route().current("pegawai.kelola.promosi")
+        ) {
+            setOpenUmkm(true);
+        }
+
+        // Group: Admin (termasuk Kelola Akun)
+        if (
+            route().current("bidang.list") ||
+            route().current("layanan.list") ||
+            route().current("legpro.list") ||
+            route().current("mobil.list") ||
+            route().current("sopir.list") ||
+            route().current("user.show")
+        ) {
+            setOpenAdmin(true);
+
+            if (route().current("user.show")) {
+                setAkunOpen(true);
+            }
+        }
+
+        // Group: HU
+        if (
+            route().current("kategori.list") ||
+            route().current("pegawai.kelola.promosi")
+        ) {
+            setOpenHU(true);
+        }
+    }, []);
 
     const canAccess = (roles: string[]) => roles.includes(role);
 
@@ -50,23 +102,34 @@ const Sidebar: React.FC = () => {
     };
 
     const baseItem =
-        "flex items-center gap-4 p-2.5 rounded-lg transition-all text-[15px]";
-    const hover = "hover:bg-green-600 hover:text-white cursor-pointer";
-    const active = "bg-green-600 text-white font-medium";
+        "flex items-center gap-4 p-2.5 rounded-lg transition-all duration-200 text-sm";
+
+    const hover =
+        "hover:bg-green-600 hover:shadow-md hover:scale-[1.01] cursor-pointer";
+
+    const active = "bg-green-600 shadow-lg text-white font-semibold";
+
+    const subItem =
+        "flex items-center gap-3 p-2 rounded-lg transition-all duration-200 text-xs";
+    const subHover = "hover:bg-green-500 hover:text-white cursor-pointer";
+    const subActive = "bg-green-500 text-white font-medium";
+
+    const groupHeader =
+        "flex justify-between items-center px-3 py-2 mt-3 text-sm font-bold bg-green-800 rounded-lg hover:bg-green-600 cursor-pointer shadow-md";
 
     return (
-        <div className="w-64 h-screen bg-green-700 text-white flex flex-col fixed shadow-lg">
+        <div className="w-64 h-screen bg-green-700 text-white flex flex-col fixed shadow-2xl z-20">
             {/* Header */}
-            <div className="w-64 h-[74px] flex items-center gap-3 px-[18px] bg-green-800 shadow-md">
+            <div className="w-64 h-[74px] flex items-center gap-3 px-4 bg-green-800 shadow-xl border-b border-green-600">
                 <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
-                <div className="text-sm font-medium leading-tight">
+                <div className="text-base font-extrabold leading-tight">
                     <p>Dinas Koperasi UKM</p>
                     <p>Sumatera Barat</p>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 scrollbar-hide">
-                {/* Dashboard */}
+            <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1 custom-scrollbar">
+                {/* ==================== DASHBOARD ==================== */}
                 <Link
                     href={getDashboardRoute()}
                     className={`${baseItem} ${
@@ -75,228 +138,385 @@ const Sidebar: React.FC = () => {
                         ) && !window.location.href.includes("user/show")
                             ? active
                             : hover
-                    }`}
+                    } font-medium`}
                 >
-                    <FaTh />
+                    <FaTh className="text-base" />
                     <span>Beranda</span>
                 </Link>
+                <hr className="my-2 border-green-600/50" />
 
-                {/* List Booking */}
+                {/* ==================== GRUP: MOBIL KLINIK ==================== */}
                 {canAccess(["Admin", "Kepala Bidang", "Pegawai Lapangan"]) && (
-                    <Link
-                        href={route("booking.listBooking")}
-                        className={`${baseItem} ${
-                            route().current("booking.listBooking")
-                                ? active
-                                : hover
-                        }`}
-                    >
-                        <FaClipboardList />
-                        <span>List Booking</span>
-                    </Link>
-                )}
-
-                {/* Pelaksanaan */}
-                {canAccess(["Admin", "Pegawai Lapangan"]) && (
-                    <Link
-                        href={route("bookinglaksana.list")}
-                        className={`${baseItem} ${
-                            route().current("bookinglaksana.list")
-                                ? active
-                                : hover
-                        }`}
-                    >
-                        <FaStore />
-                        <span>Data Pelaksanaan Mobil Klinik</span>
-                    </Link>
-                )}
-
-                {/* Laporan */}
-                {canAccess([
-                    "Admin",
-                    "Kepala Bidang",
-                    "Kepala Dinas",
-                    "Pegawai Lapangan",
-                ]) && (
-                    <Link
-                        href={route("laporan.list")}
-                        className={`${baseItem} ${
-                            route().current("laporan.list") ? active : hover
-                        }`}
-                    >
-                        <FaFileAlt />
-                        <span>Laporan</span>
-                    </Link>
-                )}
-
-                {/* Surat Masuk */}
-                {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
-                    <Link
-                        href={route("surat.list")}
-                        className={`${baseItem} ${
-                            route().current("surat.list") ? active : hover
-                        }`}
-                    >
-                        <FaInbox />
-                        <span>Surat Masuk</span>
-                    </Link>
-                )}
-
-                {/* Disposisi */}
-                {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
-                    <Link
-                        href={route("disposisi.list")}
-                        className={`${baseItem} ${
-                            route().current("disposisi.list") ? active : hover
-                        }`}
-                    >
-                        <FaShareSquare />
-                        <span>Disposisi</span>
-                    </Link>
-                )}
-
-                {/* ADMIN SECTION */}
-                {canAccess(["Admin"]) && (
-                    <>
-                        {/* Kelola Akun dropdown */}
-                        <button
-                            onClick={() => setAkunOpen(!akunOpen)}
-                            className={`${baseItem} justify-between w-full ${
-                                isAkunActive || akunOpen ? active : hover
-                            }`}
+                    <div>
+                        <div
+                            className={groupHeader}
+                            onClick={() => setOpenMK(!openMK)}
                         >
-                            <span className="flex items-center gap-4">
-                                <FaUsersCog /> Kelola Akun
+                            <span className="flex items-center gap-3">
+                                <FaCar /> Mobil Klinik
                             </span>
                             <FaChevronDown
                                 className={`transition-transform duration-300 ${
-                                    akunOpen ? "rotate-180" : ""
+                                    openMK ? "rotate-180" : ""
                                 }`}
                             />
-                        </button>
+                        </div>
 
-                        {akunOpen && (
-                            <div className="ml-7 mt-1 space-y-1">
+                        {openMK && (
+                            <div className="ml-4 mt-1 space-y-1">
+                                {canAccess([
+                                    "Admin",
+                                    "Kepala Bidang",
+                                    "Pegawai Lapangan",
+                                ]) && (
+                                    <Link
+                                        href={route("booking.listBooking")}
+                                        className={`${subItem} ${
+                                            route().current(
+                                                "booking.listBooking"
+                                            )
+                                                ? subActive
+                                                : subHover
+                                        }`}
+                                    >
+                                        <FaClipboardList className="text-xs" />
+                                        List Booking
+                                    </Link>
+                                )}
+
+                                {canAccess(["Admin", "Pegawai Lapangan"]) && (
+                                    <Link
+                                        href={route("bookinglaksana.list")}
+                                        className={`${subItem} ${
+                                            route().current(
+                                                "bookinglaksana.list"
+                                            )
+                                                ? subActive
+                                                : subHover
+                                        }`}
+                                    >
+                                        <FaStore className="text-xs" /> Data
+                                        Pelaksanaan
+                                    </Link>
+                                )}
+
+                                {canAccess([
+                                    "Admin",
+                                    "Kepala Bidang",
+                                    "Kepala Dinas",
+                                    "Pegawai Lapangan",
+                                ]) && (
+                                    <Link
+                                        href={route("laporan.list")}
+                                        className={`${subItem} ${
+                                            route().current("laporan.list")
+                                                ? subActive
+                                                : subHover
+                                        }`}
+                                    >
+                                        <FaFileAlt className="text-xs" />
+                                        Laporan
+                                    </Link>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* ==================== GRUP: SURAT MENYURAT ==================== */}
+                {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
+                    <div>
+                        <div
+                            className={groupHeader}
+                            onClick={() => setOpenSurat(!openSurat)}
+                        >
+                            <span className="flex items-center gap-3">
+                                <FaInbox /> Surat Menyurat
+                            </span>
+                            <FaChevronDown
+                                className={`transition-transform duration-300 ${
+                                    openSurat ? "rotate-180" : ""
+                                }`}
+                            />
+                        </div>
+
+                        {openSurat && (
+                            <div className="ml-4 mt-1 space-y-1">
                                 <Link
-                                    href={route("user.show", {
-                                        type: "pegawai",
-                                    })}
-                                    className={`${baseItem} text-sm px-3 ${
-                                        isAkunActive && typeParam === "pegawai"
-                                            ? active
-                                            : hover
+                                    href={route("surat.list")}
+                                    className={`${subItem} ${
+                                        route().current("surat.list")
+                                            ? subActive
+                                            : subHover
                                     }`}
                                 >
-                                    <FaUsersCog className="text-xs" />
-                                    Pegawai
+                                    <FaInbox className="text-xs" /> Surat Masuk
                                 </Link>
 
                                 <Link
-                                    href={route("user.show", {
-                                        type: "instansi",
-                                    })}
-                                    className={`${baseItem} text-sm px-3 ${
-                                        isAkunActive && typeParam === "instansi"
-                                            ? active
-                                            : hover
+                                    href={route("disposisi.list")}
+                                    className={`${subItem} ${
+                                        route().current("disposisi.list")
+                                            ? subActive
+                                            : subHover
                                     }`}
                                 >
-                                    <FaUsersCog className="text-xs" />
-                                    Instansi
-                                </Link>
-
-                                <Link
-                                    href={route("user.show", {
-                                        type: "umkm",
-                                    })}
-                                    className={`${baseItem} text-sm px-3 ${
-                                        isAkunActive && typeParam === "umkm"
-                                            ? active
-                                            : hover
-                                    }`}
-                                >
-                                    <FaUsersCog className="text-xs" />
-                                    UMKM
+                                    <FaShareSquare className="text-xs" />
+                                    Disposisi
                                 </Link>
                             </div>
                         )}
+                    </div>
+                )}
 
-                        {/* Menu Admin lain */}
-                        <Link
-                            href={route("bidang.list")}
-                            className={`${baseItem} ${
-                                route().current("bidang.list") ? active : hover
-                            }`}
+                {/* ==================== GRUP: PROMOSI UMKM ==================== */}
+                {canAccess(["Admin"]) && (
+                    <div>
+                        <div
+                            className={groupHeader}
+                            onClick={() => setOpenUmkm(!openUmkm)}
                         >
-                            <FaLayerGroup />
-                            <span>Kelola Bidang Layanan</span>
-                        </Link>
+                            <span className="flex items-center gap-3">
+                                <FaShoppingBag /> Manajemen Promosi UMKM
+                            </span>
+                            <FaChevronDown
+                                className={`transition-transform duration-300 ${
+                                    openUmkm ? "rotate-180" : ""
+                                }`}
+                            />
+                        </div>
 
-                        <Link
-                            href={route("layanan.list")}
-                            className={`${baseItem} ${
-                                route().current("layanan.list") ? active : hover
-                            }`}
-                        >
-                            <FaFileAlt />
-                            <span>Kelola Layanan</span>
-                        </Link>
+                        {openUmkm && (
+                            <div className="ml-4 mt-1 space-y-1">
+                                <Link
+                                    href={route("kategori.list")}
+                                    className={`${subItem} ${
+                                        route().current("kategori.list")
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaTags className="text-xs" /> Kelola
+                                    Kategori
+                                </Link>
 
-                        <Link
-                            href={route("legpro.list")}
-                            className={`${baseItem} ${
-                                route().current("legpro.list") ? active : hover
-                            }`}
-                        >
-                            <FaFileAlt />
-                            <span>Kelola Legalitas Produk</span>
-                        </Link>
+                                <Link
+                                    href={route("pegawai.kelola.promosi")}
+                                    className={`${subItem} ${
+                                        route().current(
+                                            "pegawai.kelola.promosi"
+                                        )
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaShoppingBag className="text-xs" /> Kelola
+                                    Promosi
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+                )}
 
-                        <Link
-                            href={route("mobil.list")}
-                            className={`${baseItem} ${
-                                route().current("mobil.list") ? active : hover
-                            }`}
+                {/* ==================== GRUP: MANAJEMEN DATA (ADMIN) ==================== */}
+                {canAccess(["Admin"]) && (
+                    <div>
+                        <div
+                            className={groupHeader}
+                            onClick={() => setOpenAdmin(!openAdmin)}
                         >
-                            <FaCar />
-                            <span>Kelola Mobil</span>
-                        </Link>
+                            <span className="flex items-center gap-3">
+                                <FaUsersCog /> Manajemen Data
+                            </span>
+                            <FaChevronDown
+                                className={`transition-transform duration-300 ${
+                                    openAdmin ? "rotate-180" : ""
+                                }`}
+                            />
+                        </div>
 
-                        <Link
-                            href={route("sopir.list")}
-                            className={`${baseItem} ${
-                                route().current("sopir.list") ? active : hover
-                            }`}
-                        >
-                            <FaUserTie />
-                            <span>Kelola Sopir</span>
-                        </Link>
+                        {openAdmin && (
+                            <div className="ml-4 mt-1 space-y-1">
+                                {/* Kelola Akun */}
+                                <button
+                                    onClick={() => setAkunOpen(!akunOpen)}
+                                    className={`${baseItem} justify-between w-full p-2 ${
+                                        isAkunActive || akunOpen
+                                            ? active
+                                            : hover
+                                    }`}
+                                >
+                                    <span className="flex items-center gap-4 text-sm font-medium">
+                                        <FaUsersCog className="text-base" />{" "}
+                                        Kelola Akun
+                                    </span>
+                                    <FaChevronDown
+                                        className={`transition-transform duration-300 ${
+                                            akunOpen ? "rotate-180" : ""
+                                        }`}
+                                    />
+                                </button>
 
-                        <Link
-                            href={route("kategori.list")}
-                            className={`${baseItem} ${
-                                route().current("kategori.list")
-                                    ? active
-                                    : hover
-                            }`}
-                        >
-                            <FaTags />
-                            <span>Kelola Kategori</span>
-                        </Link>
+                                {akunOpen && (
+                                    <div className="ml-4 mt-1 space-y-1 border-l border-green-600/50 pl-2">
+                                        <Link
+                                            href={route("user.show", {
+                                                type: "pegawai",
+                                            })}
+                                            className={`${subItem} ${
+                                                isAkunActive &&
+                                                typeParam === "pegawai"
+                                                    ? subActive
+                                                    : subHover
+                                            }`}
+                                        >
+                                            <FaUserTie className="text-xs" />
+                                            Pegawai
+                                        </Link>
 
-                        <Link
-                            href={route("pegawai.kelola.promosi")}
-                            className={`${baseItem} ${
-                                route().current("pegawai.kelola.promosi") &&
-                                !window.location.href.includes("user/show")
-                                    ? active
-                                    : hover
-                            }`}
+                                        <Link
+                                            href={route("user.show", {
+                                                type: "instansi",
+                                            })}
+                                            className={`${subItem} ${
+                                                isAkunActive &&
+                                                typeParam === "instansi"
+                                                    ? subActive
+                                                    : subHover
+                                            }`}
+                                        >
+                                            <FaUsersCog className="text-xs" />
+                                            Instansi
+                                        </Link>
+
+                                        <Link
+                                            href={route("user.show", {
+                                                type: "umkm",
+                                            })}
+                                            className={`${subItem} ${
+                                                isAkunActive &&
+                                                typeParam === "umkm"
+                                                    ? subActive
+                                                    : subHover
+                                            }`}
+                                        >
+                                            <FaUsersCog className="text-xs" />
+                                            UMKM
+                                        </Link>
+                                    </div>
+                                )}
+
+                                {/* Menu Admin lainnya */}
+                                <Link
+                                    href={route("bidang.list")}
+                                    className={`${subItem} ${
+                                        route().current("bidang.list")
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaLayerGroup className="text-xs" /> Kelola
+                                    Bidang Layanan
+                                </Link>
+
+                                <Link
+                                    href={route("layanan.list")}
+                                    className={`${subItem} ${
+                                        route().current("layanan.list")
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaFileAlt className="text-xs" /> Kelola
+                                    Layanan
+                                </Link>
+
+                                <Link
+                                    href={route("legpro.list")}
+                                    className={`${subItem} ${
+                                        route().current("legpro.list")
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaFileAlt className="text-xs" /> Kelola
+                                    Legalitas Produk
+                                </Link>
+
+                                <Link
+                                    href={route("mobil.list")}
+                                    className={`${subItem} ${
+                                        route().current("mobil.list")
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaCar className="text-xs" /> Kelola Mobil
+                                </Link>
+
+                                <Link
+                                    href={route("sopir.list")}
+                                    className={`${subItem} ${
+                                        route().current("sopir.list")
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaUserTie className="text-xs" /> Kelola
+                                    Sopir
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* ==================== GRUP: MANAJEMEN HU ==================== */}
+                {canAccess(["Admin"]) && (
+                    <div>
+                        <div
+                            className={groupHeader}
+                            onClick={() => setOpenHU(!openHU)}
                         >
-                            <FaShoppingBag />
-                            <span>Kelola Promosi</span>
-                        </Link>
-                    </>
+                            <span className="flex items-center gap-3">
+                                <FaShoppingBag /> Manajemen Halaman Utama
+                            </span>
+                            <FaChevronDown
+                                className={`transition-transform duration-300 ${
+                                    openHU ? "rotate-180" : ""
+                                }`}
+                            />
+                        </div>
+
+                        {openHU && (
+                            <div className="ml-4 mt-1 space-y-1">
+                                <Link
+                                    href={route("kategori.list")}
+                                    className={`${subItem} ${
+                                        route().current("kategori.list")
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaTags className="text-xs" /> Kelola
+                                    Berita
+                                </Link>
+
+                                <Link
+                                    href={route("pegawai.kelola.promosi")}
+                                    className={`${subItem} ${
+                                        route().current(
+                                            "pegawai.kelola.promosi"
+                                        )
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaShoppingBag className="text-xs" /> Kelola
+                                    Dokumentasi
+                                </Link>
+                            </div>
+                        )}
+                    </div>
                 )}
             </div>
         </div>
