@@ -31,6 +31,18 @@ interface Jadwal {
     waktu_akhir: string;
     lokasi: string;
 }
+
+interface SubItem {
+    name: string;
+    href: string;
+}
+
+interface NavItem {
+    name: string;
+    href: string;
+    icon: any;
+    subItems?: SubItem[];
+}
 interface Berita {
     id: number;
     judul: string;
@@ -97,9 +109,22 @@ const DUMMY_DAFTAR_BERITA: Berita[] = [
 ];
 
 // Data Menu Navigasi
-const navItems = [
+const navItems: NavItem[] = [
     { name: "Home", href: "/", icon: HomeIcon },
-    { name: "Profile", href: "/profile", icon: ClipboardList },
+    {
+        name: "Profile",
+        href: "#",
+        icon: ClipboardList,
+        subItems: [
+            {
+                name: "Struktur Organisasi",
+                href: "/profile/struktur-organisasi",
+            },
+            { name: "Tugas dan Fungsi", href: "/profile/tugas-dan-fungsi" },
+            { name: "Visi dan Misi", href: "/profile/visi-dan-misi" },
+            { name: "Maklumat Pelayanan", href: "/profile/maklumat-pelayanan" },
+        ],
+    },
     { name: "Mobil Klinik", href: "/login", icon: Truck },
     { name: "Promosi UKM", href: "/list/umkm/promosi", icon: Store },
 ];
@@ -172,6 +197,7 @@ export default function Welcome() {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
     useEffect(() => {
         setIsVisible(true);
@@ -212,13 +238,61 @@ export default function Welcome() {
                         {/* Navigasi Desktop */}
                         <nav className="hidden md:flex space-x-8">
                             {navItems.map((item) => (
-                                <Link
+                                <div
                                     key={item.name}
-                                    href={item.href}
-                                    className="text-gray-600 hover:text-green-600 font-medium transition-colors text-lg"
+                                    className="relative h-full"
+                                    onMouseEnter={() =>
+                                        item.name === "Profile" &&
+                                        setIsProfileDropdownOpen(true)
+                                    }
+                                    onMouseLeave={() =>
+                                        item.name === "Profile" &&
+                                        setIsProfileDropdownOpen(false)
+                                    }
                                 >
-                                    {item.name}
-                                </Link>
+                                    {/* Link Menu Utama */}
+                                    <Link
+                                        href={item.href}
+                                        className="text-gray-600 hover:text-green-600 font-medium transition-colors text-lg flex items-center py-4" // Tambahkan padding vertikal agar mudah dijangkau kursor
+                                    >
+                                        {item.name}
+                                        {item.subItems && (
+                                            <ChevronRight
+                                                className={`w-4 h-4 ml-1 transform transition-transform duration-200 ${
+                                                    isProfileDropdownOpen
+                                                        ? "rotate-90"
+                                                        : "rotate-0"
+                                                }`}
+                                            />
+                                        )}
+                                    </Link>
+
+                                    {/* Dropdown Menu Desktop */}
+                                    {item.subItems && isProfileDropdownOpen && (
+                                        <div
+                                            className="absolute top-full left-0 w-56 rounded-md shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-20 origin-top-left"
+                                        >
+                                            <div className="py-1">
+                                                {item.subItems.map(
+                                                    (subItem) => (
+                                                        <Link
+                                                            key={subItem.name}
+                                                            href={subItem.href}
+                                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600"
+                                                            onClick={() =>
+                                                                setIsProfileDropdownOpen(
+                                                                    false
+                                                                )
+                                                            }
+                                                        >
+                                                            {subItem.name}
+                                                        </Link>
+                                                    )
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             ))}
                         </nav>
 
@@ -246,15 +320,66 @@ export default function Welcome() {
                 >
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                         {navItems.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                onClick={() => setIsMenuOpen(false)}
-                                className="text-gray-700 hover:bg-green-50 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium flex items-center"
-                            >
-                                <item.icon className="w-5 h-5 mr-3" />
-                                {item.name}
-                            </Link>
+                            <div key={item.name}>
+                                <button
+                                    onClick={() => {
+                                        if (item.subItems) {
+                                            item.name === "Profile" &&
+                                                setIsProfileDropdownOpen(
+                                                    !isProfileDropdownOpen
+                                                );
+                                        } else {
+                                            setIsMenuOpen(false);
+                                        }
+                                    }}
+                                    className={`w-full text-left ${
+                                        item.subItems
+                                            ? "text-gray-900 font-semibold"
+                                            : "text-gray-700"
+                                    } hover:bg-green-50 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium flex items-center justify-between`}
+                                >
+                                    <span className="flex items-center">
+                                        <item.icon className="w-5 h-5 mr-3" />
+                                        {item.name}
+                                    </span>
+                                    {item.subItems && (
+                                        <ChevronRight
+                                            className={`w-4 h-4 transform transition-transform duration-200 ${
+                                                isProfileDropdownOpen
+                                                    ? "rotate-90"
+                                                    : "rotate-0"
+                                            }`}
+                                        />
+                                    )}
+                                </button>
+
+                                {/* Sub-menu Mobile */}
+                                {item.subItems && (
+                                    <div
+                                        className={`overflow-hidden transition-max-height duration-300 ease-in-out ${
+                                            isProfileDropdownOpen &&
+                                            item.name === "Profile"
+                                                ? "max-h-40 mt-1" // Atur max-h secukupnya agar cukup menampung semua sub-menu
+                                                : "max-h-0"
+                                        }`}
+                                    >
+                                        <div className="pl-8 pt-1 pb-1 space-y-1">
+                                            {item.subItems.map((subItem) => (
+                                                <Link
+                                                    key={subItem.name}
+                                                    href={subItem.href}
+                                                    onClick={() =>
+                                                        setIsMenuOpen(false)
+                                                    }
+                                                    className="text-gray-600 hover:bg-blue-50 hover:text-blue-600 block px-3 py-2 rounded-md text-sm font-normal"
+                                                >
+                                                    {subItem.name}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -275,13 +400,6 @@ export default function Welcome() {
                         Pelayanan langsung ke masyarakat melalui mobil klinik
                         dan promosi produk-produk lokal unggulan.
                     </p>
-                    <Link
-                        href="/login"
-                        className="inline-flex items-center justify-center px-8 py-3 text-lg font-semibold text-green-700 bg-white rounded-full shadow-lg hover:bg-gray-100 transition transform hover:scale-105"
-                    >
-                        Booking Mobil Klinik{" "}
-                        <ChevronRight className="w-5 h-5 ml-2" />
-                    </Link>
                 </div>
             </section>
 
