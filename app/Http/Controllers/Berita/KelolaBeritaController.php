@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Berita;
 use App\Http\Controllers\Controller;
 use App\Models\Berita;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage as Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -33,13 +34,12 @@ class KelolaBeritaController extends Controller
             'konten' => 'required|string',
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'tanggal_publikasi' => 'required|date',
-            'id_pegawai' => 'required|integer|exists:pegawai,id'
         ]);
 
         $gambarPath = null;
         if ($request->hasFile('gambar')) {
-            $gambarPath = $request->file('gambar')->store('public/berita_gambar');
-            $gambarPath = str_replace('public/', 'storage/', $gambarPath);
+            $gambarPath = $request->file('gambar')->store('berita_gambar', 'public');
+            $gambarPath = 'storage/' . $gambarPath;
         }
 
         $slug = Str::slug($request->judul);
@@ -49,17 +49,17 @@ class KelolaBeritaController extends Controller
             $slug = $originalSlug . '-' . $count++;
         }
 
-        $berita = Berita::create([
+        Berita::create([
             'judul' => $validated['judul'],
             'slug' => $slug,
             'ringkasan' => $validated['ringkasan'],
             'konten' => $validated['konten'],
             'gambar' => $gambarPath,
             'tanggal_publikasi' => $validated['tanggal_publikasi'],
-            'id_pegawai' => $validated['id_pegawai'],
+            'id_pegawai' => Auth::user()->pegawai->id ?? Auth::id(),
         ]);
 
-        return redirect()->route('admin.berita.index')->with('success', 'Berita baru berhasil dipublikasikan');
+        return redirect()->route('berita.list')->with('success', 'Berita baru berhasil dipublikasikan');
     }
 
     public function edit($id_berita)
@@ -79,9 +79,8 @@ class KelolaBeritaController extends Controller
             'judul' => 'required|string|max:255',
             'ringkasan' => 'required|string',
             'konten' => 'required|string',
-            'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'tanggal_publikasi' => 'required|date',
-            'id_pegawai' => 'required|integer|exists:pegawai,id'
         ]);
 
         $dataToUpdate = $validated;
@@ -90,7 +89,7 @@ class KelolaBeritaController extends Controller
         if ($newSlug !== $berita->slug) {
             $originalSlug = $newSlug;
             $count = 1;
-            while (Berita::where('slug', $newSlug)->where('id', '!=', $berita->id)->exists()) {
+            while (Berita::where('slug', $newSlug)->where('id_berita', '!=', $berita->id_berita)->exists()) {
                 $newSlug = $originalSlug . '-' . $count++;
             }
             $dataToUpdate['slug'] = $newSlug;
@@ -102,7 +101,7 @@ class KelolaBeritaController extends Controller
                 Storage::delete($oldPath);
             }
 
-            $gambarPath = $request->file('gambar')->store('public/berita_gambar');
+            $gambarPath = $request->file('gambar')->store('berita_gambar');
             $gambarPath = str_replace('public/', 'storage/', $gambarPath);
 
             $dataToUpdate['gambar'] = $gambarPath;
@@ -112,7 +111,7 @@ class KelolaBeritaController extends Controller
 
         $berita->update($dataToUpdate);
 
-        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil diperbarui!');
+        return redirect()->route('berita.list')->with('success', 'Berita berhasil diperbarui!');
     }
 
     public function destroy($id_berita)
@@ -129,6 +128,6 @@ class KelolaBeritaController extends Controller
 
         $berita->delete();
 
-        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil dihapus');
+        return redirect()->route('berita.list')->with('success', 'Berita berhasil dihapus');
     }
 }

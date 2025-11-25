@@ -75,7 +75,7 @@ const Sidebar: React.FC = () => {
 
         // Group: HU
         if (
-            route().current("kategori.list") ||
+            route().current("berita.list") ||
             route().current("pegawai.kelola.promosi")
         ) {
             setOpenHU(true);
@@ -490,9 +490,9 @@ const Sidebar: React.FC = () => {
                         {openHU && (
                             <div className="ml-4 mt-1 space-y-1">
                                 <Link
-                                    href={route("kategori.list")}
+                                    href={route("berita.list")}
                                     className={`${subItem} ${
-                                        route().current("kategori.list")
+                                        route().current("berita.list")
                                             ? subActive
                                             : subHover
                                     }`}

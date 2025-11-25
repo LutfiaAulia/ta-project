@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginUmkmController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Berita\KelolaBeritaController;
 use App\Http\Controllers\BidangLayanan\KelolaBidangController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\RiwayatBooking;
@@ -206,6 +207,13 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/kategori/{id}', [KelolaKategoriController::class, 'edit'])->name('kategori.edit');
         Route::put('/update/kategori/{id}', [KelolaKategoriController::class, 'update'])->name('kategori.update');
         Route::delete('/destroy/kategori/{id}', [KelolaKategoriController::class, 'destroy'])->name('kategori.destroy');
+
+        Route::get('/list/berita', [KelolaBeritaController::class, 'show'])->name('berita.list');
+        Route::get('/create/berita', [KelolaBeritaController::class, 'create'])->name('berita.create');
+        Route::post('/store/berita', [KelolaBeritaController::class, 'store'])->name('berita.store');
+        Route::get('/edit/berita/{id}', [KelolaBeritaController::class, 'edit'])->name('berita.edit');
+        Route::put('/update/berita/{id}', [KelolaBeritaController::class, 'update'])->name('berita.update');
+        Route::delete('/destroy/berita/{id}', [KelolaBeritaController::class, 'destroy'])->name('berita.destroy');
 
         Route::get('/tampilan/laporan/{id}', [KelolaLaporanController::class, 'laporan'])->name('tampilan.tempalte.laporan');
     });
