@@ -1,14 +1,12 @@
-import { useState, useEffect } from "react";
+import Header from "@/Components/HeaderHU";
+import Footer from "@/Components/FooterHU";
 import { Link, usePage } from "@inertiajs/react";
 import {
     Calendar,
-    Users,
     Award,
     MapPin,
     Phone,
     Mail,
-    Menu,
-    X,
     ChevronRight,
     CheckCircle,
     Home as HomeIcon,
@@ -62,27 +60,6 @@ interface PageProps {
     mainNews: Berita | null;
     beritaLain: Berita[];
 }
-
-// Data Menu Navigasi
-const navItems: NavItem[] = [
-    { name: "Home", href: "/", icon: HomeIcon },
-    {
-        name: "Profile",
-        href: "#",
-        icon: ClipboardList,
-        subItems: [
-            {
-                name: "Struktur Organisasi",
-                href: "/profile/struktur-organisasi",
-            },
-            { name: "Tugas dan Fungsi", href: "/profile/tugas-dan-fungsi" },
-            { name: "Visi dan Misi", href: "/profile/visi-dan-misi" },
-            { name: "Maklumat Pelayanan", href: "/profile/maklumat-pelayanan" },
-        ],
-    },
-    { name: "Mobil Klinik", href: "/login", icon: Truck },
-    { name: "Promosi UKM", href: "/list/umkm/promosi", icon: Store },
-];
 
 export default function Welcome() {
     function formatTanggalRange(tanggalMulai: string, tanggalAkhir: string) {
@@ -153,14 +130,6 @@ export default function Welcome() {
         beritaLain,
     } = usePage().props as unknown as PageProps;
 
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isVisible, setIsVisible] = useState(false);
-    const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-
-    useEffect(() => {
-        setIsVisible(true);
-    }, []);
-
     const stats = [
         { number: `${umkmTerlayani}`, label: "UMKM Terlayani" },
         { number: `${nagariTerliput}`, label: "Nagari Terjangkau" },
@@ -169,178 +138,8 @@ export default function Welcome() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 text-gray-800">
-            {/* Header */}
-            <header className="bg-white shadow-lg sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center py-4">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-16 h-16 bg-white rounded-lg shadow p-2">
-                                <img
-                                    src="/logo.png"
-                                    alt="Logo"
-                                    className="w-full h-full object-contain"
-                                />
-                            </div>
-
-                            <div>
-                                <h1 className="text-lg font-bold text-gray-900 leading-tight">
-                                    Dinas Koperasi, Usaha Kecil, dan Menengah
-                                </h1>
-                                <p className="text-sm text-gray-600">
-                                    Provinsi Sumatera Barat
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Navigasi Desktop */}
-                        <nav className="hidden md:flex space-x-8">
-                            {navItems.map((item) => (
-                                <div
-                                    key={item.name}
-                                    className="relative h-full"
-                                    onMouseEnter={() =>
-                                        item.name === "Profile" &&
-                                        setIsProfileDropdownOpen(true)
-                                    }
-                                    onMouseLeave={() =>
-                                        item.name === "Profile" &&
-                                        setIsProfileDropdownOpen(false)
-                                    }
-                                >
-                                    {/* Link Menu Utama */}
-                                    <Link
-                                        href={item.href}
-                                        className="text-gray-600 hover:text-green-600 font-medium transition-colors text-lg flex items-center py-4" // Tambahkan padding vertikal agar mudah dijangkau kursor
-                                    >
-                                        {item.name}
-                                        {item.subItems && (
-                                            <ChevronRight
-                                                className={`w-4 h-4 ml-1 transform transition-transform duration-200 ${
-                                                    isProfileDropdownOpen
-                                                        ? "rotate-90"
-                                                        : "rotate-0"
-                                                }`}
-                                            />
-                                        )}
-                                    </Link>
-
-                                    {/* Dropdown Menu Desktop */}
-                                    {item.subItems && isProfileDropdownOpen && (
-                                        <div className="absolute top-full left-0 w-56 rounded-md shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-20 origin-top-left">
-                                            <div className="py-1">
-                                                {item.subItems.map(
-                                                    (subItem) => (
-                                                        <Link
-                                                            key={subItem.name}
-                                                            href={subItem.href}
-                                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600"
-                                                            onClick={() =>
-                                                                setIsProfileDropdownOpen(
-                                                                    false
-                                                                )
-                                                            }
-                                                        >
-                                                            {subItem.name}
-                                                        </Link>
-                                                    )
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </nav>
-
-                        {/* Mobile menu button */}
-                        <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                        >
-                            {isMenuOpen ? (
-                                <X className="w-6 h-6" />
-                            ) : (
-                                <Menu className="w-6 h-6" />
-                            )}
-                        </button>
-                    </div>
-                </div>
-
-                {/* Navigasi Mobile (Conditional) */}
-                <div
-                    className={`md:hidden overflow-hidden transition-all duration-300 ${
-                        isMenuOpen
-                            ? "max-h-screen opacity-100 py-2"
-                            : "max-h-0 opacity-0"
-                    }`}
-                >
-                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                        {navItems.map((item) => (
-                            <div key={item.name}>
-                                <button
-                                    onClick={() => {
-                                        if (item.subItems) {
-                                            item.name === "Profile" &&
-                                                setIsProfileDropdownOpen(
-                                                    !isProfileDropdownOpen
-                                                );
-                                        } else {
-                                            setIsMenuOpen(false);
-                                        }
-                                    }}
-                                    className={`w-full text-left ${
-                                        item.subItems
-                                            ? "text-gray-900 font-semibold"
-                                            : "text-gray-700"
-                                    } hover:bg-green-50 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium flex items-center justify-between`}
-                                >
-                                    <span className="flex items-center">
-                                        <item.icon className="w-5 h-5 mr-3" />
-                                        {item.name}
-                                    </span>
-                                    {item.subItems && (
-                                        <ChevronRight
-                                            className={`w-4 h-4 transform transition-transform duration-200 ${
-                                                isProfileDropdownOpen
-                                                    ? "rotate-90"
-                                                    : "rotate-0"
-                                            }`}
-                                        />
-                                    )}
-                                </button>
-
-                                {/* Sub-menu Mobile */}
-                                {item.subItems && (
-                                    <div
-                                        className={`overflow-hidden transition-max-height duration-300 ease-in-out ${
-                                            isProfileDropdownOpen &&
-                                            item.name === "Profile"
-                                                ? "max-h-40 mt-1" // Atur max-h secukupnya agar cukup menampung semua sub-menu
-                                                : "max-h-0"
-                                        }`}
-                                    >
-                                        <div className="pl-8 pt-1 pb-1 space-y-1">
-                                            {item.subItems.map((subItem) => (
-                                                <Link
-                                                    key={subItem.name}
-                                                    href={subItem.href}
-                                                    onClick={() =>
-                                                        setIsMenuOpen(false)
-                                                    }
-                                                    className="text-gray-600 hover:bg-blue-50 hover:text-blue-600 block px-3 py-2 rounded-md text-sm font-normal"
-                                                >
-                                                    {subItem.name}
-                                                </Link>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </header>
-
+        <div>
+            <Header />
             {/* Hero Section */}
             <section className="relative h-[500px] flex items-center justify-center text-white overflow-hidden">
                 <img
@@ -419,7 +218,9 @@ export default function Welcome() {
                                             </p>
                                             <span className="text-xs font-semibold text-gray-500 block mb-3">
                                                 <Calendar className="w-3 h-3 inline mr-1 -mt-0.5" />
-                                                {formatTanggalPublikasi(mainNews.tanggal_publikasi)}
+                                                {formatTanggalPublikasi(
+                                                    mainNews.tanggal_publikasi
+                                                )}
                                             </span>
                                             <p className="text-base text-gray-600 line-clamp-3">
                                                 {mainNews.ringkasan}
@@ -466,7 +267,9 @@ export default function Welcome() {
                                             </p>
                                             <span className="text-xs text-gray-500 flex items-center mt-0.5">
                                                 <Calendar className="w-3 h-3 inline mr-1" />
-                                                {formatTanggalPublikasi(berita.tanggal_publikasi)}
+                                                {formatTanggalPublikasi(
+                                                    berita.tanggal_publikasi
+                                                )}
                                             </span>
                                         </Link>
                                     </li>
@@ -632,76 +435,7 @@ export default function Welcome() {
                     </div>
                 </div>
             </section>
-
-            {/* Footer */}
-            <footer className="bg-gray-900 text-white py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid md:grid-cols-4 gap-8">
-                        <div className="md:col-span-2">
-                            <div className="flex items-center space-x-3 mb-4">
-                                <div className="w-10 h-10 overflow-hidden">
-                                    <img
-                                        src="/logo.png"
-                                        alt="Logo"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-
-                                <div>
-                                    <h4 className="font-bold">
-                                        Dinas Koperasi dan UMKM
-                                    </h4>
-                                    <p className="text-sm text-gray-400">
-                                        Provinsi Sumatera Barat
-                                    </p>
-                                </div>
-                            </div>
-                            <p className="text-gray-400 mb-4 max-w-md">
-                                Mendukung pertumbuhan UMKM melalui layanan
-                                terpadu dan inovasi yang berkelanjutan.
-                            </p>
-                        </div>
-                        <div>
-                            <h5 className="font-semibold mb-4">Kontak</h5>
-                            <div className="space-y-2 text-gray-400">
-                                <div className="flex items-start">
-                                    <MapPin className="w-5 h-5 mr-2" />
-                                    <span className="text-sm">
-                                        Jl.Khatib Sulaiman No.11, Padang,
-                                        Sumatera Barat
-                                    </span>
-                                </div>
-                                <div className="flex items-center">
-                                    <Phone className="w-4 h-4 mr-2" />
-                                    <span className="text-sm">
-                                        (0751) 7055292-7055298
-                                    </span>
-                                </div>
-                                <div className="flex items-center">
-                                    <Mail className="w-4 h-4 mr-2" />
-                                    <span className="text-sm">
-                                        info@diskopumkm-sumbar.go.id
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-                        <p className="text-gray-400 text-sm">
-                            © 2025 Dinas Koperasi dan UMKM Provinsi Sumatera
-                            Barat. All rights reserved.
-                        </p>
-                        <div className="flex space-x-6 mt-4 md:mt-0">
-                            <a className="text-gray-400 hover:text-white text-sm transition-colors">
-                                Privacy Policy
-                            </a>
-                            <a className="text-gray-400 hover:text-white text-sm transition-colors">
-                                Terms of Service
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }
