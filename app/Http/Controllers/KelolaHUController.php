@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Berita;
 use App\Models\BidangLayanan;
 use App\Models\Booking;
 use App\Models\Dokumentasi;
@@ -17,6 +18,16 @@ class KelolaHUController extends Controller
 {
     public function beranda()
     {
+        $beritaTerbaru = Berita::select('judul', 'slug', 'ringkasan', 'gambar', 'tanggal_publikasi')
+            ->where('tanggal_publikasi', '<=', Carbon::now())
+            ->orderBy('tanggal_publikasi', 'desc')
+            ->limit(6)
+            ->get();
+
+        $mainNews = $beritaTerbaru->first();
+
+        $beritaLain = $beritaTerbaru->skip(1)->values();
+
         $jadwalTerdekat = Booking::whereDate('tanggal_akhir', '>=', Carbon::now())
             ->where('status_booking', 'Diterima')
             ->orderBy('tanggal_mulai')
@@ -76,6 +87,9 @@ class KelolaHUController extends Controller
             'jumlahInstansi' => $jumlahInstansi,
             'jumlahUmkm' => $jumlahUmkm,
             'dokumentasiTerbaru' => $dokumentasiTerbaru,
+            'beritaTerbaru' => $beritaTerbaru,
+            'mainNews' => $mainNews,
+            'beritaLain' => $beritaLain,
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'laravelVersion' => Application::VERSION,

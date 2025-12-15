@@ -39,7 +39,6 @@ class KelolaBeritaController extends Controller
         $gambarPath = null;
         if ($request->hasFile('gambar')) {
             $gambarPath = $request->file('gambar')->store('berita_gambar', 'public');
-            $gambarPath = 'storage/' . $gambarPath;
         }
 
         $slug = Str::slug($request->judul);

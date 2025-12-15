@@ -44,69 +44,24 @@ interface NavItem {
     subItems?: SubItem[];
 }
 interface Berita {
-    id: number;
+    id_berita: number;
     judul: string;
-    tanggal: string;
+    tanggal_publikasi: string;
     ringkasan: string;
-    imageUrl: string;
+    gambar: string;
 }
 
 interface PageProps {
     layanan: Record<string, LayananItem[]>;
     jadwalTerdekat: Jadwal[];
+    umkmTerlayani: number;
+    nagariTerliput: number;
+    jumlahInstansi: number;
+    jumlahUmkm: number;
+    dokumentasiTerbaru: any[];
+    mainNews: Berita | null;
+    beritaLain: Berita[];
 }
-
-const DUMMY_BERITA_UTAMA: Berita = {
-    id: 101,
-    judul: "Diskop UKM Sumbar Kembangkan Pasar Digital untuk 5.000 UMKM Lokal",
-    tanggal: "2025-11-20",
-    ringkasan:
-        "Dinas Koperasi dan UMKM Provinsi Sumatera Barat sukses meluncurkan platform pasar digital baru, menghubungkan ribuan UMKM dengan pasar yang lebih luas di Indonesia.",
-    imageUrl: "/images/mobilklinik.jpg",
-};
-
-const DUMMY_DAFTAR_BERITA: Berita[] = [
-    {
-        id: 102,
-        judul: "Pelatihan Pengemasan Produk Kreatif di Nagari Sumpur Sukses",
-        tanggal: "2025-11-15",
-        ringkasan:
-            "Kegiatan ini dihadiri puluhan pelaku UMKM yang mendapat bimbingan langsung dari ahli desain produk.",
-        imageUrl: "/images/berita/pelatihan-sumpur.jpg",
-    },
-    {
-        id: 103,
-        judul: "Bantuan Modal Usaha Bergulir untuk Korban Bencana Alam",
-        tanggal: "2025-11-10",
-        ringkasan:
-            "Dinas menyalurkan bantuan dana bergulir untuk pemulihan usaha kecil yang terdampak bencana alam di beberapa daerah.",
-        imageUrl: "/images/berita/bantuan-modal.jpg",
-    },
-    {
-        id: 104,
-        judul: "Sertifikasi Halal Gratis Capai Target 1.500 Produk UMKM",
-        tanggal: "2025-11-05",
-        ringkasan:
-            "Target sertifikasi halal gratis tercapai sepenuhnya, menandakan komitmen dinas dalam meningkatkan daya saing produk lokal.",
-        imageUrl: "/images/berita/sertif-halal.jpg",
-    },
-    {
-        id: 105,
-        judul: "Pameran Produk Unggulan UMKM Sumbar di Jakarta Fair",
-        tanggal: "2025-10-28",
-        ringkasan:
-            "Produk-produk dari Sumatera Barat menarik perhatian pengunjung di pameran nasional.",
-        imageUrl: "/images/berita/pameran-jakarta.jpg",
-    },
-    {
-        id: 106,
-        judul: "Diskop UKM Selenggarakan Workshop Keuangan Digital",
-        tanggal: "2025-10-20",
-        ringkasan:
-            "Workshop ini bertujuan meningkatkan literasi keuangan digital bagi para pelaku usaha.",
-        imageUrl: "/images/berita/workshop-keuangan.jpg",
-    },
-];
 
 // Data Menu Navigasi
 const navItems: NavItem[] = [
@@ -173,6 +128,19 @@ export default function Welcome() {
         })}`;
     }
 
+    function formatTanggalPublikasi(tanggal: string): string {
+        const datePart = tanggal.split(" ")[0];
+        const date = new Date(datePart);
+
+        const options = {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        } as const;
+
+        return date.toLocaleDateString("id-ID", options);
+    }
+
     const {
         layanan,
         jadwalTerdekat,
@@ -181,19 +149,9 @@ export default function Welcome() {
         jumlahInstansi,
         jumlahUmkm,
         dokumentasiTerbaru,
-        beritaTerbaru = DUMMY_BERITA_UTAMA,
-        daftarBeritaLain = DUMMY_DAFTAR_BERITA,
-    } = usePage().props as unknown as {
-        layanan: Record<string, LayananItem[]>;
-        jadwalTerdekat: Jadwal[];
-        umkmTerlayani: number;
-        nagariTerliput: number;
-        jumlahInstansi: number;
-        jumlahUmkm: number;
-        dokumentasiTerbaru: any;
-        beritaTerbaru?: Berita;
-        daftarBeritaLain?: Berita[];
-    };
+        mainNews,
+        beritaLain,
+    } = usePage().props as unknown as PageProps;
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
@@ -269,9 +227,7 @@ export default function Welcome() {
 
                                     {/* Dropdown Menu Desktop */}
                                     {item.subItems && isProfileDropdownOpen && (
-                                        <div
-                                            className="absolute top-full left-0 w-56 rounded-md shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-20 origin-top-left"
-                                        >
+                                        <div className="absolute top-full left-0 w-56 rounded-md shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-20 origin-top-left">
                                             <div className="py-1">
                                                 {item.subItems.map(
                                                     (subItem) => (
@@ -421,7 +377,7 @@ export default function Welcome() {
                 </div>
             </section>
 
-            {/* Beriya Terbaru */}
+            {/* Berita Terbaru */}
             <section className="py-20 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-14">
@@ -429,46 +385,68 @@ export default function Welcome() {
                     </h2>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                         {/* Kolom Berita Utama */}
-                        <div className="lg:col-span-2 bg-white rounded-2xl shadow-xl overflow-hidden">
-                            <Link
-                                href={`/berita/${beritaTerbaru.id}`}
-                                className="block group"
-                            >
-                                <div className="grid md:grid-cols-2">
-                                    <img
-                                        src={beritaTerbaru.imageUrl}
-                                        alt={beritaTerbaru.judul}
-                                        className="w-full h-64 md:h-full object-cover transition-opacity duration-300 group-hover:opacity-90"
-                                    />
-                                    {/* Berita Utama */}
-                                    <div className="p-6 flex flex-col justify-center">
-                                        <h3 className="text-sm font-semibold text-blue-700 mb-1 flex items-center">
-                                            <Award className="w-4 h-4 mr-1" />
-                                            BERITA UTAMA
-                                        </h3>
-                                        <p className="text-2xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-green-600 line-clamp-3">
-                                            {beritaTerbaru.judul}
-                                        </p>
-                                        <span className="text-xs font-semibold text-gray-500 block mb-3">
-                                            <Calendar className="w-3 h-3 inline mr-1 -mt-0.5" />
-                                            {beritaTerbaru.tanggal}
-                                        </span>
-                                        <p className="text-base text-gray-600 line-clamp-3">
-                                            {beritaTerbaru.ringkasan}
-                                        </p>
-                                    </div>
-                                </div>
-                            </Link>
-                            <div className="p-4 bg-gray-50 text-right">
+                        {mainNews && (
+                            <div className="lg:col-span-2 bg-white rounded-2xl shadow-xl overflow-hidden">
                                 <Link
-                                    href="/berita"
-                                    className="text-blue-600 hover:text-blue-800 font-semibold text-sm flex items-center justify-end"
+                                    href={`/berita/${mainNews.id_berita}`}
+                                    className="block group"
                                 >
-                                    Lihat Arsip Berita
-                                    <ChevronRight className="w-4 h-4 ml-1" />
+                                    <div className="grid md:grid-cols-2">
+                                        <img
+                                            src={
+                                                mainNews?.gambar
+                                                    ? mainNews.gambar.startsWith(
+                                                          "/storage/"
+                                                      )
+                                                        ? mainNews.gambar
+                                                        : `/storage/${mainNews.gambar}`
+                                                    : "placeholder.jpg"
+                                            }
+                                            alt={
+                                                mainNews?.judul ||
+                                                "Gambar Berita"
+                                            }
+                                            className="w-full h-64 md:h-full object-cover transition-opacity duration-300 group-hover:opacity-90"
+                                        />
+                                        {/* Berita Utama Content */}
+                                        <div className="p-6 flex flex-col justify-center">
+                                            <h3 className="text-sm font-semibold text-blue-700 mb-1 flex items-center">
+                                                <Award className="w-4 h-4 mr-1" />
+                                                BERITA UTAMA
+                                            </h3>
+                                            <p className="text-2xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-green-600 line-clamp-3">
+                                                {mainNews.judul}
+                                            </p>
+                                            <span className="text-xs font-semibold text-gray-500 block mb-3">
+                                                <Calendar className="w-3 h-3 inline mr-1 -mt-0.5" />
+                                                {formatTanggalPublikasi(mainNews.tanggal_publikasi)}
+                                            </span>
+                                            <p className="text-base text-gray-600 line-clamp-3">
+                                                {mainNews.ringkasan}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </Link>
+                                <div className="p-4 bg-gray-50 text-right">
+                                    <Link
+                                        href="/berita"
+                                        className="text-blue-600 hover:text-blue-800 font-semibold text-sm flex items-center justify-end"
+                                    >
+                                        Lihat Arsip Berita
+                                        <ChevronRight className="w-4 h-4 ml-1" />
+                                    </Link>
+                                </div>
                             </div>
-                        </div>
+                        )}
+
+                        {/* Jika tidak ada Berita Utama */}
+                        {!mainNews && (
+                            <div className="lg:col-span-2 flex items-center justify-center p-8 bg-white rounded-2xl shadow-xl">
+                                <p className="text-gray-500 italic">
+                                    Belum ada Berita Utama yang tersedia.
+                                </p>
+                            </div>
+                        )}
 
                         {/* List Berita Terbaru */}
                         <div className="bg-white rounded-2xl shadow-xl p-6 lg:p-4">
@@ -477,10 +455,10 @@ export default function Welcome() {
                                 Berita Lainnya
                             </h3>
                             <ul className="space-y-4">
-                                {daftarBeritaLain.slice(0, 5).map((berita) => (
-                                    <li key={berita.id}>
+                                {beritaLain.slice(0, 5).map((berita) => (
+                                    <li key={berita.id_berita}>
                                         <Link
-                                            href={`/berita/${berita.id}`}
+                                            href={`/berita/${berita.id_berita}`}
                                             className="block hover:bg-green-50 p-2 -m-2 rounded transition-colors group"
                                         >
                                             <p className="font-semibold text-gray-800 group-hover:text-green-700 line-clamp-2">
@@ -488,11 +466,16 @@ export default function Welcome() {
                                             </p>
                                             <span className="text-xs text-gray-500 flex items-center mt-0.5">
                                                 <Calendar className="w-3 h-3 inline mr-1" />
-                                                {berita.tanggal}
+                                                {formatTanggalPublikasi(berita.tanggal_publikasi)}
                                             </span>
                                         </Link>
                                     </li>
                                 ))}
+                                {beritaLain.length === 0 && (
+                                    <li className="text-gray-600 italic text-sm">
+                                        Belum ada berita lainnya yang tersedia.
+                                    </li>
+                                )}
                             </ul>
                             <div className="mt-6 text-center">
                                 <Link
