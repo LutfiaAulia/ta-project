@@ -563,11 +563,7 @@ export default function Welcome() {
                         {/* Kolom Kiri */}
                         <div className="order-1 lg:order-2 ">
                             <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
-                                Layanan Mobil Klinik{" "}
-                                <span className="text-green-600">
-                                    Jemput Bola
-                                </span>{" "}
-                                untuk UMKM
+                                Layanan Mobil Klinik Terdekat
                             </h3>
 
                             {/* Jadwal Terdekat */}
