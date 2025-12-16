@@ -40,6 +40,7 @@ Route::get('/', [KelolaHUController::class, 'beranda'])->name('home');
 Route::get('/list/umkm/promosi', [KelolaShowPromosiController::class, 'show'])->name('list.umkm.promosi');
 Route::get('/umkm/{id}', [KelolaShowPromosiController::class, 'detail'])->name('umkm.show');
 Route::post('/chatbot', [ChatbotController::class, 'handle'])->name('chatbot.handle');
+Route::get('/berita', [BeritaPublicController::class, 'index'])->name('berita.index');
 Route::get('/berita/{berita:slug}', [BeritaPublicController::class, 'show'])->name('berita.show');
 
 Route::get('/email/verify', function () {
