@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginUmkmController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Berita\BeritaPublicController;
 use App\Http\Controllers\Berita\KelolaBeritaController;
 use App\Http\Controllers\BidangLayanan\KelolaBidangController;
 use App\Http\Controllers\Booking\BookingController;
@@ -39,6 +40,7 @@ Route::get('/', [KelolaHUController::class, 'beranda'])->name('home');
 Route::get('/list/umkm/promosi', [KelolaShowPromosiController::class, 'show'])->name('list.umkm.promosi');
 Route::get('/umkm/{id}', [KelolaShowPromosiController::class, 'detail'])->name('umkm.show');
 Route::post('/chatbot', [ChatbotController::class, 'handle'])->name('chatbot.handle');
+Route::get('/berita/{berita:slug}', [BeritaPublicController::class, 'show'])->name('berita.show');
 
 Route::get('/email/verify', function () {
     return inertia('Auth/VerifyEmail');

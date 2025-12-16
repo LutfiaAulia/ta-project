@@ -4,15 +4,10 @@ import { Link, usePage } from "@inertiajs/react";
 import {
     Calendar,
     Award,
-    MapPin,
-    Phone,
-    Mail,
     ChevronRight,
     CheckCircle,
     Home as HomeIcon,
     ClipboardList,
-    Truck,
-    Store,
 } from "lucide-react";
 
 interface LayananItem {
@@ -29,24 +24,13 @@ interface Jadwal {
     waktu_akhir: string;
     lokasi: string;
 }
-
-interface SubItem {
-    name: string;
-    href: string;
-}
-
-interface NavItem {
-    name: string;
-    href: string;
-    icon: any;
-    subItems?: SubItem[];
-}
 interface Berita {
     id_berita: number;
     judul: string;
     tanggal_publikasi: string;
     ringkasan: string;
     gambar: string;
+    slug: string;
 }
 
 interface PageProps {
@@ -187,7 +171,7 @@ export default function Welcome() {
                         {mainNews && (
                             <div className="lg:col-span-2 bg-white rounded-2xl shadow-xl overflow-hidden">
                                 <Link
-                                    href={`/berita/${mainNews.id_berita}`}
+                                    href={`/berita/${mainNews.slug}`}
                                     className="block group"
                                 >
                                     <div className="grid md:grid-cols-2">
@@ -259,7 +243,7 @@ export default function Welcome() {
                                 {beritaLain.slice(0, 5).map((berita) => (
                                     <li key={berita.id_berita}>
                                         <Link
-                                            href={`/berita/${berita.id_berita}`}
+                                            href={`/berita/${berita.slug}`}
                                             className="block hover:bg-green-50 p-2 -m-2 rounded transition-colors group"
                                         >
                                             <p className="font-semibold text-gray-800 group-hover:text-green-700 line-clamp-2">
