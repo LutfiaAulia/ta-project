@@ -79,7 +79,7 @@ export default function ArsipBerita({ berita }: ArsipBeritaProps) {
                         📰 Arsip Berita Terbaru
                     </h1>
 
-                    {/* Konten Daftar Berita */}
+                    {/* Daftar Berita */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {berita.data.length > 0 ? (
                             berita.data.map((item) => (
@@ -122,7 +122,7 @@ export default function ArsipBerita({ berita }: ArsipBeritaProps) {
                                 </Link>
                             ))
                         ) : (
-                            // Kondisi jika data kosong
+                            // Jika berita kosong
                             <div className="md:col-span-3 text-center py-10 bg-white rounded-xl shadow-lg">
                                 <p className="text-xl text-gray-600">
                                     Belum ada berita yang dipublikasikan saat
