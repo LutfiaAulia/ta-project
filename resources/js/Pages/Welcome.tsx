@@ -305,7 +305,7 @@ export default function Welcome() {
                                 </li>
                             </ul>
                             <Link
-                                href="/mobil-klinik"
+                                href="/layanan"
                                 className="text-white bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition inline-flex items-center"
                             >
                                 Lihat Detail Lengkap{" "}

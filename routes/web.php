@@ -17,6 +17,7 @@ use App\Http\Controllers\Kategori\KelolaKategoriController;
 use App\Http\Controllers\KelolaHUController;
 use App\Http\Controllers\Laporan\KelolaLaporanController;
 use App\Http\Controllers\Layanan\KelolaLayananController;
+use App\Http\Controllers\Layanan\LayananPublicController;
 use App\Http\Controllers\LegalitasProduk\KelolaLegalitasProdukController;
 use App\Http\Controllers\MobilSopir\KelolaMobilController;
 use App\Http\Controllers\MobilSopir\KelolaSopirController;
@@ -42,6 +43,7 @@ Route::get('/umkm/{id}', [KelolaShowPromosiController::class, 'detail'])->name('
 Route::post('/chatbot', [ChatbotController::class, 'handle'])->name('chatbot.handle');
 Route::get('/berita', [BeritaPublicController::class, 'index'])->name('berita.index');
 Route::get('/berita/{berita:slug}', [BeritaPublicController::class, 'show'])->name('berita.show');
+Route::get('/layanan', [LayananPublicController::class, 'index'])->name('layanan.index');
 
 Route::get('/email/verify', function () {
     return inertia('Auth/VerifyEmail');
