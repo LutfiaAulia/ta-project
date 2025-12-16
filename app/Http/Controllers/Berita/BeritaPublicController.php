@@ -38,6 +38,7 @@ class BeritaPublicController extends Controller
                 'id_berita' => $item->id_berita,
                 'judul' => $item->judul,
                 'tanggal_publikasi' => $item->tanggal_publikasi,
+                'slug' => $item->slug,
             ]);
 
         return Inertia::render('DetailBerita', [
