@@ -13,6 +13,7 @@ use App\Http\Controllers\Booking\RiwayatBooking;
 use App\Http\Controllers\Chatbot\ChatbotController;
 use App\Http\Controllers\Dashboard\PegawaiDashboardController;
 use App\Http\Controllers\Dashboard\UmkmDashboardController;
+use App\Http\Controllers\Galeri\KelolaGaleriController;
 use App\Http\Controllers\Kategori\KelolaKategoriController;
 use App\Http\Controllers\KelolaHUController;
 use App\Http\Controllers\Laporan\KelolaLaporanController;
@@ -49,6 +50,7 @@ Route::get('/layanan', [LayananPublicController::class, 'index'])->name('layanan
 Route::get('/profile/struktur-organisasi', [ProfilOrganisasiPublicController::class, 'struktur'])->name('struktur.show');
 Route::get('/profile/visi-dan-misi', [ProfilOrganisasiPublicController::class, 'visi_misi'])->name('visi_misi.show');
 Route::get('/profile/tugas-dan-fungsi', [ProfilOrganisasiPublicController::class, 'tugas_fungsi'])->name('tugas_fungsi.show');
+Route::get('/media/gambar', [KelolaGaleriController::class, 'index'])->name('galeri.index');
 
 Route::get('/email/verify', function () {
     return inertia('Auth/VerifyEmail');
@@ -227,6 +229,13 @@ Route::prefix('pegawai')->group(function () {
 
         Route::get('/profil-organisasi', [KelolaProfilOrganisasiController::class, 'show'])->name('profil-organisasi.show');
         Route::post('/profil-organisasi/update', [KelolaProfilOrganisasiController::class, 'update'])->name('profil-organisasi.update');
+
+        Route::get('/galeri', [KelolaGaleriController::class, 'adminIndex'])->name('index.galeri');
+        Route::get('/galeri/tambah', [KelolaGaleriController::class, 'create'])->name('create.galeri');
+        Route::post('/galeri/store', [KelolaGaleriController::class, 'store'])->name('store.galeri');
+        Route::get('/galeri/{id}/edit', [KelolaGaleriController::class, 'edit'])->name('edit.galeri');
+        Route::post('/galeri/{id}/update', [KelolaGaleriController::class, 'update'])->name('update.galeri');
+        Route::delete('/galeri/{id}/hapus', [KelolaGaleriController::class, 'destroy'])->name('destroy.galeri');
 
         Route::get('/tampilan/laporan/{id}', [KelolaLaporanController::class, 'laporan'])->name('tampilan.tempalte.laporan');
     });

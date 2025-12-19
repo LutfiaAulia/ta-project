@@ -497,8 +497,7 @@ const Sidebar: React.FC = () => {
                                             : subHover
                                     }`}
                                 >
-                                    <FaTags className="text-xs" /> Kelola
-                                    Berita
+                                    <FaTags className="text-xs" /> Kelola Berita
                                 </Link>
 
                                 <Link
@@ -513,6 +512,20 @@ const Sidebar: React.FC = () => {
                                 >
                                     <FaShoppingBag className="text-xs" /> Kelola
                                     Profil Organisasi
+                                </Link>
+
+                                <Link
+                                    href={route("index.galeri")}
+                                    className={`${subItem} ${
+                                        route().current(
+                                            "index.galeri"
+                                        )
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaShoppingBag className="text-xs" /> Kelola
+                                    Galeri
                                 </Link>
                             </div>
                         )}
