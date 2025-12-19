@@ -26,17 +26,16 @@ interface NavItem {
 const navItems: NavItem[] = [
     { name: "Home", href: "/", icon: HomeIcon },
     {
-        name: "Profile",
+        name: "Profil",
         href: "#",
         icon: ClipboardList,
         subItems: [
             {
-                name: "Struktur Organisasi",
+                name: "Struktur Organisasi dan Maklumat Pelayanan",
                 href: "/profile/struktur-organisasi",
             },
             { name: "Tugas dan Fungsi", href: "/profile/tugas-dan-fungsi" },
             { name: "Visi dan Misi", href: "/profile/visi-dan-misi" },
-            { name: "Maklumat Pelayanan", href: "/profile/maklumat-pelayanan" },
         ],
     },
     { name: "Mobil Klinik", href: "/login", icon: Truck },
@@ -84,11 +83,11 @@ export default function Welcome() {
                                     key={item.name}
                                     className="relative h-full"
                                     onMouseEnter={() =>
-                                        item.name === "Profile" &&
+                                        item.name === "Profil" &&
                                         setIsProfileDropdownOpen(true)
                                     }
                                     onMouseLeave={() =>
-                                        item.name === "Profile" &&
+                                        item.name === "Profil" &&
                                         setIsProfileDropdownOpen(false)
                                     }
                                 >

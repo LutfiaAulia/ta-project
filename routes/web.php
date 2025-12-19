@@ -24,6 +24,7 @@ use App\Http\Controllers\MobilSopir\KelolaSopirController;
 use App\Http\Controllers\PelayananUmkm\KelolaPelayananUmkmController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilOrganisasi\KelolaProfilOrganisasiController;
+use App\Http\Controllers\ProfilOrganisasi\ProfilOrganisasiPublicController;
 use App\Http\Controllers\Promosi\KelolaDataUmkmController;
 use App\Http\Controllers\Promosi\KelolaPromosiController;
 use App\Http\Controllers\Promosi\KelolaShowPromosiController;
@@ -45,6 +46,7 @@ Route::post('/chatbot', [ChatbotController::class, 'handle'])->name('chatbot.han
 Route::get('/berita', [BeritaPublicController::class, 'index'])->name('berita.index');
 Route::get('/berita/{berita:slug}', [BeritaPublicController::class, 'show'])->name('berita.show');
 Route::get('/layanan', [LayananPublicController::class, 'index'])->name('layanan.index');
+Route::get('/profile/struktur-organisasi', [ProfilOrganisasiPublicController::class, 'struktur'])->name('struktur.show');
 
 Route::get('/email/verify', function () {
     return inertia('Auth/VerifyEmail');
