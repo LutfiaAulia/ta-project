@@ -23,6 +23,7 @@ use App\Http\Controllers\MobilSopir\KelolaMobilController;
 use App\Http\Controllers\MobilSopir\KelolaSopirController;
 use App\Http\Controllers\PelayananUmkm\KelolaPelayananUmkmController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfilOrganisasi\KelolaProfilOrganisasiController;
 use App\Http\Controllers\Promosi\KelolaDataUmkmController;
 use App\Http\Controllers\Promosi\KelolaPromosiController;
 use App\Http\Controllers\Promosi\KelolaShowPromosiController;
@@ -219,6 +220,9 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/edit/berita/{id}', [KelolaBeritaController::class, 'edit'])->name('berita.edit');
         Route::put('/update/berita/{id}', [KelolaBeritaController::class, 'update'])->name('berita.update');
         Route::delete('/destroy/berita/{id}', [KelolaBeritaController::class, 'destroy'])->name('berita.destroy');
+
+        Route::get('/profil-organisasi', [KelolaProfilOrganisasiController::class, 'show'])->name('profil-organisasi.show');
+        Route::post('/profil-organisasi/update', [KelolaProfilOrganisasiController::class, 'update'])->name('profil-organisasi.update');
 
         Route::get('/tampilan/laporan/{id}', [KelolaLaporanController::class, 'laporan'])->name('tampilan.tempalte.laporan');
     });

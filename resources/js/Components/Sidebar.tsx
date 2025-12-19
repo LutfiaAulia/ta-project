@@ -502,17 +502,17 @@ const Sidebar: React.FC = () => {
                                 </Link>
 
                                 <Link
-                                    href={route("pegawai.kelola.promosi")}
+                                    href={route("profil-organisasi.show")}
                                     className={`${subItem} ${
                                         route().current(
-                                            "pegawai.kelola.promosi"
+                                            "profil-organisasi.show"
                                         )
                                             ? subActive
                                             : subHover
                                     }`}
                                 >
                                     <FaShoppingBag className="text-xs" /> Kelola
-                                    Dokumentasi
+                                    Profil Organisasi
                                 </Link>
                             </div>
                         )}
