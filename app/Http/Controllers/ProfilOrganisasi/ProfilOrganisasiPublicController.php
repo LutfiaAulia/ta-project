@@ -17,4 +17,22 @@ class ProfilOrganisasiPublicController extends Controller
             'profilOrganisasi' => $profil
         ]);
     }
+
+    public function visi_misi()
+    {
+        $vimi = ProfilOrganisasi::select('visi', 'misi')->first();
+
+        return Inertia::render('VisiMisi', [
+            'vimi' => $vimi
+        ]);
+    }
+
+    public function tugas_fungsi()
+    {
+        $tufu = ProfilOrganisasi::select('tugas', 'fungsi')->first();
+
+        return Inertia::render('TugasFungsi', [
+            'tufu' => $tufu
+        ]);
+    }
 }

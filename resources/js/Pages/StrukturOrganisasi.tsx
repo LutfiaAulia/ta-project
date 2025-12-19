@@ -3,14 +3,12 @@ import { Link } from "@inertiajs/react";
 import Header from "@/Components/HeaderHU";
 import Footer from "@/Components/FooterHU";
 import {
-    Maximize2,
     Users,
     Download,
     ZoomIn,
     ZoomOut,
     ChevronRight,
     HomeIcon,
-    LayoutGrid,
 } from "lucide-react";
 
 interface Props {
@@ -38,7 +36,7 @@ const HalamanStruktur: React.FC<Props> = ({ profilOrganisasi }) => {
                         <li className="flex items-center">
                             <Link
                                 href="/"
-                                className="flex items-center hover:text-blue-600 transition-colors"
+                                className="flex items-center hover:text-green-600 transition-colors"
                             >
                                 <HomeIcon className="w-4 h-4 mr-1" />
                                 Beranda
@@ -60,9 +58,9 @@ const HalamanStruktur: React.FC<Props> = ({ profilOrganisasi }) => {
                 <div className="max-w-7xl mx-auto px-6 mb-12 text-center">
                     <h1 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">
                         Struktur{" "}
-                        <span className="text-blue-600">Organisasi</span>
+                        <span className="text-green-600">Organisasi</span>
                     </h1>
-                    <div className="w-20 h-1.5 bg-blue-600 mx-auto rounded-full mb-6"></div>
+                    <div className="w-20 h-1.5 bg-green-600 mx-auto rounded-full mb-6"></div>
                     <p className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
                         Mengenal lebih dekat hierarki dan tata kelola unit kerja
                         PLUT Sumatera Barat.
@@ -74,7 +72,7 @@ const HalamanStruktur: React.FC<Props> = ({ profilOrganisasi }) => {
                         {/* Control Bar */}
                         <div className="flex flex-wrap items-center justify-between gap-4 p-5 bg-slate-50 border-b border-slate-100">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-blue-600 rounded-lg shadow-blue-200 shadow-lg">
+                                <div className="p-2 bg-green-600 rounded-lg shadow-green-200 shadow-lg">
                                     <Users className="w-5 h-5 text-white" />
                                 </div>
                                 <span className="font-bold text-slate-700 tracking-wide uppercase text-sm">
@@ -87,7 +85,7 @@ const HalamanStruktur: React.FC<Props> = ({ profilOrganisasi }) => {
                                     <a
                                         href={imagePath}
                                         download
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-blue-600 transition-all font-medium text-sm shadow-sm"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-green-600 transition-all font-medium text-sm shadow-sm"
                                     >
                                         <Download className="w-4 h-4" />{" "}
                                         Download
@@ -97,7 +95,7 @@ const HalamanStruktur: React.FC<Props> = ({ profilOrganisasi }) => {
                                     onClick={() => setIsZoomed(!isZoomed)}
                                     className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all shadow-sm ${
                                         isZoomed
-                                            ? "bg-blue-100 text-blue-700"
+                                            ? "bg-green-100 text-green-700"
                                             : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
                                     }`}
                                 >
@@ -148,7 +146,7 @@ const HalamanStruktur: React.FC<Props> = ({ profilOrganisasi }) => {
                                         <h3 className="text-xl font-black text-slate-900 leading-none">
                                             MAKLUMAT
                                         </h3>
-                                        <span className="text-blue-600 font-bold text-sm tracking-widest uppercase">
+                                        <span className="text-green-600 font-bold text-sm tracking-widest uppercase">
                                             Pelayanan
                                         </span>
                                     </div>

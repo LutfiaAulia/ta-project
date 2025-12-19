@@ -47,6 +47,8 @@ Route::get('/berita', [BeritaPublicController::class, 'index'])->name('berita.in
 Route::get('/berita/{berita:slug}', [BeritaPublicController::class, 'show'])->name('berita.show');
 Route::get('/layanan', [LayananPublicController::class, 'index'])->name('layanan.index');
 Route::get('/profile/struktur-organisasi', [ProfilOrganisasiPublicController::class, 'struktur'])->name('struktur.show');
+Route::get('/profile/visi-dan-misi', [ProfilOrganisasiPublicController::class, 'visi_misi'])->name('visi_misi.show');
+Route::get('/profile/tugas-dan-fungsi', [ProfilOrganisasiPublicController::class, 'tugas_fungsi'])->name('tugas_fungsi.show');
 
 Route::get('/email/verify', function () {
     return inertia('Auth/VerifyEmail');
