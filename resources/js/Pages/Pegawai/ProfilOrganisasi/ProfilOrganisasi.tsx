@@ -5,10 +5,8 @@ import {
     Edit3,
     Save,
     X,
-    Eye,
     FileText,
     Target,
-    Users,
     Image as ImageIcon,
 } from "lucide-react";
 
@@ -31,7 +29,6 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [activeTab, setActiveTab] = useState("visi-misi");
 
-    // Inisialisasi Form Inertia
     const { data, setData, post, processing, errors, reset } = useForm({
         visi: profilOrganisasi?.visi || "",
         misi: profilOrganisasi?.misi || "",
@@ -43,7 +40,6 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Menggunakan post karena kita akan mengunggah file (Multipart Form)
         post(route("profil-organisasi.update"), {
             onSuccess: () => setIsEditing(false),
             forceFormData: true,
@@ -55,7 +51,6 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
         setIsEditing(false);
     };
 
-    // Helper untuk menampilkan data dengan baris baru (nl2br)
     const renderText = (text: string) => {
         return text.split("\n").map((str, index) => (
             <p key={index} className="mb-2">
@@ -147,7 +142,7 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
                     {/* Main Content Area */}
                     <div className="bg-white rounded-xl shadow-sm border p-6 min-h-[400px]">
                         <form onSubmit={handleSubmit}>
-                            {/* TAB: VISI & MISI */}
+                            {/* VISI & MISI */}
                             {activeTab === "visi-misi" && (
                                 <div className="space-y-6">
                                     <SectionWrapper
@@ -206,7 +201,7 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
                                 </div>
                             )}
 
-                            {/* TAB: TUGAS & FUNGSI */}
+                            {/* TUGAS & FUNGSI */}
                             {activeTab === "tugas-fungsi" && (
                                 <div className="space-y-6">
                                     <SectionWrapper
@@ -265,7 +260,7 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
                                 </div>
                             )}
 
-                            {/* TAB: MAKLUMAT & STRUKTUR */}
+                            {/* MAKLUMAT & STRUKTUR */}
                             {activeTab === "maklumat-struktur" && (
                                 <div className="space-y-8">
                                     <SectionWrapper
@@ -342,7 +337,6 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
     );
 };
 
-// --- HELPER COMPONENT UNTUK LAYOUT SECTION ---
 const SectionWrapper = ({ title, children, isEditing, error }: any) => (
     <div className="mb-4">
         <label className="block text-sm font-bold text-gray-600 uppercase tracking-wider mb-2">
