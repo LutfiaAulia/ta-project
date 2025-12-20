@@ -76,7 +76,7 @@ export default function ArsipBerita({ berita }: ArsipBeritaProps) {
                     </div>
 
                     <h1 className="text-4xl font-extrabold text-gray-900 mb-8 border-b pb-4">
-                        📰 Arsip Berita Terbaru
+                        📰 Arsip Berita
                     </h1>
 
                     {/* Daftar Berita */}

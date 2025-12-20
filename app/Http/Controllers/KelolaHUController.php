@@ -6,6 +6,7 @@ use App\Models\Berita;
 use App\Models\BidangLayanan;
 use App\Models\Booking;
 use App\Models\Dokumentasi;
+use App\Models\Galeri;
 use App\Models\Instansi;
 use App\Models\PelayananUmkm;
 use App\Models\Umkm;
@@ -74,9 +75,9 @@ class KelolaHUController extends Controller
 
         $jumlahUmkm = Umkm::count();
 
-        $dokumentasiTerbaru = Dokumentasi::orderBy('created_at', 'desc')
+        $dokumentasiTerbaru = Galeri::orderBy('created_at', 'desc')
             ->limit(10)
-            ->get(['id_dokumentasi', 'path_file', 'created_at']);
+            ->get(['id_galeri', 'gambar', 'created_at']);
 
 
         return Inertia::render('Welcome', [
