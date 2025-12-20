@@ -76,7 +76,12 @@ const Sidebar: React.FC = () => {
         // Group: HU
         if (
             route().current("berita.list") ||
-            route().current("pegawai.kelola.promosi")
+            route().current("profil-organisasi.show") ||
+            route().current("index.galeri") ||
+            route().current("berita.create") ||
+            route().current("berita.edit") ||
+            route().current("create.galeri") ||
+            route().current("edit.galeri")
         ) {
             setOpenHU(true);
         }

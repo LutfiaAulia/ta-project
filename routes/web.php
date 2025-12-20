@@ -50,7 +50,7 @@ Route::get('/layanan', [LayananPublicController::class, 'index'])->name('layanan
 Route::get('/profile/struktur-organisasi', [ProfilOrganisasiPublicController::class, 'struktur'])->name('struktur.show');
 Route::get('/profile/visi-dan-misi', [ProfilOrganisasiPublicController::class, 'visi_misi'])->name('visi_misi.show');
 Route::get('/profile/tugas-dan-fungsi', [ProfilOrganisasiPublicController::class, 'tugas_fungsi'])->name('tugas_fungsi.show');
-Route::get('/media/gambar', [KelolaGaleriController::class, 'index'])->name('galeri.index');
+Route::get('/media/galeri', [KelolaGaleriController::class, 'index'])->name('galeri.index');
 
 Route::get('/email/verify', function () {
     return inertia('Auth/VerifyEmail');

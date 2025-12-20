@@ -14,11 +14,10 @@ class KelolaGaleriController extends Controller
 {
     public function index()
     {
-        $galeri = Galeri::with('pegawai:id_pegawai,nama_pegawai')
-            ->orderBy('tanggal', 'desc')
+        $galeri = Galeri::orderBy('tanggal', 'desc')
             ->paginate(9);
 
-        return Inertia::render('HalamanGaleri', [
+        return Inertia::render('GaleriPublic', [
             'galeri' => $galeri
         ]);
     }
@@ -95,7 +94,7 @@ class KelolaGaleriController extends Controller
 
         $galeri->update($data);
 
-        return redirect()->back()->with('message', 'Galeri berhasil diperbarui!');
+        return redirect()->route('index.galeri')->with('message', 'Galeri berhasil diperbarui!');
     }
 
     public function destroy($id)

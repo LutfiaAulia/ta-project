@@ -11,6 +11,7 @@ import {
     Newspaper,
     Image as ImageIcon,
     LayoutGrid,
+    Briefcase,
 } from "lucide-react";
 
 interface SubItem {
@@ -42,6 +43,7 @@ const navItems: NavItem[] = [
             { name: "Visi dan Misi", href: "/profile/visi-dan-misi" },
         ],
     },
+    { name: "Bidang & Pelayanan", href: "/layanan", icon: Briefcase, id: "layanan" },
     { name: "Mobil Klinik", href: "/login", icon: Truck, id: "mobil" },
     {
         name: "Promosi UKM",
@@ -56,7 +58,7 @@ const navItems: NavItem[] = [
         icon: LayoutGrid,
         subItems: [
             { name: "Berita", href: "/berita" },
-            { name: "Galeri", href: "/profile/galeri" },
+            { name: "Galeri", href: "/media/galeri" },
         ],
     },
 ];
