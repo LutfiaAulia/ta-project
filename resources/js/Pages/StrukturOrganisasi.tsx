@@ -42,10 +42,6 @@ const HalamanStruktur: React.FC<Props> = ({ profilOrganisasi }) => {
                                 Beranda
                             </Link>
                         </li>
-                        <li className="flex items-center">
-                            <ChevronRight className="w-4 h-4 text-slate-300" />
-                            <span className="ml-2">Profil</span>
-                        </li>
                         <li
                             className="flex items-center text-gray-900 font-medium"
                             aria-current="page"

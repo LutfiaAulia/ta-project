@@ -54,7 +54,7 @@ export default function DaftarLayanan({ layananGrouped }: DaftarLayananProps) {
                         </Link>
                         <ChevronRight className="w-4 h-4 mx-2" />
                         <span className="text-gray-900 font-medium">
-                            Layanan Kami
+                            Layanan
                         </span>
                     </div>
 
