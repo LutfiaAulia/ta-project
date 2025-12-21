@@ -145,7 +145,7 @@ export default function Welcome() {
             <section className="relative h-[600px] md:h-[700px] flex items-center overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/images/mobilklinik.jpg"
+                        src="/images/rumahgd.jpg"
                         alt="Pelayanan UMKM"
                         className="w-full h-full object-cover scale-105 animate-[soft-zoom_20s_ease-in-out_infinite_alternate]"
                     />

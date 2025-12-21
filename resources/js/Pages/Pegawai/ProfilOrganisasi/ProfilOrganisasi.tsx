@@ -77,7 +77,7 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
     };
 
     const renderQuillContent = (html: string | undefined) => {
-        if (!html || html === "<p><br></p>")
+        if (!html || html === "<p><br></p>" || html.trim() === "")
             return <p className="text-gray-400 italic">Belum diisi</p>;
         return (
             <div
@@ -185,23 +185,20 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
                                             error={errors.visi}
                                         >
                                             {isEditing ? (
-                                                <textarea
-                                                    className="w-full border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 p-4"
-                                                    rows={3}
+                                                <ReactQuill
+                                                    theme="snow"
                                                     value={data.visi}
-                                                    onChange={(e) =>
-                                                        setData(
-                                                            "visi",
-                                                            e.target.value
-                                                        )
+                                                    onChange={(val) =>
+                                                        setData("visi", val)
                                                     }
+                                                    modules={quillModules}
+                                                    className="bg-white rounded-xl"
                                                 />
                                             ) : (
-                                                <div className="text-xl font-medium text-gray-800 italic leading-relaxed border-l-4 border-indigo-500 pl-6 py-2 bg-indigo-50/30 rounded-r-xl">
-                                                    "
-                                                    {profilOrganisasi?.visi ||
-                                                        "Belum diisi"}
-                                                    "
+                                                <div className="bg-indigo-50/30 p-6 rounded-2xl border-l-4 border-indigo-500">
+                                                    {renderQuillContent(
+                                                        profilOrganisasi?.visi
+                                                    )}
                                                 </div>
                                             )}
                                         </SectionWrapper>
@@ -218,7 +215,7 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
                                                         setData("misi", val)
                                                     }
                                                     modules={quillModules}
-                                                    className="bg-white rounded-xl overflow-hidden border border-gray-200"
+                                                    className="bg-white rounded-xl"
                                                 />
                                             ) : (
                                                 <div className="bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
@@ -301,20 +298,17 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
                                                     modules={quillModules}
                                                 />
                                             ) : (
-                                                <div className="p-8 text-white shadow-lg">
-                                                    <h4 className="text-blue-500 text-xs font-bold uppercase tracking-widest mb-3">
-                                                        Service Pledge
+                                                <div className="p-8 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                                                    <h4 className="text-indigo-600 text-xs font-bold uppercase tracking-widest mb-4">
+                                                        Maklumat Pelayanan
                                                     </h4>
-                                                    <div className="prose prose-invert max-w-none">
-                                                        {renderQuillContent(
-                                                            profilOrganisasi?.maklumat_pelayanan
-                                                        )}
-                                                    </div>
+                                                    {renderQuillContent(
+                                                        profilOrganisasi?.maklumat_pelayanan
+                                                    )}
                                                 </div>
                                             )}
                                         </SectionWrapper>
 
-                                        {/* Bagian Gambar Struktur */}
                                         <SectionWrapper
                                             title="Bagan Struktur Organisasi"
                                             error={errors.gambar_struktur}
@@ -374,7 +368,6 @@ const ProfilOrganisasiPage: React.FC<Props> = ({ profilOrganisasi }) => {
     );
 };
 
-// --- HELPER COMPONENT ---
 const SectionWrapper = ({ title, children, error }: any) => (
     <div className="w-full">
         <label className="block text-[11px] font-black text-indigo-900 uppercase tracking-[0.2em] mb-3 ml-1">
