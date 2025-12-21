@@ -7,9 +7,9 @@ const SidebarUmkm: React.FC = () => {
         <div className="w-60 h-screen bg-green-600 text-white flex flex-col fixed">
             {/* Logo Section */}
             <div className="flex items-center gap-3 px-5 py-4 border-b border-green-500">
-                <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
+                <img src="/logo plut.png" alt="Logo" className="h-10 w-auto" />
                 <div className="text-sm leading-tight font-medium">
-                    <p>Dinas Koperasi UKM</p>
+                    <p>PLUT-KUMKM</p>
                     <p>Sumatera Barat</p>
                 </div>
             </div>

@@ -39,7 +39,7 @@ export default function Login({
                                 className="h-16 mb-2"
                             />
                             <p className="text-center font-medium text-sm">
-                                Dinas Koperasi UKM Provinsi <br /> Sumatera
+                                PLUT-KUMKM Provinsi <br /> Sumatera
                                 Barat
                             </p>
                         </div>

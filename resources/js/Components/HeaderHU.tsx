@@ -86,7 +86,7 @@ export default function HeaderHU() {
                         <div className="relative">
                             <div className="absolute -inset-1 bg-green-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             <img
-                                src="/logo.png"
+                                src="/logo plut.png"
                                 alt="Logo"
                                 className="relative w-12 h-12 md:w-14 md:h-14 object-contain transition-transform group-hover:scale-105"
                             />
@@ -94,7 +94,7 @@ export default function HeaderHU() {
 
                         <div className="hidden sm:block">
                             <h1 className="text-sm md:text-base font-black text-slate-800 leading-tight tracking-tight uppercase">
-                                Dinas Koperasi & UKM
+                                PLUT-KUMKM
                             </h1>
                             <p className="text-[10px] md:text-xs font-bold text-green-600 tracking-[0.15em] uppercase">
                                 Provinsi Sumatera Barat
@@ -153,7 +153,7 @@ export default function HeaderHU() {
 
                         <div className="ml-4 pl-4 border-l border-slate-200">
                             <Link
-                                href="/login"
+                                href="/pegawai/login"
                                 className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-green-600 transition-colors shadow-lg shadow-slate-200"
                             >
                                 Masuk

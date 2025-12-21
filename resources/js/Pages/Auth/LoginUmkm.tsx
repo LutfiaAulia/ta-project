@@ -22,12 +22,12 @@ export default function LoginUmkm() {
                 <div className="bg-white bg-opacity-90 p-8 rounded-lg shadow-lg max-w-md w-full">
                     <div className="flex items-center justify-center gap-3 mb-6">
                         <img
-                            src="/logo.png"
+                            src="/logo plut.png"
                             alt="Logo"
                             className="w-auto h-14"
                         />
                         <p className="text-[12px] font-medium leading-tight text-gray-800 text-left">
-                            Dinas Koperasi UKM Provinsi <br /> Sumatera Barat
+                            PLUT-KUMKM Provinsi <br /> Sumatera Barat
                         </p>
                     </div>
 

@@ -53,7 +53,7 @@ export default function LoginPegawai() {
                             <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center p-4 shadow-inner mb-6 relative group">
                                 <div className="absolute inset-0 bg-emerald-500/10 rounded-2xl scale-0 group-hover:scale-100 transition-transform duration-500"></div>
                                 <img
-                                    src="/logo.png"
+                                    src="/logo plut.png"
                                     alt="Logo"
                                     className="w-full h-full object-contain relative z-10"
                                 />

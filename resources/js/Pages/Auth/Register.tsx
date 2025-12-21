@@ -47,7 +47,7 @@ export default function Register() {
                     {/* Kanan */}
                     <div className="bg-white flex flex-col justify-center items-center p-10 shadow-lg">
                         <img
-                            src="/logo.png"
+                            src="/logo plut.png"
                             alt="Logo"
                             className="h-16 mb-4"
                         />

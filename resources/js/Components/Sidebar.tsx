@@ -126,9 +126,9 @@ const Sidebar: React.FC = () => {
         <div className="w-64 h-screen bg-green-700 text-white flex flex-col fixed shadow-2xl z-20">
             {/* Header */}
             <div className="w-64 h-[74px] flex items-center gap-3 px-4 bg-green-800 shadow-xl border-b border-green-600">
-                <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
+                <img src="/logo plut.png" alt="Logo" className="h-10 w-auto" />
                 <div className="text-base font-extrabold leading-tight">
-                    <p>Dinas Koperasi UKM</p>
+                    <p>PLUT-KUMKM</p>
                     <p>Sumatera Barat</p>
                 </div>
             </div>

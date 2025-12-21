@@ -134,11 +134,9 @@ const HalamanTugasFungsi: React.FC<Props> = ({ tufu }) => {
                     </div>
 
                     {/* Footer Meta */}
-                    <div className="mt-16 flex flex-col items-center">
-                        <div className="h-px w-24 bg-slate-200 mb-6"></div>
-                        <p className="text-[10px] font-bold text-slate-400 tracking-[0.3em] uppercase">
-                            PLUT-KUMKM Provinsi Sumatera Barat
-                        </p>
+                    <div className="mt-20 pt-8 border-t border-slate-200 flex justify-center items-center gap-3 text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">
+                        <span className="w-1.5 h-1.5 bg-green-600 rounded-full animate-pulse"></span>
+                        PLUT-KUMKM PROVINSI SUMATERA BARAT
                     </div>
                 </div>
             </main>

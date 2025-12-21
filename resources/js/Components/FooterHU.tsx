@@ -20,14 +20,14 @@ export default function FooterHU() {
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-14 h-14 bg-white p-2 rounded-2xl shadow-xl shadow-white/5">
                                 <img
-                                    src="/logo.png"
+                                    src="/logo plut.png"
                                     alt="Logo"
                                     className="w-full h-full object-contain"
                                 />
                             </div>
                             <div>
                                 <h4 className="text-white font-black text-lg leading-tight uppercase tracking-tight">
-                                    Dinas Koperasi & UKM
+                                    PLUT-KUMKM
                                 </h4>
                                 <p className="text-green-500 font-bold text-xs tracking-[0.2em] uppercase">
                                     Provinsi Sumatera Barat
@@ -133,7 +133,7 @@ export default function FooterHU() {
                 {/* Bottom Bar */}
                 <div className="pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-6">
                     <p className="text-slate-500 text-xs font-bold uppercase tracking-widest text-center md:text-left leading-relaxed">
-                        © 2025 Dinas Koperasi dan UMKM{" "}
+                        © 2025 PLUT-KUMKM{" "}
                         <br className="md:hidden" />
                         <span className="text-slate-400">
                             Provinsi Sumatera Barat.
