@@ -19,6 +19,13 @@ interface Props {
 }
 
 const HalamanVisiMisi: React.FC<Props> = ({ vimi }) => {
+    const quillStyle = `
+        prose prose-slate max-w-none text-slate-700 leading-relaxed
+        [&>ol]:list-decimal [&>ol]:ml-5 [&>ol]:space-y-2
+        [&>ul]:list-disc [&>ul]:ml-5 [&>ul]:space-y-2
+        [&>p]:mb-3
+    `;
+
     return (
         <div className="flex flex-col min-h-screen bg-slate-50">
             <Header />
@@ -36,8 +43,7 @@ const HalamanVisiMisi: React.FC<Props> = ({ vimi }) => {
                         </Link>
                         <ChevronRight className="w-4 h-4 mx-2" />
                         <span className="text-gray-900 font-medium">
-                            {" "}
-                            Visi dan Misi{" "}
+                            Visi dan Misi
                         </span>
                     </div>
 
@@ -86,11 +92,20 @@ const HalamanVisiMisi: React.FC<Props> = ({ vimi }) => {
                                 </div>
                                 <div className="bg-white rounded-3xl p-8 md:p-12 border border-slate-200 shadow-sm relative overflow-hidden">
                                     <Star className="absolute -top-4 -right-4 w-24 h-24 text-slate-50 opacity-50" />
-                                    <p className="text-xl md:text-2xl text-slate-700 leading-relaxed font-medium italic relative z-10">
-                                        {vimi?.visi
-                                            ? `"${vimi.visi}"`
-                                            : "Visi belum tersedia."}
-                                    </p>
+                                    <div className="relative z-10">
+                                        {vimi?.visi ? (
+                                            <div
+                                                className="text-xl md:text-2xl text-slate-700 leading-relaxed font-medium italic"
+                                                dangerouslySetInnerHTML={{
+                                                    __html: vimi.visi,
+                                                }}
+                                            />
+                                        ) : (
+                                            <p className="text-xl text-slate-400 italic">
+                                                Visi belum tersedia.
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </section>
 
@@ -105,9 +120,19 @@ const HalamanVisiMisi: React.FC<Props> = ({ vimi }) => {
                                     </h3>
                                 </div>
                                 <div className="bg-white rounded-3xl p-8 md:p-12 border border-slate-200 shadow-sm">
-                                    <div className="text-lg text-slate-600 leading-loose space-y-4 whitespace-pre-line">
-                                        {vimi?.misi ||
-                                            "Misi belum tersedia."}
+                                    <div className="relative z-10">
+                                        {vimi?.misi ? (
+                                            <div
+                                                className={quillStyle}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: vimi.misi,
+                                                }}
+                                            />
+                                        ) : (
+                                            <p className="text-slate-400 italic">
+                                                Misi belum tersedia.
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </section>

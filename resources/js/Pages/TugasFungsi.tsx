@@ -8,7 +8,6 @@ import {
     Briefcase,
     ClipboardCheck,
     Settings,
-    CheckCircle2,
     Info,
 } from "lucide-react";
 
@@ -20,11 +19,17 @@ interface Props {
 }
 
 const HalamanTugasFungsi: React.FC<Props> = ({ tufu }) => {
+    const quillContentStyle = `
+        prose prose-slate max-w-none text-slate-600 leading-relaxed
+        [&>ol]:list-decimal [&>ol]:ml-5 [&>ol]:space-y-2
+        [&>ul]:list-disc [&>ul]:ml-5 [&>ul]:space-y-2
+        [&>p]:mb-3
+    `;
+
     return (
         <div className="flex flex-col min-h-screen bg-slate-50">
             <Header />
 
-            {/* Main Content Area */}
             <main className="flex-grow pt-24 pb-20">
                 <div className="max-w-7xl mx-auto px-6">
                     {/* Breadcrumb */}
@@ -37,8 +42,7 @@ const HalamanTugasFungsi: React.FC<Props> = ({ tufu }) => {
                         </Link>
                         <ChevronRight className="w-4 h-4 mx-2" />
                         <span className="text-gray-900 font-medium">
-                            {" "}
-                            Tugas dan Fungsi{" "}
+                            Tugas dan Fungsi
                         </span>
                     </div>
 
@@ -58,7 +62,7 @@ const HalamanTugasFungsi: React.FC<Props> = ({ tufu }) => {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                         {/* TUGAS SECTION */}
                         <div className="lg:col-span-5">
-                            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm h-full relative overflow-hidden group hover:border-green-200 transition-all">
+                            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm h-full relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 transition-transform duration-500">
                                     <Briefcase className="w-32 h-32 text-green-900" />
                                 </div>
@@ -73,10 +77,19 @@ const HalamanTugasFungsi: React.FC<Props> = ({ tufu }) => {
                                 </div>
 
                                 <div className="relative z-10">
-                                    <div className="text-lg text-slate-600 leading-relaxed italic border-l-4 border-green-500 pl-6 py-2 bg-green-50/30 rounded-r-xl">
-                                        {tufu?.tugas ||
-                                            "Informasi tugas pokok belum tersedia."}
-                                    </div>
+                                    {tufu?.tugas ? (
+                                        <div
+                                            className={`${quillContentStyle} italic border-l-4 border-green-500 pl-6 py-1 bg-green-50/30 rounded-r-xl`}
+                                            dangerouslySetInnerHTML={{
+                                                __html: tufu.tugas,
+                                            }}
+                                        />
+                                    ) : (
+                                        <p className="text-slate-400 italic">
+                                            Informasi tugas pokok belum
+                                            tersedia.
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="mt-8 flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200 relative z-10">
@@ -103,27 +116,16 @@ const HalamanTugasFungsi: React.FC<Props> = ({ tufu }) => {
                                     </h2>
                                 </div>
 
-                                {/* List Fungsi */}
-                                <div className="text-slate-600 leading-loose whitespace-pre-line space-y-4">
+                                <div className="relative z-10">
                                     {tufu?.fungsi ? (
-                                        <div className="grid gap-4">
-                                            {tufu.fungsi.split("\n").map(
-                                                (line, index) =>
-                                                    line.trim() && (
-                                                        <div
-                                                            key={index}
-                                                            className="flex gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100"
-                                                        >
-                                                            <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-1" />
-                                                            <span className="text-[16px] leading-relaxed">
-                                                                {line}
-                                                            </span>
-                                                        </div>
-                                                    )
-                                            )}
-                                        </div>
+                                        <div
+                                            className={quillContentStyle}
+                                            dangerouslySetInnerHTML={{
+                                                __html: tufu.fungsi,
+                                            }}
+                                        />
                                     ) : (
-                                        <p className="text-slate-400 italic px-4">
+                                        <p className="text-slate-400 italic">
                                             Informasi fungsi operasional belum
                                             tersedia.
                                         </p>

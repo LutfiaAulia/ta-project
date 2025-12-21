@@ -22,8 +22,7 @@ interface BeritaLain {
     id_berita: number;
     judul: string;
     tanggal_publikasi: string;
-    slug:string;
-    
+    slug: string;
 }
 
 interface DetailBeritaProps {
@@ -122,7 +121,13 @@ export default function DetailBerita({
 
                             {/* Isi Berita */}
                             <div
-                                className="prose max-w-none text-gray-800 leading-relaxed lg:prose-lg"
+                                className="prose max-w-none text-gray-800 leading-relaxed lg:prose-lg
+               [&>ol]:list-decimal [&>ol]:ml-6 [&>ol]:mb-4 [&>ol]:space-y-2
+               [&>ul]:list-disc [&>ul]:ml-6 [&>ul]:mb-4 [&>ul]:space-y-2
+               [&>p]:mb-4
+               [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:mt-6 [&>h2]:mb-3
+               [&>h3]:text-xl [&>h3]:font-bold [&>h3]:mt-4 [&>h3]:mb-2
+               [&>img]:rounded-xl [&>img]:shadow-md [&>img]:my-6"
                                 dangerouslySetInnerHTML={{
                                     __html: berita.isi_berita,
                                 }}

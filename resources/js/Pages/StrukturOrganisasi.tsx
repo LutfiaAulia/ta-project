@@ -137,8 +137,9 @@ const HalamanStruktur: React.FC<Props> = ({ profilOrganisasi }) => {
                         {/* Maklumat Section */}
                         {profilOrganisasi?.maklumat_pelayanan && (
                             <div className="p-8 bg-gradient-to-br from-slate-50 to-white border-t border-slate-100">
-                                <div className="flex flex-col md:flex-row gap-6 items-center">
-                                    <div className="flex-shrink-0 text-center md:text-left">
+                                <div className="flex flex-col md:flex-row gap-6 items-start">
+                                    {" "}
+                                    <div className="flex-shrink-0 text-center md:text-left pt-1">
                                         <h3 className="text-xl font-black text-slate-900 leading-none">
                                             MAKLUMAT
                                         </h3>
@@ -146,10 +147,16 @@ const HalamanStruktur: React.FC<Props> = ({ profilOrganisasi }) => {
                                             Pelayanan
                                         </span>
                                     </div>
-                                    <div className="hidden md:block w-px h-12 bg-slate-200"></div>
-                                    <p className="text-slate-600 leading-relaxed italic text-center md:text-left flex-grow">
-                                        "{profilOrganisasi.maklumat_pelayanan}"
-                                    </p>
+                                    <div className="hidden md:block w-px h-12 bg-slate-200 self-center"></div>
+                                    <div
+                                        className="text-slate-600 leading-relaxed italic text-left flex-grow 
+                           [&>ol]:list-decimal [&>ol]:ml-5 [&>ol]:space-y-1
+                           [&>ul]:list-disc [&>ul]:ml-5 [&>ul]:space-y-1
+                           [&>p]:mb-2"
+                                        dangerouslySetInnerHTML={{
+                                            __html: profilOrganisasi.maklumat_pelayanan,
+                                        }}
+                                    />
                                 </div>
                             </div>
                         )}
