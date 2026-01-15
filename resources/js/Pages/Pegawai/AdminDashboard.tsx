@@ -80,8 +80,22 @@ export default function DashboardAdmin({
     layananPopuler,
     bookingTrend,
 }: PageProps) {
+    const currentYear = new Date().getFullYear();
+    const startYear = 2023;
+    const yearOptions = Array.from(
+        { length: currentYear - startYear + 1 },
+        (_, i) => startYear + i
+    ).reverse();
+
     const handleYearChange = (selectedYear: string) => {
-        router.get("/pegawai/dashboardAdmin", { year: selectedYear });
+        router.get(
+            "/pegawai/dashboardAdmin",
+            { year: selectedYear },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
     };
 
     return (
@@ -100,16 +114,21 @@ export default function DashboardAdmin({
                                 </p>
                             </div>
                             <div className="flex items-center gap-3">
+                                <label className="text-sm font-medium text-gray-700">
+                                    Tahun:
+                                </label>
                                 <select
                                     value={year}
                                     onChange={(e) =>
                                         handleYearChange(e.target.value)
                                     }
-                                    className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-20"
+                                    className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-28 bg-white cursor-pointer"
                                 >
-                                    <option value={2023}>2023</option>
-                                    <option value={2024}>2024</option>
-                                    <option value={2025}>2025</option>
+                                    {yearOptions.map((y) => (
+                                        <option key={y} value={y}>
+                                            {y}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
