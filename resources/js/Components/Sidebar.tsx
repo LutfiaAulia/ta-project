@@ -142,7 +142,7 @@ const Sidebar: React.FC = () => {
                     href={getDashboardRoute()}
                     className={`${baseItem} ${
                         route().current(
-                            `${role.toLowerCase().replace(" ", "")}.dashboard`
+                            `${role.toLowerCase().replace(" ", "")}.dashboard`,
                         ) && !window.location.href.includes("user/show")
                             ? active
                             : hover
@@ -181,7 +181,7 @@ const Sidebar: React.FC = () => {
                                         href={route("booking.listBooking")}
                                         className={`${subItem} ${
                                             route().current(
-                                                "booking.listBooking"
+                                                "booking.listBooking",
                                             )
                                                 ? subActive
                                                 : subHover
@@ -197,7 +197,7 @@ const Sidebar: React.FC = () => {
                                         href={route("bookinglaksana.list")}
                                         className={`${subItem} ${
                                             route().current(
-                                                "bookinglaksana.list"
+                                                "bookinglaksana.list",
                                             )
                                                 ? subActive
                                                 : subHover
@@ -285,7 +285,7 @@ const Sidebar: React.FC = () => {
                             onClick={() => setOpenUmkm(!openUmkm)}
                         >
                             <span className="flex items-center gap-3">
-                                <FaShoppingBag /> Manajemen Promosi UMKM
+                                <FaShoppingBag /> Pemberdayaan UMKM
                             </span>
                             <FaChevronDown
                                 className={`transition-transform duration-300 ${
@@ -312,7 +312,7 @@ const Sidebar: React.FC = () => {
                                     href={route("pegawai.kelola.promosi")}
                                     className={`${subItem} ${
                                         route().current(
-                                            "pegawai.kelola.promosi"
+                                            "pegawai.kelola.promosi",
                                         )
                                             ? subActive
                                             : subHover
@@ -320,6 +320,20 @@ const Sidebar: React.FC = () => {
                                 >
                                     <FaShoppingBag className="text-xs" /> Kelola
                                     Promosi
+                                </Link>
+
+                                <Link
+                                    href={route("pegawai.kelola.promosi")}
+                                    className={`${subItem} ${
+                                        route().current(
+                                            "pegawai.kelola.promosi",
+                                        )
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaShoppingBag className="text-xs" />
+                                    Monitoring UMKM
                                 </Link>
                             </div>
                         )}
@@ -334,7 +348,7 @@ const Sidebar: React.FC = () => {
                             onClick={() => setOpenAdmin(!openAdmin)}
                         >
                             <span className="flex items-center gap-3">
-                                <FaUsersCog /> Manajemen Data
+                                <FaUsersCog /> Master Data
                             </span>
                             <FaChevronDown
                                 className={`transition-transform duration-300 ${
@@ -486,7 +500,7 @@ const Sidebar: React.FC = () => {
                             onClick={() => setOpenHU(!openHU)}
                         >
                             <span className="flex items-center gap-3">
-                                <FaShoppingBag /> Manajemen Halaman Utama
+                                <FaShoppingBag /> Informasi Publik
                             </span>
                             <FaChevronDown
                                 className={`transition-transform duration-300 ${
@@ -512,7 +526,7 @@ const Sidebar: React.FC = () => {
                                     href={route("profil-organisasi.show")}
                                     className={`${subItem} ${
                                         route().current(
-                                            "profil-organisasi.show"
+                                            "profil-organisasi.show",
                                         )
                                             ? subActive
                                             : subHover
@@ -525,9 +539,7 @@ const Sidebar: React.FC = () => {
                                 <Link
                                     href={route("index.galeri")}
                                     className={`${subItem} ${
-                                        route().current(
-                                            "index.galeri"
-                                        )
+                                        route().current("index.galeri")
                                             ? subActive
                                             : subHover
                                     }`}
@@ -539,9 +551,7 @@ const Sidebar: React.FC = () => {
                                 <Link
                                     href={route("admin.list.program")}
                                     className={`${subItem} ${
-                                        route().current(
-                                            "admin.list.program"
-                                        )
+                                        route().current("admin.list.program")
                                             ? subActive
                                             : subHover
                                     }`}
