@@ -37,7 +37,7 @@ const ListGaleri: React.FC<PageProps<{ galeri: Galeri[] }>> = ({ galeri }) => {
     const handleDelete = (id: number, judul: string) => {
         if (
             confirm(
-                `Apakah Anda yakin ingin menghapus foto kegiatan: "${judul}"? Tindakan ini tidak dapat dibatalkan.`
+                `Apakah Anda yakin ingin menghapus foto kegiatan: "${judul}"? Tindakan ini tidak dapat dibatalkan.`,
             )
         ) {
             inertiaDelete(route("destroy.galeri", id));
@@ -118,34 +118,36 @@ const ListGaleri: React.FC<PageProps<{ galeri: Galeri[] }>> = ({ galeri }) => {
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-gray-600">
                                                 {new Date(
-                                                    item.tanggal
+                                                    item.tanggal,
                                                 ).toLocaleDateString("id-ID", {
                                                     year: "numeric",
                                                     month: "long",
                                                     day: "numeric",
                                                 })}
                                             </td>
-                                            <td className="px-4 py-4 whitespace-nowrap text-center space-x-2">
-                                                <Link
-                                                    href={route(
-                                                        "edit.galeri",
-                                                        item.id_galeri
-                                                    )}
-                                                    className="bg-yellow-500 hover:bg-yellow-600 transition duration-150 text-white px-3 py-1 rounded text-xs font-medium shadow-md hover:shadow-lg"
-                                                >
-                                                    Edit
-                                                </Link>
-                                                <button
-                                                    onClick={() =>
-                                                        handleDelete(
+                                            <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                                <div className="flex justify-center space-x-2">
+                                                    <Link
+                                                        href={route(
+                                                            "edit.galeri",
                                                             item.id_galeri,
-                                                            item.judul
-                                                        )
-                                                    }
-                                                    className="bg-red-600 hover:bg-red-700 transition duration-150 text-white px-3 py-1 rounded text-xs font-medium shadow-md hover:shadow-lg"
-                                                >
-                                                    Hapus
-                                                </button>
+                                                        )}
+                                                        className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1.5 rounded-md transition duration-150"
+                                                    >
+                                                        Edit
+                                                    </Link>
+                                                    <button
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                item.id_galeri,
+                                                                item.judul,
+                                                            )
+                                                        }
+                                                        className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1.5 rounded-md transition duration-150"
+                                                    >
+                                                        Hapus
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

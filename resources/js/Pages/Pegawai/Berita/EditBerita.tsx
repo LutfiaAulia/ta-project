@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import Layout from "@/Components/Layout";
-import { router } from "@inertiajs/react";
-// Import Quill
+import { Head, Link, useForm } from "@inertiajs/react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-type BeritaForm = {
+interface Berita {
+    id_berita: number;
     judul: string;
     slug: string;
-    gambar: File | null;
+    gambar: string | null;
     tanggal_publikasi: string;
     ringkasan: string;
     konten: string;
-};
+}
+
+interface Props {
+    berita: Berita;
+}
 
 const generateSlug = (text: string): string => {
     return text
@@ -23,223 +27,252 @@ const generateSlug = (text: string): string => {
         .replace(/^-+|-+$/g, "");
 };
 
-type Props = {
-    berita: {
-        id_berita: number;
-        judul: string;
-        slug: string;
-        gambar: string | null;
-        tanggal_publikasi: string;
-        ringkasan: string;
-        konten: string;
-    };
+const modules = {
+    toolbar: [
+        [{ header: [1, 2, false] }],
+        ["bold", "italic", "underline", "strike"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        ["link", "clean"],
+    ],
 };
 
-const EditBerita: React.FC<Props> = ({ berita }) => {
-    const [form, setForm] = useState<BeritaForm>({
-        judul: berita.judul,
-        slug: berita.slug,
-        gambar: null,
-        tanggal_publikasi: berita.tanggal_publikasi?.slice(0, 10),
-        ringkasan: berita.ringkasan,
-        konten: berita.konten,
+const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "list",
+    "bullet",
+    "link",
+];
+
+const EditBerita = ({ berita }: Props) => {
+    const { data, setData, post, processing, errors } = useForm({
+        judul: berita.judul || "",
+        slug: berita.slug || "",
+        gambar: null as File | null,
+        tanggal_publikasi: berita.tanggal_publikasi?.slice(0, 10) || "",
+        ringkasan: berita.ringkasan || "",
+        konten: berita.konten || "",
+        _method: "PUT",
     });
 
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [preview, setPreview] = useState<string | null>(
+        berita.gambar ? `/storage/${berita.gambar}` : null,
+    );
 
-    // Toolbar editor
-    const modules = {
-        toolbar: [
-            [{ header: [1, 2, false] }],
-            ["bold", "italic", "underline"],
-            [{ list: "ordered" }, { list: "bullet" }],
-            ["link", "clean"],
-        ],
+    const handleJudulChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setData((prev) => ({
+            ...prev,
+            judul: value,
+            slug: generateSlug(value),
+        }));
     };
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const { name, value, type } = e.target;
-
-        setForm((prev) => {
-            let newState: Record<string, any> = {};
-
-            if (type === "file") {
-                const fileInput = e.target as HTMLInputElement;
-                if (fileInput.files && fileInput.files[0]) {
-                    newState[name] = fileInput.files[0];
-                } else {
-                    return prev;
-                }
-            } else {
-                newState[name] = value;
-            }
-
-            if (name === "judul") {
-                newState.slug = generateSlug(value);
-            }
-
-            return { ...prev, ...newState };
-        });
-
-        setErrors((prev) => ({ ...prev, [name]: "" }));
-    };
-
-    // Handler khusus konten editor
-    const handleKontenChange = (value: string) => {
-        setForm((prev) => ({ ...prev, konten: value }));
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setData("gambar", file);
+            setPreview(URL.createObjectURL(file));
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        router.post(
-            `/pegawai/update/berita/${berita.id_berita}`,
-            {
-                _method: "PUT",
-                ...form,
-            },
-            {
-                forceFormData: true,
-                onError: (err) => setErrors(err),
-            }
-        );
+        post(route("berita.update", berita.id_berita), {
+            forceFormData: true,
+        });
     };
-
-    const renderError = (field: string) =>
-        errors[field] && (
-            <p className="text-red-500 text-xs mt-1">{errors[field]}</p>
-        );
 
     return (
         <Layout>
-            <div className="max-w-screen-lg mx-auto p-8 sm:p-12">
-                <h1 className="text-2xl font-bold mb-8 text-center text-gray-800">
-                    Edit Berita
-                </h1>
+            <Head title={`Edit Berita - ${berita.judul}`} />
 
-                <form
-                    onSubmit={handleSubmit}
-                    className="space-y-6 bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100"
-                >
-                    {/* Judul */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Judul Berita
-                        </label>
-                        <input
-                            type="text"
-                            name="judul"
-                            value={form.judul}
-                            onChange={handleChange}
-                            className="w-full border px-4 py-2 rounded-lg"
-                        />
-                        {renderError("judul")}
-                    </div>
-
-                    {/* Slug */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Slug
-                        </label>
-                        <input
-                            type="text"
-                            name="slug"
-                            value={form.slug}
-                            readOnly
-                            className="w-full border px-4 py-2 rounded-lg bg-gray-100 text-gray-500"
-                        />
-                    </div>
-
-                    {/* Tanggal Publikasi */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Tanggal Publikasi
-                        </label>
-                        <input
-                            type="date"
-                            name="tanggal_publikasi"
-                            value={form.tanggal_publikasi}
-                            onChange={handleChange}
-                            className="w-full border px-4 py-2 rounded-lg"
-                        />
-                        {renderError("tanggal_publikasi")}
-                    </div>
-
-                    {/* Gambar */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Gambar Utama
-                        </label>
-
-                        {berita.gambar && (
-                            <img
-                                src={`/storage/${berita.gambar}`}
-                                alt="Gambar Lama"
-                                className="w-32 h-20 object-cover rounded-md border mb-3"
-                            />
-                        )}
-
-                        <input
-                            type="file"
-                            name="gambar"
-                            accept="image/*"
-                            onChange={handleChange}
-                            className="w-full border px-4 py-2 rounded-lg"
-                        />
-
-                        {form.gambar && (
-                            <p className="text-xs text-gray-600 mt-1">
-                                File baru: {form.gambar.name}
-                            </p>
-                        )}
-
-                        {renderError("gambar")}
-                    </div>
-
-                    {/* Ringkasan */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Ringkasan
-                        </label>
-                        <textarea
-                            name="ringkasan"
-                            value={form.ringkasan}
-                            onChange={handleChange}
-                            rows={3}
-                            className="w-full border px-4 py-2 rounded-lg"
-                        />
-                        {renderError("ringkasan")}
-                    </div>
-
-                    {/* Konten (Ganti Textarea ke Quill) */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Konten Berita
-                        </label>
-                        <div className="bg-white">
-                            <ReactQuill
-                                theme="snow"
-                                value={form.konten}
-                                onChange={handleKontenChange}
-                                modules={modules}
-                                className="mb-12 h-64"
-                            />
-                        </div>
-                        {renderError("konten")}
-                    </div>
-
-                    {/* Submit */}
-                    <div className="flex justify-end pt-10">
-                        <button
-                            type="submit"
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+            <div className="min-h-screen bg-gray-100 py-8">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Header Navigasi */}
+                    <div className="pt-20 flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold text-gray-700">
+                            Edit Berita
+                        </h2>
+                        <Link
+                            href={route("berita.list")}
+                            className="text-sm text-gray-500 hover:text-gray-700 font-medium"
                         >
-                            Update Berita
-                        </button>
+                            &larr; Batal & Kembali
+                        </Link>
                     </div>
-                </form>
+
+                    <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                        <form
+                            onSubmit={handleSubmit}
+                            className="p-6 md:p-8 space-y-6"
+                        >
+                            {/* Judul & Slug */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Judul Berita
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={data.judul}
+                                        onChange={handleJudulChange}
+                                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition ${
+                                            errors.judul
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                    />
+                                    {errors.judul && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            {errors.judul}
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Slug
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={data.slug}
+                                        readOnly
+                                        className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Tanggal & Gambar */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Tanggal Publikasi
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={data.tanggal_publikasi}
+                                        onChange={(e) =>
+                                            setData(
+                                                "tanggal_publikasi",
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+                                    />
+                                    {errors.tanggal_publikasi && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            {errors.tanggal_publikasi}
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Gambar Utama (Kosongkan jika tidak
+                                        ganti)
+                                    </label>
+                                    <div className="relative border-2 border-dashed border-gray-300 rounded-lg hover:border-green-400 transition bg-gray-50 p-2 text-center">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                        />
+                                        {preview ? (
+                                            <div className="flex items-center justify-center space-x-4">
+                                                <img
+                                                    src={preview}
+                                                    alt="Preview"
+                                                    className="h-20 w-32 object-cover rounded shadow-sm"
+                                                />
+                                                <p className="text-xs text-gray-500 italic">
+                                                    Klik untuk ganti gambar
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <div className="py-4">
+                                                <p className="text-xs text-gray-500">
+                                                    Klik untuk upload gambar
+                                                    baru
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {errors.gambar && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            {errors.gambar}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Ringkasan */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Ringkasan Berita
+                                </label>
+                                <textarea
+                                    value={data.ringkasan}
+                                    onChange={(e) =>
+                                        setData("ringkasan", e.target.value)
+                                    }
+                                    rows={2}
+                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition ${
+                                        errors.ringkasan
+                                            ? "border-red-500"
+                                            : "border-gray-300"
+                                    }`}
+                                />
+                                {errors.ringkasan && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors.ringkasan}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Konten (Quill) */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Konten Berita Lengkap
+                                </label>
+                                <div
+                                    className={`rounded-lg overflow-hidden border ${errors.konten ? "border-red-500" : "border-gray-300"}`}
+                                >
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={data.konten}
+                                        onChange={(content) =>
+                                            setData("konten", content)
+                                        }
+                                        modules={modules}
+                                        formats={formats}
+                                        className="bg-white min-h-[300px]"
+                                    />
+                                </div>
+                                {errors.konten && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors.konten}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Action Button */}
+                            <div className="pt-6 border-t border-gray-100 flex justify-end">
+                                <button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-10 rounded-lg shadow-md transition disabled:opacity-50"
+                                >
+                                    {processing
+                                        ? "Menyimpan..."
+                                        : "Update Berita"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </Layout>
     );

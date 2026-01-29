@@ -26,6 +26,7 @@ use App\Http\Controllers\PelayananUmkm\KelolaPelayananUmkmController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilOrganisasi\KelolaProfilOrganisasiController;
 use App\Http\Controllers\ProfilOrganisasi\ProfilOrganisasiPublicController;
+use App\Http\Controllers\Program\KelolaProgramController;
 use App\Http\Controllers\Promosi\KelolaDataUmkmController;
 use App\Http\Controllers\Promosi\KelolaPromosiController;
 use App\Http\Controllers\Promosi\KelolaShowPromosiController;
@@ -236,6 +237,13 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/galeri/{id}/edit', [KelolaGaleriController::class, 'edit'])->name('edit.galeri');
         Route::post('/galeri/{id}/update', [KelolaGaleriController::class, 'update'])->name('update.galeri');
         Route::delete('/galeri/{id}/hapus', [KelolaGaleriController::class, 'destroy'])->name('destroy.galeri');
+
+        Route::get('/program', [KelolaProgramController::class, 'adminIndex'])->name('admin.list.program');
+        Route::get('/program/tambah', [KelolaProgramController::class, 'create'])->name('create.program');
+        Route::post('/program/store', [KelolaProgramController::class, 'store'])->name('store.program');
+        Route::get('/program/{id}/edit', [KelolaProgramController::class, 'edit'])->name('edit.program');
+        Route::put('/program/{id}/update', [KelolaProgramController::class, 'update'])->name('update.program');
+        Route::delete('/program/{id}/hapus', [KelolaProgramController::class, 'destroy'])->name('destroy.program');
 
         Route::get('/tampilan/laporan/{id}', [KelolaLaporanController::class, 'laporan'])->name('tampilan.tempalte.laporan');
     });

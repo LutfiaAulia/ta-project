@@ -81,7 +81,10 @@ const Sidebar: React.FC = () => {
             route().current("berita.create") ||
             route().current("berita.edit") ||
             route().current("create.galeri") ||
-            route().current("edit.galeri")
+            route().current("edit.galeri") ||
+            route().current("admin.list.program") ||
+            route().current("create.program") ||
+            route().current("edit.program")
         ) {
             setOpenHU(true);
         }
@@ -531,6 +534,20 @@ const Sidebar: React.FC = () => {
                                 >
                                     <FaShoppingBag className="text-xs" /> Kelola
                                     Galeri
+                                </Link>
+
+                                <Link
+                                    href={route("admin.list.program")}
+                                    className={`${subItem} ${
+                                        route().current(
+                                            "admin.list.program"
+                                        )
+                                            ? subActive
+                                            : subHover
+                                    }`}
+                                >
+                                    <FaShoppingBag className="text-xs" /> Kelola
+                                    Program PLUT
                                 </Link>
                             </div>
                         )}

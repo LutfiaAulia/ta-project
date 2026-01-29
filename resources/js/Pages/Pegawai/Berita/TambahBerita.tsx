@@ -1,17 +1,8 @@
 import React, { useState } from "react";
 import Layout from "@/Components/Layout";
-import { router } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-
-type BeritaForm = {
-    judul: string;
-    slug: string;
-    gambar: File | null;
-    tanggal_publikasi: string;
-    ringkasan: string;
-    konten: string;
-};
 
 const generateSlug = (text: string): string => {
     return text
@@ -25,7 +16,7 @@ const generateSlug = (text: string): string => {
 const modules = {
     toolbar: [
         [{ header: [1, 2, false] }],
-        ["bold", "italic", "underline"],
+        ["bold", "italic", "underline", "strike"],
         [{ list: "ordered" }, { list: "bullet" }],
         ["link", "clean"],
     ],
@@ -36,188 +27,232 @@ const formats = [
     "bold",
     "italic",
     "underline",
+    "strike",
     "list",
     "bullet",
     "link",
 ];
 
-const TambahBerita: React.FC = () => {
-    const [form, setForm] = useState<BeritaForm>({
+const TambahBerita = () => {
+    const { data, setData, post, processing, errors } = useForm({
         judul: "",
         slug: "",
-        gambar: null,
+        gambar: null as File | null,
         tanggal_publikasi: new Date().toISOString().split("T")[0],
         ringkasan: "",
         konten: "",
     });
 
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [preview, setPreview] = useState<string | null>(null);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const { name, value, type } = e.target;
-        setForm((prev) => {
-            let newState: Partial<BeritaForm> = { [name]: value };
-            if (type === "file") {
-                const file = (e.target as HTMLInputElement).files?.[0] || null;
-                newState = { [name]: file };
-            }
-            if (name === "judul") {
-                newState.slug = generateSlug(value);
-            }
-            return { ...prev, ...newState } as BeritaForm;
-        });
-        setErrors((prev) => ({ ...prev, [name]: "" }));
+    const handleJudulChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setData((prev) => ({
+            ...prev,
+            judul: value,
+            slug: generateSlug(value),
+        }));
     };
 
-    const handleQuillChange = (content: string) => {
-        setForm((prev) => ({ ...prev, konten: content }));
-        setErrors((prev) => ({ ...prev, konten: "" }));
-    };
-
-    const validate = (): boolean => {
-        const newErrors: { [key: string]: string } = {};
-        if (!form.judul.trim()) newErrors.judul = "Judul berita wajib diisi";
-        if (!form.gambar) newErrors.gambar = "Gambar utama wajib diunggah";
-        if (!form.tanggal_publikasi)
-            newErrors.tanggal_publikasi = "Tanggal publikasi wajib diisi";
-        if (!form.ringkasan.trim())
-            newErrors.ringkasan = "Ringkasan berita wajib diisi";
-        if (!form.konten || form.konten === "<p><br></p>")
-            newErrors.konten = "Konten berita wajib diisi";
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setData("gambar", file);
+            setPreview(URL.createObjectURL(file));
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!validate()) return;
-        router.post("/pegawai/store/berita", form, {
+        post(route("berita.store"), {
             forceFormData: true,
-            onError: (errors) => {
-                setErrors(errors as { [key: string]: string });
-            },
         });
     };
 
-    const renderError = (field: string) =>
-        errors[field] ? (
-            <p className="text-red-500 text-xs mt-1">{errors[field]}</p>
-        ) : null;
-
     return (
         <Layout>
-            <div className="max-w-screen-lg mx-auto p-8 sm:p-12">
-                <h1 className="text-2xl font-bold mb-8 text-center text-gray-800">
-                    Tambah Berita Baru
-                </h1>
+            <Head title="Tambah Berita" />
 
-                <form
-                    onSubmit={handleSubmit}
-                    className="space-y-6 bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100"
-                >
-                    {/* Input Judul */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Judul Berita
-                        </label>
-                        <input
-                            type="text"
-                            name="judul"
-                            value={form.judul}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Masukkan judul berita"
-                        />
-                        {renderError("judul")}
-                    </div>
-
-                    {/* Input Slug */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Slug (Otomatis)
-                        </label>
-                        <input
-                            type="text"
-                            value={form.slug}
-                            readOnly
-                            className="w-full border border-gray-300 px-4 py-2 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
-                        />
-                    </div>
-
-                    {/* Input Tanggal */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Tanggal Publikasi
-                        </label>
-                        <input
-                            type="date"
-                            name="tanggal_publikasi"
-                            value={form.tanggal_publikasi}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-                        />
-                    </div>
-
-                    {/* Input Gambar */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Gambar Utama
-                        </label>
-                        <input
-                            type="file"
-                            name="gambar"
-                            accept="image/*"
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-lg p-2"
-                        />
-                        {renderError("gambar")}
-                    </div>
-
-                    {/* Input Ringkasan */}
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Ringkasan Berita
-                        </label>
-                        <textarea
-                            name="ringkasan"
-                            value={form.ringkasan}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-                            rows={3}
-                        />
-                        {renderError("ringkasan")}
-                    </div>
-
-                    <div>
-                        <label className="block mb-1 font-medium text-gray-700">
-                            Konten Berita
-                        </label>
-                        <div className="bg-white">
-                            <ReactQuill
-                                theme="snow"
-                                value={form.konten}
-                                onChange={handleQuillChange}
-                                modules={modules}
-                                formats={formats}
-                                className="rounded-lg"
-                                placeholder="Tulis isi berita lengkap dengan penomoran dan paragraf..."
-                            />
-                        </div>
-                        {renderError("konten")}
-                    </div>
-
-                    <div className="pt-4 flex justify-end">
-                        <button
-                            type="submit"
-                            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition duration-200"
+            <div className="min-h-screen bg-gray-100 py-8">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Header Navigasi */}
+                    <div className="pt-20 flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold text-gray-700">
+                            Tambah Berita Baru
+                        </h2>
+                        <Link
+                            href={route("berita.list")}
+                            className="text-sm text-gray-500 hover:text-gray-700 font-medium"
                         >
-                            Publikasikan Berita
-                        </button>
+                            &larr; Batal & Kembali
+                        </Link>
                     </div>
-                </form>
+
+                    <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                        <form
+                            onSubmit={handleSubmit}
+                            className="p-6 md:p-8 space-y-6"
+                        >
+                            {/* Judul & Slug */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Judul Berita
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={data.judul}
+                                        onChange={handleJudulChange}
+                                        placeholder="Contoh: Kegiatan Bakti Sosial..."
+                                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition ${
+                                            errors.judul
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                    />
+                                    {errors.judul && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            {errors.judul}
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Slug (Otomatis)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={data.slug}
+                                        readOnly
+                                        className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Tanggal & Gambar */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Tanggal Publikasi
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={data.tanggal_publikasi}
+                                        onChange={(e) =>
+                                            setData(
+                                                "tanggal_publikasi",
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+                                    />
+                                    {errors.tanggal_publikasi && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            {errors.tanggal_publikasi}
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Gambar Utama
+                                    </label>
+                                    <div className="relative border-2 border-dashed border-gray-300 rounded-lg hover:border-green-400 transition bg-gray-50 p-2 text-center">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                        />
+                                        {preview ? (
+                                            <img
+                                                src={preview}
+                                                alt="Preview"
+                                                className="h-32 mx-auto object-cover rounded-md shadow-sm"
+                                            />
+                                        ) : (
+                                            <div className="py-4">
+                                                <p className="text-xs text-gray-500">
+                                                    Klik untuk upload gambar
+                                                    utama (Max 2MB)
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {errors.gambar && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            {errors.gambar}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Ringkasan */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Ringkasan Berita
+                                </label>
+                                <textarea
+                                    value={data.ringkasan}
+                                    onChange={(e) =>
+                                        setData("ringkasan", e.target.value)
+                                    }
+                                    rows={2}
+                                    placeholder="Tulis ringkasan singkat untuk tampilan depan..."
+                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition ${
+                                        errors.ringkasan
+                                            ? "border-red-500"
+                                            : "border-gray-300"
+                                    }`}
+                                />
+                                {errors.ringkasan && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors.ringkasan}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Konten (Quill) */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Konten Berita Lengkap
+                                </label>
+                                <div
+                                    className={`rounded-lg overflow-hidden border ${errors.konten ? "border-red-500" : "border-gray-300"}`}
+                                >
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={data.konten}
+                                        onChange={(content) =>
+                                            setData("konten", content)
+                                        }
+                                        modules={modules}
+                                        formats={formats}
+                                        className="bg-white min-h-[300px]"
+                                        placeholder="Tulis isi berita lengkap di sini..."
+                                    />
+                                </div>
+                                {errors.konten && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors.konten}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Action Button */}
+                            <div className="pt-6 border-t border-gray-100 flex justify-end">
+                                <button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-10 rounded-lg shadow-md transition disabled:opacity-50"
+                                >
+                                    {processing
+                                        ? "Memproses..."
+                                        : "Publikasikan Berita"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </Layout>
     );

@@ -35,7 +35,7 @@ const ListBerita: React.FC<PageProps<{ berita: Berita[] }>> = ({ berita }) => {
     const handleDelete = (id: number, judul: string) => {
         if (
             confirm(
-                `Apakah Anda yakin ingin menghapus berita: "${judul}"? Tindakan ini tidak dapat dibatalkan.`
+                `Apakah Anda yakin ingin menghapus berita: "${judul}"? Tindakan ini tidak dapat dibatalkan.`,
             )
         ) {
             inertiaDelete(route("berita.destroy", id));
@@ -116,34 +116,36 @@ const ListBerita: React.FC<PageProps<{ berita: Berita[] }>> = ({ berita }) => {
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-gray-600">
                                                 {new Date(
-                                                    item.tanggal_publikasi
+                                                    item.tanggal_publikasi,
                                                 ).toLocaleDateString("id-ID", {
                                                     year: "numeric",
                                                     month: "long",
                                                     day: "numeric",
                                                 })}
                                             </td>
-                                            <td className="px-4 py-4 whitespace-nowrap text-center space-x-2">
-                                                <Link
-                                                    href={route(
-                                                        "berita.edit",
-                                                        item.id_berita
-                                                    )}
-                                                    className="bg-yellow-500 hover:bg-yellow-600 transition duration-150 text-white px-3 py-1 rounded text-xs font-medium shadow-md hover:shadow-lg"
-                                                >
-                                                    Edit
-                                                </Link>
-                                                <button
-                                                    onClick={() =>
-                                                        handleDelete(
+                                            <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                                <div className="flex justify-center space-x-2">
+                                                    <Link
+                                                        href={route(
+                                                            "berita.edit",
                                                             item.id_berita,
-                                                            item.judul
-                                                        )
-                                                    }
-                                                    className="bg-red-600 hover:bg-red-700 transition duration-150 text-white px-3 py-1 rounded text-xs font-medium shadow-md hover:shadow-lg"
-                                                >
-                                                    Hapus
-                                                </button>
+                                                        )}
+                                                        className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1.5 rounded-md transition duration-150"
+                                                    >
+                                                        Edit
+                                                    </Link>
+                                                    <button
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                item.id_berita,
+                                                                item.judul,
+                                                            )
+                                                        }
+                                                        className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1.5 rounded-md transition duration-150"
+                                                    >
+                                                        Hapus
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))
