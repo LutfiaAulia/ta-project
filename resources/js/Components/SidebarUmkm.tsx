@@ -58,7 +58,7 @@ const SidebarUmkm: React.FC = () => {
 
                 {/* Menu baru untuk input Omset & Aset */}
                 <Link
-                    href={route("umkm.dashboard")}
+                    href={route("umkm.keuangan")}
                     className={`${baseItem} ${
                         route().current("umkm.keuangan") ? active : hover
                     }`}

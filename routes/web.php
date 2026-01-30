@@ -22,6 +22,7 @@ use App\Http\Controllers\Layanan\LayananPublicController;
 use App\Http\Controllers\LegalitasProduk\KelolaLegalitasProdukController;
 use App\Http\Controllers\MobilSopir\KelolaMobilController;
 use App\Http\Controllers\MobilSopir\KelolaSopirController;
+use App\Http\Controllers\Monitoring\KelolaKeuanganUmkmController;
 use App\Http\Controllers\PelayananUmkm\KelolaPelayananUmkmController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilOrganisasi\KelolaProfilOrganisasiController;
@@ -273,6 +274,10 @@ Route::prefix('umkm')->group(function () {
         Route::get('/umkm/profile', [KelolaProfilController::class, 'show'])->name('umkm.profile');
         Route::post('/umkm/update-profile', [KelolaProfilController::class, 'updateProfile'])->name('umkm.profile.update');
         Route::post('/umkm/password', [KelolaProfilController::class, 'updatePassword'])->name('umkm.password.update');
+
+        Route::get('/umkm/keuangan', [KelolaKeuanganUmkmController::class, 'index'])->name('umkm.keuangan');
+        Route::post('/umkm/keuangan', [KelolaKeuanganUmkmController::class, 'store'])->name('umkm.keuangan.store');
+        Route::delete('/umkm/keuangan/{id}', [KelolaKeuanganUmkmController::class, 'destroy'])->name('umkm.keuangan.destroy');
     });
 });
 

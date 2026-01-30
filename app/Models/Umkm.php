@@ -43,4 +43,9 @@ class Umkm extends Model
     {
         return $this->hasMany(Promosi::class, 'id_umkm');
     }
+
+    public function riwayatKeuangan()
+    {
+        return $this->hasMany(KeuanganUmkm::class, 'umkm_id', 'id');
+    }
 }
