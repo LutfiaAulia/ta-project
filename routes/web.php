@@ -247,6 +247,8 @@ Route::prefix('pegawai')->group(function () {
         Route::delete('/program/{id}/hapus', [KelolaProgramController::class, 'destroy'])->name('destroy.program');
 
         Route::get('/tampilan/laporan/{id}', [KelolaLaporanController::class, 'laporan'])->name('tampilan.tempalte.laporan');
+
+        Route::get('/riwayat-keuangan', [KelolaKeuanganUmkmController::class, 'indexRiwayatAdmin'])->name('pegawai.riwayat.index');
     });
 });
 

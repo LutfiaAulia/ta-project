@@ -323,10 +323,10 @@ const Sidebar: React.FC = () => {
                                 </Link>
 
                                 <Link
-                                    href={route("pegawai.kelola.promosi")}
+                                    href={route("pegawai.riwayat.index")}
                                     className={`${subItem} ${
                                         route().current(
-                                            "pegawai.kelola.promosi",
+                                            "pegawai.riwayat.index",
                                         )
                                             ? subActive
                                             : subHover

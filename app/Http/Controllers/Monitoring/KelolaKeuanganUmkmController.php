@@ -11,6 +11,20 @@ use Inertia\Inertia;
 
 class KelolaKeuanganUmkmController extends Controller
 {
+    public function indexRiwayatAdmin()
+    {
+        $riwayat = KeuanganUmkm::with(['umkm.identitas'])
+            ->orderBy('tahun', 'desc')
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->umkm->identitas->nama_usaha ?? 'UMKM Tidak Terdaftar';
+            });
+
+        return Inertia::render('Pegawai/MonitoringUmkm/RiwayatKeuangan', [
+            'riwayat_kelompok' => $riwayat
+        ]);
+    }
+
     public function index()
     {
         $userId = Auth::id();

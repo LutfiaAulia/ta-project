@@ -36,7 +36,7 @@ class Umkm extends Model
 
     public function identitas()
     {
-        return $this->hasOne(IdentitasUmkm::class, 'id_umkm');
+        return $this->hasOne(IdentitasUmkm::class, 'id_umkm', 'id');
     }
 
     public function promosi()
