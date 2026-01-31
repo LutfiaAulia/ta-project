@@ -41,6 +41,7 @@ const navItems: NavItem[] = [
         ],
     },
     { name: "Layanan", href: "/layanan", icon: Briefcase, id: "layanan" },
+    { name: "Program PLUT", href: "/program", icon: Briefcase, id: "program" },
     { name: "Mobil Klinik", href: "/login", icon: Truck, id: "mobil" },
     {
         name: "Promosi UKM",
