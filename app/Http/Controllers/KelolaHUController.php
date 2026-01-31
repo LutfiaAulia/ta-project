@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Berita;
 use App\Models\BidangLayanan;
 use App\Models\Booking;
-use App\Models\Dokumentasi;
 use App\Models\Galeri;
 use App\Models\Instansi;
 use App\Models\PelayananUmkm;
+use App\Models\Program;
 use App\Models\Umkm;
 use Carbon\Carbon;
 use Illuminate\Foundation\Application;
@@ -28,6 +28,12 @@ class KelolaHUController extends Controller
         $mainNews = $beritaTerbaru->first();
 
         $beritaLain = $beritaTerbaru->skip(1)->values();
+
+        $programPlut = Program::select('id_program', 'judul', 'excerpt', 'image', 'slug', 'status')
+            ->whereIn('status', ['active', 'upcoming'])
+            ->orderBy('id_program', 'asc')
+            ->limit(3)
+            ->get();
 
         $jadwalTerdekat = Booking::whereDate('tanggal_akhir', '>=', Carbon::now())
             ->where('status_booking', 'Diterima')
@@ -81,6 +87,7 @@ class KelolaHUController extends Controller
 
 
         return Inertia::render('Welcome', [
+            'programPlut' => $programPlut,
             'jadwalTerdekat' => $jadwalTerdekat,
             'layanan' => $layananGrouped,
             'umkmTerlayani' => $umkmTerlayani,

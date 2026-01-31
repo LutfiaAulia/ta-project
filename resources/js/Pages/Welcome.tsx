@@ -39,6 +39,14 @@ interface Berita {
     gambar: string;
     slug: string;
 }
+interface ProgramItem {
+    id_program: number;
+    judul: string;
+    excerpt: string;
+    image: string;
+    status: string;
+    slug: string;
+}
 
 interface PageProps {
     layanan: Record<string, LayananItem[]>;
@@ -50,11 +58,13 @@ interface PageProps {
     dokumentasiTerbaru: any[];
     mainNews: Berita | null;
     beritaLain: Berita[];
+    programPlut: ProgramItem[];
 }
 
 export default function Welcome() {
     const {
         layanan,
+        programPlut,
         jadwalTerdekat,
         umkmTerlayani,
         nagariTerliput,
@@ -87,10 +97,10 @@ export default function Welcome() {
         ) {
             return `${start.toLocaleDateString(
                 "id-ID",
-                optionsDay
+                optionsDay,
             )}–${end.toLocaleDateString(
                 "id-ID",
-                optionsDay
+                optionsDay,
             )} ${start.toLocaleDateString("id-ID", optionsMonthYear)}`;
         }
         return `${start.toLocaleDateString("id-ID", {
@@ -162,12 +172,14 @@ export default function Welcome() {
                             Pelayanan Aktif di Sumatera Barat
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.1] mb-6">
-                            Mendekatkan Layanan,{" "}
-                            Meningkatkan <span className="text-green-400">UMKM</span>
+                            Mendekatkan Layanan, Meningkatkan{" "}
+                            <span className="text-green-400">UMKM</span>
                         </h1>
                         <p className="text-lg md:text-xl text-slate-200 mb-10 opacity-90 leading-relaxed font-light">
-                            Berkomitmen menghadirkan layanan prima bagi pelaku UMKM guna mengakselerasi pertumbuhan 
-                            usaha yang unggul dan berdaya saing di kancah lokal maupun nasional.
+                            Berkomitmen menghadirkan layanan prima bagi pelaku
+                            UMKM guna mengakselerasi pertumbuhan usaha yang
+                            unggul dan berdaya saing di kancah lokal maupun
+                            nasional.
                         </p>
                         <div className="flex flex-wrap gap-4">
                             <Link
@@ -204,8 +216,105 @@ export default function Welcome() {
                 </div>
             </section>
 
+            {/* SECTION: Program PLUT dari Database */}
+            <section className="pt-24 pb-12 bg-slate-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                        <div className="max-w-2xl">
+                            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4">
+                                Program Unggulan{" "}
+                                <span className="text-green-600">PLUT</span>
+                            </h2>
+                            <p className="text-slate-500 font-medium text-lg">
+                                Inisiatif strategis untuk mendukung transformasi
+                                dan akselerasi UMKM di Sumatera Barat.
+                            </p>
+                        </div>
+                        {/* Navigasi program */}
+                        <Link
+                            href="/program"
+                            className="text-green-700 font-bold flex items-center gap-2 hover:gap-3 transition-all"
+                        >
+                            Lihat Semua Program{" "}
+                            <ArrowRight className="w-5 h-5" />
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        {programPlut && programPlut.length > 0 ? (
+                            programPlut.map((prog) => (
+                                <Link
+                                    key={prog.id_program}
+                                    href={`/program/${prog.slug}`}
+                                    className="group bg-white rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 overflow-hidden flex flex-col"
+                                >
+                                    {/* Image Header */}
+                                    <div className="relative h-56 overflow-hidden">
+                                        <img
+                                            src={
+                                                prog.image?.startsWith(
+                                                    "/storage/",
+                                                )
+                                                    ? prog.image
+                                                    : `/storage/${prog.image}`
+                                            }
+                                            alt={prog.judul}
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                        />
+
+                                        {/* FLOAT BADGE STATUS */}
+                                        <div className="absolute top-5 left-5 z-10">
+                                            {prog.status === "active" ? (
+                                                <div className="bg-green-600/90 backdrop-blur-md text-white text-[10px] font-black px-4 py-2 rounded-xl shadow-lg flex items-center gap-2 border border-white/20">
+                                                    <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                                                    AKTIF
+                                                </div>
+                                            ) : (
+                                                <div className="bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-black px-4 py-2 rounded-xl shadow-lg flex items-center gap-2 border border-white/20">
+                                                    <span className="w-2 h-2 bg-blue-200 rounded-full"></span>
+                                                    SEGERA HADIR
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                            <span className="text-white text-xs font-bold uppercase tracking-widest bg-white/20 backdrop-blur-md border border-white/30 px-3 py-1.5 rounded-lg">
+                                                Detail Program
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Content */}
+                                    <div className="p-8 flex flex-col flex-grow">
+                                        <h3 className="text-2xl font-bold text-slate-800 mb-4 group-hover:text-green-600 transition-colors leading-tight">
+                                            {prog.judul}
+                                        </h3>
+                                        <p className="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-3">
+                                            {prog.excerpt}
+                                        </p>
+
+                                        <div className="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
+                                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                                                PLUT-KUMKM
+                                            </span>
+                                            <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 group-hover:bg-green-600 group-hover:text-white transition-all flex items-center justify-center">
+                                                <ArrowRight className="w-5 h-5" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))
+                        ) : (
+                            <div className="col-span-full text-center py-20 bg-white rounded-[3rem] border-2 border-dashed border-slate-100 text-slate-400 italic">
+                                Belum ada data program yang dipublikasikan.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </section>
+
             {/* Berita Section */}
-            <section className="py-24">
+            <section className="pt-12 pb-24 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-end justify-between mb-12">
                         <div>
@@ -236,7 +345,7 @@ export default function Welcome() {
                                     <img
                                         src={
                                             mainNews.gambar?.startsWith(
-                                                "/storage/"
+                                                "/storage/",
                                             )
                                                 ? mainNews.gambar
                                                 : `/storage/${mainNews.gambar}`
@@ -253,7 +362,7 @@ export default function Welcome() {
                                             <span className="flex items-center gap-1.5">
                                                 <Clock className="w-4 h-4" />{" "}
                                                 {formatTanggalPublikasi(
-                                                    mainNews.tanggal_publikasi
+                                                    mainNews.tanggal_publikasi,
                                                 )}
                                             </span>
                                         </div>
@@ -292,7 +401,7 @@ export default function Welcome() {
                                             <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                                                 <Calendar className="w-3 h-3" />{" "}
                                                 {formatTanggalPublikasi(
-                                                    item.tanggal_publikasi
+                                                    item.tanggal_publikasi,
                                                 )}
                                             </div>
                                         </Link>
@@ -373,7 +482,7 @@ export default function Welcome() {
                                                         </span>
                                                         <span className="text-2xl font-black leading-none">
                                                             {new Date(
-                                                                jadwal.tanggal_mulai
+                                                                jadwal.tanggal_mulai,
                                                             ).getDate()}
                                                         </span>
                                                     </div>
@@ -397,7 +506,7 @@ export default function Welcome() {
                                                                 <Calendar className="w-4 h-4 text-green-600" />{" "}
                                                                 {formatTanggalRange(
                                                                     jadwal.tanggal_mulai,
-                                                                    jadwal.tanggal_akhir
+                                                                    jadwal.tanggal_akhir,
                                                                 )}
                                                             </span>
                                                         </div>

@@ -28,6 +28,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilOrganisasi\KelolaProfilOrganisasiController;
 use App\Http\Controllers\ProfilOrganisasi\ProfilOrganisasiPublicController;
 use App\Http\Controllers\Program\KelolaProgramController;
+use App\Http\Controllers\Program\ProgramPublicController;
 use App\Http\Controllers\Promosi\KelolaDataUmkmController;
 use App\Http\Controllers\Promosi\KelolaPromosiController;
 use App\Http\Controllers\Promosi\KelolaShowPromosiController;
@@ -53,6 +54,8 @@ Route::get('/profile/struktur-organisasi', [ProfilOrganisasiPublicController::cl
 Route::get('/profile/visi-dan-misi', [ProfilOrganisasiPublicController::class, 'visi_misi'])->name('visi_misi.show');
 Route::get('/profile/tugas-dan-fungsi', [ProfilOrganisasiPublicController::class, 'tugas_fungsi'])->name('tugas_fungsi.show');
 Route::get('/media/galeri', [KelolaGaleriController::class, 'index'])->name('galeri.index');
+Route::get('/program', [ProgramPublicController::class, 'index'])->name('program.index');
+Route::get('/program/{slug}', [ProgramPublicController::class, 'show'])->name('program.show');
 
 Route::get('/email/verify', function () {
     return inertia('Auth/VerifyEmail');
