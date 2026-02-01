@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Program;
 use App\Http\Controllers\Controller;
 use App\Models\Program;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -32,7 +33,6 @@ class KelolaProgramController extends Controller
             'excerpt'    => 'nullable|string|max:255',
             'status'     => 'required|in:active,inactive,upcoming',
             'is_open'    => 'required|boolean',
-            'id_pegawai' => 'required|exists:pegawai,id',
         ]);
 
         $path = null;
@@ -48,7 +48,7 @@ class KelolaProgramController extends Controller
             'excerpt'    => $request->excerpt,
             'status'     => $request->status,
             'is_open'    => $request->is_open,
-            'id_pegawai' => $request->id_pegawai,
+            'id_pegawai' => Auth::user()->pegawai->id ?? Auth::id(),
         ]);
 
         return redirect()->route('admin.list.program')->with('success', 'Program berhasil ditambahkan!');

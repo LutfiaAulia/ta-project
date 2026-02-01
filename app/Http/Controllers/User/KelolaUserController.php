@@ -169,7 +169,7 @@ class KelolaUserController extends Controller
         }
 
         if ($user->user_type === 'pegawai') {
-            $rules['role'] = 'required|string|in:Admin,Kepala Bidang,Pegawai Lapangan,Administrasi Umum,Kepala Dinas';
+            $rules['role'] = 'required|string|in:Admin,Pegawai Lapangan,Kepala PLUT';
         }
 
         if ($user->user_type === 'instansi') {

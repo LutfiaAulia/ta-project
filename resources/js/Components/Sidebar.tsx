@@ -96,14 +96,10 @@ const Sidebar: React.FC = () => {
         switch (role) {
             case "Admin":
                 return route("admin.dashboard");
-            case "Kepala Dinas":
+            case "Kepala PLUT":
                 return route("kadin.dashboard");
-            case "Kepala Bidang":
-                return route("kabid.dashboard");
             case "Pegawai Lapangan":
                 return route("lapangan.dashboard");
-            case "Administrasi Umum":
-                return route("adm.dashboard");
             default:
                 return route("pegawai.login.form");
         }
@@ -154,7 +150,7 @@ const Sidebar: React.FC = () => {
                 <hr className="my-2 border-green-600/50" />
 
                 {/* ==================== GRUP: MOBIL KLINIK ==================== */}
-                {canAccess(["Admin", "Kepala Bidang", "Pegawai Lapangan"]) && (
+                {canAccess(["Admin", "Pegawai Lapangan"]) && (
                     <div>
                         <div
                             className={groupHeader}
@@ -174,7 +170,6 @@ const Sidebar: React.FC = () => {
                             <div className="ml-4 mt-1 space-y-1">
                                 {canAccess([
                                     "Admin",
-                                    "Kepala Bidang",
                                     "Pegawai Lapangan",
                                 ]) && (
                                     <Link
@@ -210,8 +205,7 @@ const Sidebar: React.FC = () => {
 
                                 {canAccess([
                                     "Admin",
-                                    "Kepala Bidang",
-                                    "Kepala Dinas",
+                                    "Kepala PLUT",
                                     "Pegawai Lapangan",
                                 ]) && (
                                     <Link
@@ -232,7 +226,7 @@ const Sidebar: React.FC = () => {
                 )}
 
                 {/* ==================== GRUP: SURAT MENYURAT ==================== */}
-                {canAccess(["Administrasi Umum", "Kepala Dinas"]) && (
+                {canAccess(["Kepala PLUT"]) && (
                     <div>
                         <div
                             className={groupHeader}

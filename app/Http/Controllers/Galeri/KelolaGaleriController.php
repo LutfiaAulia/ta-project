@@ -54,7 +54,7 @@ class KelolaGaleriController extends Controller
             'gambar'     => $path,
             'tanggal'    => $request->tanggal,
             'keterangan' => $request->keterangan,
-            'id_pegawai' => Auth::id(),
+            'id_pegawai' => Auth::user()->pegawai->id ?? Auth::id(),
         ]);
 
         return redirect()->route('index.galeri')->with('message', 'Galeri berhasil ditambahkan!');
