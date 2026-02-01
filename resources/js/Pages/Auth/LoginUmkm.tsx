@@ -128,7 +128,7 @@ export default function LoginUmkm() {
                                         MEMPROSES...
                                     </span>
                                 ) : (
-                                    "MASUK KE DASHBOARD"
+                                    "MASUK"
                                 )}
                             </button>
                         </div>

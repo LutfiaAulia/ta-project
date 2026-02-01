@@ -576,6 +576,85 @@ export default function Welcome() {
                 </div>
             </section>
 
+            {/* Section: Lokasi Kantor */}
+            <section className="py-24 bg-slate-50 relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid lg:grid-cols-12 gap-12 items-center">
+                        {/* Info Alamat */}
+                        <div className="lg:col-span-4 order-2 lg:order-1">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-green-100 text-green-700 text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+                                <MapPin className="w-3 h-3" /> Lokasi Kantor
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-6 leading-tight">
+                                Kunjungi{" "}
+                                <span className="text-green-600">
+                                    PLUT KUMKM
+                                </span>{" "}
+                                Sumatera Barat
+                            </h2>
+                            <div className="space-y-6">
+                                <div className="flex gap-4 p-6 bg-white rounded-[2rem] shadow-sm border border-slate-100">
+                                    <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center flex-shrink-0 text-green-600">
+                                        <MapPin className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-slate-800 mb-1">
+                                            Alamat Utama
+                                        </h4>
+                                        <p className="text-slate-500 text-sm leading-relaxed">
+                                            Transito, Jl. Hiu I, Ulak Karang
+                                            Sel., Kec. Padang Utara, Kota
+                                            Padang, Sumatera Barat 25134
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 p-6 bg-white rounded-[2rem] shadow-sm border border-slate-100">
+                                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center flex-shrink-0 text-blue-600">
+                                        <Clock className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-slate-800 mb-1">
+                                            Jam Operasional
+                                        </h4>
+                                        <p className="text-slate-500 text-sm italic">
+                                            Senin - Jumat: 08:00 - 16:00 WIB
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a
+                                href="https://maps.app.goo.gl/PTnemBT1QcL3Sw3Z8"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-8 inline-flex items-center gap-2 text-green-700 font-bold hover:gap-4 transition-all"
+                            >
+                                Petunjuk Arah di Google Maps{" "}
+                                <ArrowRight className="w-5 h-5" />
+                            </a>
+                        </div>
+
+                        {/* Map Iframe */}
+                        <div className="lg:col-span-8 order-1 lg:order-2 h-[450px] relative">
+                            <div className="absolute -inset-4 bg-green-200/30 rounded-[3rem] blur-2xl"></div>
+                            <div className="relative h-full w-full rounded-[2.5rem] overflow-hidden border-8 border-white shadow-2xl">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.3061526128135!2d100.34704967411783!3d-0.9180615990730573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4bf84beeea25b%3A0x8bbcff519391df9e!2sPLUT%20KUMKM%20PROVINSI%20SUMATERA%20BARAT!5e0!3m2!1sen!2sid!4v1769913094943!5m2!1sen!2sid"
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0 }}
+                                    allowFullScreen={true}
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                    className="grayscale hover:grayscale-0 transition-all duration-700"
+                                ></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <Footer />
 
             {/* CSS Animation */}
