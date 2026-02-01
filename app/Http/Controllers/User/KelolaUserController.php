@@ -64,12 +64,12 @@ class KelolaUserController extends Controller
         ];
 
         if ($request->user_type === 'umkm') {
-            $rules['nib'] = ['required', 'string', 'max:16', \Illuminate\Validation\Rule::unique('users', 'nib')];
-            $rules['nik'] = ['required', 'string', 'max:16', \Illuminate\Validation\Rule::unique('umkm', 'nik')];
+            $rules['nib'] = ['required', 'string', 'max:16', Rule::unique('users', 'nib')];
+            $rules['nik'] = ['required', 'string', 'max:16', Rule::unique('umkm', 'nik')];
         }
 
         if ($request->user_type === 'pegawai') {
-            $rules['role'] = 'required|string|in:Admin,Kepala Bidang,Pegawai Lapangan,Administrasi Umum,Kepala Dinas';
+            $rules['role'] = 'required|string|in:Admin,Pegawai Lapangan,Kepala PLUT';
         }
 
         $validated = $request->validate($rules);
