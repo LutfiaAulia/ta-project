@@ -20,7 +20,6 @@
         .font-bold { font-weight: bold; }
         .text-muted { color: #888; font-style: italic; }
         
-        /* Memberi warna selang-seling tipis pada baris */
         tr:nth-child(even) { background-color: #fafafa; }
     </style>
 </head>
@@ -58,7 +57,6 @@
             <tr>
                 <td class="text-center">{{ $index + 1 }}</td>
                 
-                {{-- Logika IDEM: Membandingkan ID UMKM --}}
                 @if($item->umkm_id !== $lastUmkmId)
                     <td class="font-bold">
                         {{ $item->umkm->identitas->nama_usaha ?? 'Tidak Terdaftar' }}
