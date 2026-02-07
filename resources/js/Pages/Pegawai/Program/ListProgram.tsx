@@ -38,6 +38,11 @@ const ListProgram: React.FC<PageProps<{ program: Program[] }>> = ({
 }) => {
     const { delete: inertiaDelete } = useForm();
 
+    const { auth } = usePage().props as any;
+    const role = auth?.role || "";
+
+    const isAdmin = role === "Admin";
+
     const handleDelete = (id: number, judul: string) => {
         if (
             confirm(
@@ -63,12 +68,14 @@ const ListProgram: React.FC<PageProps<{ program: Program[] }>> = ({
                                 Kelola program pemberdayaan UMKM di sini.
                             </p>
                         </div>
-                        <Link
-                            href={route("create.program")}
-                            className="bg-indigo-600 hover:bg-indigo-700 transition duration-150 text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md flex items-center"
-                        >
-                            <span className="mr-2">+</span> Tambah Program
-                        </Link>
+                        {isAdmin && (
+                            <Link
+                                href={route("create.program")}
+                                className="bg-indigo-600 hover:bg-indigo-700 transition duration-150 text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md flex items-center"
+                            >
+                                <span className="mr-2">+</span> Tambah Program
+                            </Link>
+                        )}
                     </div>
 
                     <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
@@ -161,26 +168,42 @@ const ListProgram: React.FC<PageProps<{ program: Program[] }>> = ({
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                                 <div className="flex justify-center space-x-2">
-                                                    <Link
-                                                        href={route(
-                                                            "edit.program",
-                                                            item.id_program,
-                                                        )}
-                                                        className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1.5 rounded-md transition duration-150"
-                                                    >
-                                                        Edit
-                                                    </Link>
-                                                    <button
-                                                        onClick={() =>
-                                                            handleDelete(
+                                                    {!isAdmin && (
+                                                        <Link
+                                                            href={route(
+                                                                "program.lihat",
                                                                 item.id_program,
-                                                                item.judul,
-                                                            )
-                                                        }
-                                                        className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1.5 rounded-md transition duration-150"
-                                                    >
-                                                        Hapus
-                                                    </button>
+                                                            )}
+                                                            className="text-green-600 hover:text-green-900 bg-green-50 px-3 py-1.5 rounded-md transition duration-150"
+                                                        >
+                                                            Lihat
+                                                        </Link>
+                                                    )}
+
+                                                    {isAdmin && (
+                                                        <>
+                                                            <Link
+                                                                href={route(
+                                                                    "edit.program",
+                                                                    item.id_program,
+                                                                )}
+                                                                className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1.5 rounded-md transition duration-150"
+                                                            >
+                                                                Edit
+                                                            </Link>
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        item.id_program,
+                                                                        item.judul,
+                                                                    )
+                                                                }
+                                                                className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1.5 rounded-md transition duration-150"
+                                                            >
+                                                                Hapus
+                                                            </button>
+                                                        </>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>

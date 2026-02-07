@@ -15,7 +15,23 @@ class KelolaProgramController extends Controller
     public function adminIndex()
     {
         return Inertia::render('Pegawai/Program/ListProgram', [
-            'program' => Program::orderBy('created_at', 'desc')->get()
+            'program' => Program::orderBy('created_at', 'desc')->get(),
+            'auth' => [
+                'role' => Auth::user()->pegawai->role ?? null,
+                'user' => [
+                    'id' => Auth::user()->id,
+                    'nama' => Auth::user()->nama,
+                ],
+            ],
+        ]);
+    }
+
+    public function lihatProgram($id_program)
+    {
+        $program = Program::findOrFail($id_program);
+
+        return Inertia::render('Pegawai/Program/LihatProgram', [
+            'program' => $program,
         ]);
     }
 

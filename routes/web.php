@@ -244,6 +244,7 @@ Route::prefix('pegawai')->group(function () {
         Route::delete('/galeri/{id}/hapus', [KelolaGaleriController::class, 'destroy'])->name('destroy.galeri');
 
         Route::get('/program', [KelolaProgramController::class, 'adminIndex'])->name('admin.list.program');
+        Route::get('/lihat/program/{id}', [KelolaProgramController::class, 'lihatProgram'])->name('program.lihat');
         Route::get('/program/tambah', [KelolaProgramController::class, 'create'])->name('create.program');
         Route::post('/program/store', [KelolaProgramController::class, 'store'])->name('store.program');
         Route::get('/program/{id}/edit', [KelolaProgramController::class, 'edit'])->name('edit.program');

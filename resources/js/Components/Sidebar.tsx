@@ -52,7 +52,8 @@ const Sidebar: React.FC = () => {
         // Group: UMKM
         if (
             route().current("kategori.list") ||
-            route().current("pegawai.kelola.promosi")
+            route().current("pegawai.kelola.promosi") ||
+            route().current("pegawai.riwayat.index")
         ) {
             setOpenUmkm(true);
         }
@@ -320,7 +321,7 @@ const Sidebar: React.FC = () => {
                                 {canAccess([
                                     "Admin",
                                     "Kepala PLUT",
-                                    "Pegawai Lapangan"
+                                    "Pegawai Lapangan",
                                 ]) && (
                                     <Link
                                         href={route("pegawai.riwayat.index")}
@@ -512,30 +513,39 @@ const Sidebar: React.FC = () => {
 
                         {openHU && (
                             <div className="ml-4 mt-1 space-y-1">
-                                <Link
-                                    href={route("berita.list")}
-                                    className={`${subItem} ${
-                                        route().current("berita.list")
-                                            ? subActive
-                                            : subHover
-                                    }`}
-                                >
-                                    <FaTags className="text-xs" /> Kelola Berita
-                                </Link>
+                                {canAccess([
+                                    "Admin",
+                                    "Kepala PLUT",
+                                    "Pegawai Lapangan",
+                                ]) && (
+                                    <Link
+                                        href={route("berita.list")}
+                                        className={`${subItem} ${
+                                            route().current("berita.list")
+                                                ? subActive
+                                                : subHover
+                                        }`}
+                                    >
+                                        <FaTags className="text-xs" /> Kelola
+                                        Berita
+                                    </Link>
+                                )}
 
-                                <Link
-                                    href={route("profil-organisasi.show")}
-                                    className={`${subItem} ${
-                                        route().current(
-                                            "profil-organisasi.show",
-                                        )
-                                            ? subActive
-                                            : subHover
-                                    }`}
-                                >
-                                    <FaShoppingBag className="text-xs" /> Kelola
-                                    Profil Organisasi
-                                </Link>
+                                {canAccess(["Admin", "Kepala PLUT"]) && (
+                                    <Link
+                                        href={route("profil-organisasi.show")}
+                                        className={`${subItem} ${
+                                            route().current(
+                                                "profil-organisasi.show",
+                                            )
+                                                ? subActive
+                                                : subHover
+                                        }`}
+                                    >
+                                        <FaShoppingBag className="text-xs" />{" "}
+                                        Kelola Profil Organisasi
+                                    </Link>
+                                )}
 
                                 <Link
                                     href={route("index.galeri")}
