@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Monitoring;
 use App\Http\Controllers\Controller;
 use App\Models\KeuanganUmkm;
 use App\Models\Umkm;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -77,5 +78,34 @@ class KelolaKeuanganUmkmController extends Controller
         $keuangan->delete();
 
         return redirect()->back()->with('success', 'Data berhasil dihapus.');
+    }
+
+    public function cetakLaporan(Request $request)
+    {
+        $request->validate([
+            'tahun' => 'nullable|numeric',
+        ]);
+
+        $tahun = $request->tahun;
+
+        $query = KeuanganUmkm::with(['umkm.identitas'])
+            ->orderBy('tahun', 'desc');
+
+        if ($tahun) {
+            $query->where('tahun', $tahun);
+        }
+
+        $data = $query->get();
+
+        $laporan = [
+            'title' => 'Laporan Monitoring Keuangan UMKM',
+            'date' => date('d/m/Y'),
+            'tahun_filter' => $tahun ?? 'Semua Tahun',
+            'riwayat' => $data
+        ];
+
+        $pdf = Pdf::loadView('pdf.monitoring', $laporan)
+            ->setPaper('a4', 'landscape');
+        return $pdf->stream('Laporan-Monitoring-UMKM-' . ($tahun ?? 'Semua') . '.pdf');
     }
 }

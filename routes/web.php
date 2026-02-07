@@ -254,6 +254,7 @@ Route::prefix('pegawai')->group(function () {
         Route::get('/tampilan/laporan/{id}', [KelolaLaporanController::class, 'laporan'])->name('tampilan.tempalte.laporan');
 
         Route::get('/riwayat-keuangan', [KelolaKeuanganUmkmController::class, 'indexRiwayatAdmin'])->name('pegawai.riwayat.index');
+        Route::get('/monitoring/cetak', [KelolaKeuanganUmkmController::class, 'cetakLaporan'])->name('monitoring.cetak');
     });
 });
 
