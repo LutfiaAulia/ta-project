@@ -226,6 +226,7 @@ Route::prefix('pegawai')->group(function () {
         Route::delete('/destroy/kategori/{id}', [KelolaKategoriController::class, 'destroy'])->name('kategori.destroy');
 
         Route::get('/list/berita', [KelolaBeritaController::class, 'show'])->name('berita.list');
+        Route::get('/lihat/berita/{id}', [KelolaBeritaController::class, 'lihatBerita'])->name('berita.lihat');
         Route::get('/create/berita', [KelolaBeritaController::class, 'create'])->name('berita.create');
         Route::post('/store/berita', [KelolaBeritaController::class, 'store'])->name('berita.store');
         Route::get('/edit/berita/{id}', [KelolaBeritaController::class, 'edit'])->name('berita.edit');

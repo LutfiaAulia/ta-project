@@ -32,6 +32,11 @@ const FlashMessage = () => {
 const ListBerita: React.FC<PageProps<{ berita: Berita[] }>> = ({ berita }) => {
     const { delete: inertiaDelete } = useForm();
 
+    const { auth } = usePage().props as any;
+    const role = auth?.role || "";
+
+    const isAdmin = role === "Admin";
+
     const handleDelete = (id: number, judul: string) => {
         if (
             confirm(
@@ -52,12 +57,14 @@ const ListBerita: React.FC<PageProps<{ berita: Berita[] }>> = ({ berita }) => {
                         <h2 className="text-xl font-semibold text-gray-700">
                             Daftar Berita
                         </h2>
-                        <Link
-                            href={route("berita.create")}
-                            className="bg-blue-600 hover:bg-blue-700 transition duration-150 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-md flex items-center justify-center"
-                        >
-                            + Tambah Berita Baru
-                        </Link>
+                        {isAdmin && (
+                            <Link
+                                href={route("berita.create")}
+                                className="bg-blue-600 hover:bg-blue-700 transition duration-150 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-md flex items-center justify-center"
+                            >
+                                + Tambah Berita Baru
+                            </Link>
+                        )}
                     </div>
 
                     <div className="bg-white p-6 rounded-xl shadow-lg overflow-x-auto border border-gray-200">
@@ -125,26 +132,43 @@ const ListBerita: React.FC<PageProps<{ berita: Berita[] }>> = ({ berita }) => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                                 <div className="flex justify-center space-x-2">
-                                                    <Link
-                                                        href={route(
-                                                            "berita.edit",
-                                                            item.id_berita,
-                                                        )}
-                                                        className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1.5 rounded-md transition duration-150"
-                                                    >
-                                                        Edit
-                                                    </Link>
-                                                    <button
-                                                        onClick={() =>
-                                                            handleDelete(
+                                    
+                                                    {!isAdmin && (
+                                                        <Link
+                                                            href={route(
+                                                                "berita.lihat",
                                                                 item.id_berita,
-                                                                item.judul,
-                                                            )
-                                                        }
-                                                        className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1.5 rounded-md transition duration-150"
-                                                    >
-                                                        Hapus
-                                                    </button>
+                                                            )}
+                                                            className="text-green-600 hover:text-green-900 bg-green-50 px-3 py-1.5 rounded-md transition duration-150"
+                                                        >
+                                                            Lihat
+                                                        </Link>
+                                                    )}
+
+                                                    {isAdmin && (
+                                                        <>
+                                                            <Link
+                                                                href={route(
+                                                                    "berita.edit",
+                                                                    item.id_berita,
+                                                                )}
+                                                                className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1.5 rounded-md transition duration-150"
+                                                            >
+                                                                Edit
+                                                            </Link>
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        item.id_berita,
+                                                                        item.judul,
+                                                                    )
+                                                                }
+                                                                className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1.5 rounded-md transition duration-150"
+                                                            >
+                                                                Hapus
+                                                            </button>
+                                                        </>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>

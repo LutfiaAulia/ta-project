@@ -36,7 +36,10 @@ class KelolaLaporanController extends Controller
             'laporan' => $laporan,
             'auth' => [
                 'role' => Auth::user()->pegawai->role ?? null,
-                'user' => Auth::user(),
+                'user' => [
+                    'id' => Auth::user()->id,
+                    'nama' => Auth::user()->nama,
+                ],
             ],
         ]);
     }

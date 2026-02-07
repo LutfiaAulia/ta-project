@@ -22,7 +22,7 @@ const extractJam = (waktu: string | null | undefined) => {
     if (!waktu) return "-";
     const dateObj = new Date(waktu);
     if (isNaN(dateObj.getTime())) return "-";
-    dateObj.setHours(dateObj.getHours() - 7); // Koreksi zona waktu
+    dateObj.setHours(dateObj.getHours() - 7);
     return `${dateObj.getHours().toString().padStart(2, "0")}:${dateObj
         .getMinutes()
         .toString()
@@ -33,7 +33,7 @@ const formatTanggalDanJam = (
     tanggalMulai: string,
     tanggalAkhir: string,
     waktuMulai: string,
-    waktuAkhir: string
+    waktuAkhir: string,
 ) => {
     const mulai = new Date(tanggalMulai);
     const akhir = new Date(tanggalAkhir);
@@ -47,7 +47,7 @@ const formatTanggalDanJam = (
               })
             : `${mulai.getDate()} - ${akhir.getDate()} ${akhir.toLocaleDateString(
                   "id-ID",
-                  { month: "long", year: "numeric" }
+                  { month: "long", year: "numeric" },
               )}`;
 
     const jam = `${extractJam(waktuMulai)} - ${extractJam(waktuAkhir)} WIB`;
@@ -65,7 +65,7 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
     const [filteredLaporan, setFilteredLaporan] = useState(laporan);
 
     const { auth } = usePage().props as any;
-    const role = auth?.user?.pegawai?.role || "";
+    const role = auth?.role || "";
 
     const isPegawaiLapangan = role === "Pegawai Lapangan";
 
@@ -78,7 +78,7 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                 lapor.nama_penulis.toLowerCase().includes(keyword) ||
                 new Date(lapor.tanggal_mulai)
                     .toLocaleDateString("id-ID")
-                    .includes(keyword)
+                    .includes(keyword),
         );
         setFilteredLaporan(filtered);
     }, [search, laporan]);
@@ -136,7 +136,7 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                                                 lapor.tanggal_mulai,
                                                 lapor.tanggal_akhir,
                                                 lapor.waktu_mulai,
-                                                lapor.waktu_akhir
+                                                lapor.waktu_akhir,
                                             )}
                                         </td>
                                         <td className="border px-2 py-2">
@@ -165,7 +165,7 @@ const ListLaporan: React.FC<ListLaporanProps> = ({ laporan }) => {
                                                         onClick={(e) => {
                                                             if (
                                                                 !confirm(
-                                                                    "Yakin ingin menghapus laporan ini?"
+                                                                    "Yakin ingin menghapus laporan ini?",
                                                                 )
                                                             ) {
                                                                 e.preventDefault();

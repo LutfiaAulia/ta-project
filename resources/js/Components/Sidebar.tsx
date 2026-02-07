@@ -150,7 +150,7 @@ const Sidebar: React.FC = () => {
                 <hr className="my-2 border-green-600/50" />
 
                 {/* ==================== GRUP: MOBIL KLINIK ==================== */}
-                {canAccess(["Admin", "Pegawai Lapangan"]) && (
+                {canAccess(["Admin", "Pegawai Lapangan", "Kepala PLUT"]) && (
                     <div>
                         <div
                             className={groupHeader}
@@ -168,10 +168,7 @@ const Sidebar: React.FC = () => {
 
                         {openMK && (
                             <div className="ml-4 mt-1 space-y-1">
-                                {canAccess([
-                                    "Admin",
-                                    "Pegawai Lapangan",
-                                ]) && (
+                                {canAccess(["Admin", "Pegawai Lapangan"]) && (
                                     <Link
                                         href={route("booking.listBooking")}
                                         className={`${subItem} ${
@@ -226,7 +223,7 @@ const Sidebar: React.FC = () => {
                 )}
 
                 {/* ==================== GRUP: SURAT MENYURAT ==================== */}
-                {canAccess(["Kepala PLUT"]) && (
+                {canAccess([""]) && (
                     <div>
                         <div
                             className={groupHeader}
@@ -272,7 +269,7 @@ const Sidebar: React.FC = () => {
                 )}
 
                 {/* ==================== GRUP: PROMOSI UMKM ==================== */}
-                {canAccess(["Admin"]) && (
+                {canAccess(["Admin", "Kepala PLUT", "Pegawai Lapangan"]) && (
                     <div>
                         <div
                             className={groupHeader}
@@ -290,45 +287,55 @@ const Sidebar: React.FC = () => {
 
                         {openUmkm && (
                             <div className="ml-4 mt-1 space-y-1">
-                                <Link
-                                    href={route("kategori.list")}
-                                    className={`${subItem} ${
-                                        route().current("kategori.list")
-                                            ? subActive
-                                            : subHover
-                                    }`}
-                                >
-                                    <FaTags className="text-xs" /> Kelola
-                                    Kategori
-                                </Link>
+                                {canAccess(["Admin"]) && (
+                                    <Link
+                                        href={route("kategori.list")}
+                                        className={`${subItem} ${
+                                            route().current("kategori.list")
+                                                ? subActive
+                                                : subHover
+                                        }`}
+                                    >
+                                        <FaTags className="text-xs" /> Kelola
+                                        Kategori
+                                    </Link>
+                                )}
 
-                                <Link
-                                    href={route("pegawai.kelola.promosi")}
-                                    className={`${subItem} ${
-                                        route().current(
-                                            "pegawai.kelola.promosi",
-                                        )
-                                            ? subActive
-                                            : subHover
-                                    }`}
-                                >
-                                    <FaShoppingBag className="text-xs" /> Kelola
-                                    Promosi
-                                </Link>
+                                {canAccess(["Admin"]) && (
+                                    <Link
+                                        href={route("pegawai.kelola.promosi")}
+                                        className={`${subItem} ${
+                                            route().current(
+                                                "pegawai.kelola.promosi",
+                                            )
+                                                ? subActive
+                                                : subHover
+                                        }`}
+                                    >
+                                        <FaShoppingBag className="text-xs" />{" "}
+                                        Kelola Promosi
+                                    </Link>
+                                )}
 
-                                <Link
-                                    href={route("pegawai.riwayat.index")}
-                                    className={`${subItem} ${
-                                        route().current(
-                                            "pegawai.riwayat.index",
-                                        )
-                                            ? subActive
-                                            : subHover
-                                    }`}
-                                >
-                                    <FaShoppingBag className="text-xs" />
-                                    Monitoring UMKM
-                                </Link>
+                                {canAccess([
+                                    "Admin",
+                                    "Kepala PLUT",
+                                    "Pegawai Lapangan"
+                                ]) && (
+                                    <Link
+                                        href={route("pegawai.riwayat.index")}
+                                        className={`${subItem} ${
+                                            route().current(
+                                                "pegawai.riwayat.index",
+                                            )
+                                                ? subActive
+                                                : subHover
+                                        }`}
+                                    >
+                                        <FaShoppingBag className="text-xs" />
+                                        Monitoring UMKM
+                                    </Link>
+                                )}
                             </div>
                         )}
                     </div>
@@ -487,7 +494,7 @@ const Sidebar: React.FC = () => {
                 )}
 
                 {/* ==================== GRUP: MANAJEMEN HU ==================== */}
-                {canAccess(["Admin"]) && (
+                {canAccess(["Admin", "Kepala PLUT", "Pegawai Lapangan"]) && (
                     <div>
                         <div
                             className={groupHeader}

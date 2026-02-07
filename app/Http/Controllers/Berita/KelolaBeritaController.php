@@ -18,6 +18,22 @@ class KelolaBeritaController extends Controller
 
         return Inertia::render('Pegawai/Berita/ListBerita', [
             'berita' => $berita,
+            'auth' => [
+                'role' => Auth::user()->pegawai->role ?? null,
+                'user' => [
+                    'id' => Auth::user()->id,
+                    'nama' => Auth::user()->nama,
+                ],
+            ],
+        ]);
+    }
+
+    public function lihatBerita($id_berita)
+    {
+        $berita = Berita::findOrFail($id_berita);
+
+        return Inertia::render('Pegawai/Berita/LihatBerita', [
+            'berita' => $berita,
         ]);
     }
 

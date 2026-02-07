@@ -46,14 +46,10 @@ class LoginPegawaiController extends Controller
             switch ($role) {
                 case 'Admin':
                     return redirect()->intended('/pegawai/dashboardAdmin');
-                case 'Kepala Dinas':
+                case 'Kepala PLUT':
                     return redirect()->intended('/pegawai/dashboardKadin');
-                case 'Kepala Bidang':
-                    return redirect()->intended('/pegawai/dashboardKabid');
                 case 'Pegawai Lapangan':
                     return redirect()->intended('/pegawai/dashboardLapangan');
-                case 'Administrasi Umum':
-                    return redirect()->intended('/pegawai/dashboardAdm');
                 default:
                     return redirect()->intended('/pegawai/login');
             }
